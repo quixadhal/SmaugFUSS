@@ -8,7 +8,36 @@ It was decided for purposes of clarity to begin a new changelog for the code.
 Listing changes from the AntiFreeze client code would have been confusing
 considering how much of it was gutted and replaced.
 
-CL 1b:
+CL-2:
+
+*Added support for customized who template. Can be expanded upon for others.
+
+CL-1h:
+
+*Host and port information now sent out with is-alive packets.
+
+CL-1g:
+
+*Failure to connect using MD5 will try standard authentication before giving up.
+
+CL-1f:
+
+*Banned muds are not being rejected during packet parsing.
+*Changing your localname will now reset the MD5 login.
+
+CL-1e:
+
+*Made it possible to use imcwho on your own mud for testing purposes.
+
+CL-1d:
+
+*Added emote support to imctell.
+
+CL-1c:
+
+*BUG: Critical buffer overflow found and fixed in packet input buffer.
+
+CL-1b:
 
 *imc_deny_channel was improperly setting denials on the user instead of the target.
 *Remote admin was improperly hashing the router password.

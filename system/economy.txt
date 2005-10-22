@@ -1,7 +1,0 @@
-Sun Jul  6 03:00:00 2003:  0ptn  0pll  0sc 0br  0 global loot
-Wed Mar  3 21:30:00 2004:  0ptn  0pll  0sc 0br  0 global loot
-Wed Mar  3 22:00:00 2004:  0ptn  0pll  0sc 0br  0 global loot
-Thu Mar  4 11:00:00 2004:  0ptn  0pll  0sc 0br  0 global loot
-Fri Oct  1 14:00:00 2004:  0ptn  0pll  0sc 0br  0 global loot
-Fri Oct  1 14:30:00 2004:  0ptn  0pll  0sc 0br  0 global loot
-Fri Oct  1 15:00:00 2004:  0ptn  0pll  0sc 0br  0 global loot

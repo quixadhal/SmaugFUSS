@@ -5,10 +5,13 @@
  *                /-----\  |      | \  |  v  | |     | |  /                 *
  *               /       \ |      |  \ |     | +-----+ +-/                  *
  ****************************************************************************
- * AFKMud Copyright 1997-2003 by Roger Libiez (Samson),                     *
+ * AFKMud Copyright 1997-2005 by Roger Libiez (Samson),                     *
  * Levi Beckerson (Whir), Michael Ward (Tarl), Erik Wolfe (Dwip),           *
  * Cameron Carroll (Cam), Cyberfox, Karangi, Rathian, Raine, and Adjani.    *
  * All Rights Reserved.                                                     *
+ * Registered with the United States Copyright Office. TX 5-877-286         *
+ *                                                                          *
+ * External contributions from Xorith, Quixadhal, Zarius, and many others.  *
  *                                                                          *
  * Original SMAUG 1.4a written by Thoric (Derek Snider) with Altrag,        *
  * Blodkai, Haus, Narn, Scryn, Swordbearer, Tricops, Gorog, Rennard,        *
@@ -24,15 +27,16 @@
  *                      Enhanced ANSI parser by Samson                      *
  ****************************************************************************/
 
-#define SAMSONCOLOR /* To interact with other snippets */
+void reset_colors( CHAR_DATA * ch );
+void set_char_color( short AType, CHAR_DATA * ch );
+void set_pager_color( short AType, CHAR_DATA * ch );
+char *color_str( short AType, CHAR_DATA * ch );
+char *color_align( const char *argument, int size, int align );
+int color_strlen( const char *src );
+char *colorize( const char *txt, DESCRIPTOR_DATA * d );
 
+#define COLOR_DIR "../color/"
 DECLARE_DO_FUN( do_color );
-
-void reset_colors( CHAR_DATA *ch );
-void set_char_color( sh_int AType, CHAR_DATA *ch );
-void set_pager_color( sh_int AType, CHAR_DATA *ch );
-char *color_str( sh_int AType, CHAR_DATA *ch );
-const char *const_color_align( const char *argument, int size, int align );
 
 /*
  * Color Alignment Parameters
@@ -58,25 +62,24 @@ const char *const_color_align( const char *argument, int size, int align );
 #define ANSI_PINK		"\033[1;35m"
 #define ANSI_LBLUE   	"\033[1;36m"
 #define ANSI_WHITE   	"\033[1;37m"
-#define ANSI_RESET	"\033[0m"
 
 /* These are the ANSI codes for blinking foreground text colors */
-#define BLINK_BLACK	"\033[0;5;30m"
-#define BLINK_DRED	"\033[0;5;31m"
-#define BLINK_DGREEN	"\033[0;5;32m"
-#define BLINK_ORANGE	"\033[0;5;33m"
-#define BLINK_DBLUE	"\033[0;5;34m"
-#define BLINK_PURPLE	"\033[0;5;35m"
-#define BLINK_CYAN	"\033[0;5;36m"
-#define BLINK_GREY	"\033[0;5;37m"
-#define BLINK_DGREY	"\033[1;5;30m"
-#define BLINK_RED		"\033[1;5;31m"
-#define BLINK_GREEN	"\033[1;5;32m"
-#define BLINK_YELLOW	"\033[1;5;33m"
-#define BLINK_BLUE	"\033[1;5;34m"
-#define BLINK_PINK	"\033[1;5;35m"
-#define BLINK_LBLUE	"\033[1;5;36m"
-#define BLINK_WHITE	"\033[1;5;37m"
+#define BLINK_BLACK		"\033[0;5;30m"
+#define BLINK_DRED		"\033[0;5;31m"
+#define BLINK_DGREEN		"\033[0;5;32m"
+#define BLINK_ORANGE		"\033[0;5;33m"
+#define BLINK_DBLUE		"\033[0;5;34m"
+#define BLINK_PURPLE		"\033[0;5;35m"
+#define BLINK_CYAN		"\033[0;5;36m"
+#define BLINK_GREY		"\033[0;5;37m"
+#define BLINK_DGREY		"\033[1;5;30m"
+#define BLINK_RED			"\033[1;5;31m"
+#define BLINK_GREEN		"\033[1;5;32m"
+#define BLINK_YELLOW		"\033[1;5;33m"
+#define BLINK_BLUE		"\033[1;5;34m"
+#define BLINK_PINK		"\033[1;5;35m"
+#define BLINK_LBLUE		"\033[1;5;36m"
+#define BLINK_WHITE		"\033[1;5;37m"
 
 /* These are the ANSI codes for background colors */
 #define BACK_BLACK 	"\033[40m"
@@ -97,12 +100,13 @@ const char *const_color_align( const char *argument, int size, int align );
 #define BACK_WHITE    	"\033[57m"
 
 /* Other miscelaneous ANSI tags that can be used */
-#define ANSI_BOLD		"\033[1m" /* For bright color stuff */
-#define ANSI_ITALIC	"\033[3m" /* Italic text */
-#define ANSI_UNDERLINE  "\033[4m" /* Underline text */
-#define ANSI_BLINK	"\033[5m" /* Blinking text */
-#define ANSI_REVERSE    "\033[7m" /* Reverse colors */
-#define ANSI_STRIKEOUT  "\033[9m" /* Overstrike line */
+#define ANSI_RESET	"\033[0m"   /* Reset to terminal default */
+#define ANSI_BOLD		"\033[1m"   /* For bright color stuff */
+#define ANSI_ITALIC	"\033[3m"   /* Italic text */
+#define ANSI_UNDERLINE  "\033[4m"   /* Underline text */
+#define ANSI_BLINK	"\033[5m"   /* Blinking text */
+#define ANSI_REVERSE    "\033[7m"   /* Reverse colors */
+#define ANSI_STRIKEOUT  "\033[9m"   /* Overstrike line */
 
 #define AT_BLACK    	0
 #define AT_BLOOD    	1
@@ -201,12 +205,11 @@ const char *const_color_align( const char *argument, int size, int align );
 #define AT_PRAC4		90 /* Added by Samson 1-21-02 */
 #define AT_MXPPROMPT    91 /* Added by Samson 2-27-02 */
 #define AT_GUILDTALK    92 /* Added by Tarl 28 Nov 02 */
-#define AT_OOC          93
-#define AT_AVATAR       94
-#define AT_SHIP         95
-#define AT_CLAN         96
+#define AT_BOARD        93 /* Samson 10-14-03 */
+#define AT_BOARD2       94 /* Samson 10-14-03 */
+#define AT_BOARD3       95 /* Samson 10-14-03 */
 
 /* Should ALWAYS be one more than the last numerical value in the list */
-#define MAX_COLORS    97
+#define MAX_COLORS    96
 
-extern const sh_int default_set [MAX_COLORS];
+extern const short default_set[MAX_COLORS];

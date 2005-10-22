@@ -8,28 +8,20 @@ CC      = gcc
 #SOLARIS_FLAG = -Dsun -DSYSV
 #SOLARIS_LINK = -lnsl -lsocket
 
-#Intermud-3 - Comment out to disable I3 support in your code
-I3 = 1
-
 #IMC2 - Comment out to disable IMC2 support
 IMC = 1
 
-W_FLAGS = -Wall -Werror -Wshadow -Wformat-security -Winline -Wpointer-arith -Wcast-align -Wredundant-decls -Wstrict-prototypes
+W_FLAGS = -Wall -Werror -Wshadow -Wformat-security -Wpointer-arith -Wcast-align -Wredundant-decls -Wbad-function-cast
 
 C_FLAGS = -g2 $(W_FLAGS) $(SOLARIS_FLAG) $(PROF)
-L_FLAGS = $(PROF) $(SOLARIS_LINK)
+L_FLAGS = $(PROF) $(SOLARIS_LINK) -lz
 
 C_FILES = act_comm.c act_info.c act_move.c act_obj.c act_wiz.c ban.c boards.c \
           build.c clans.c color.c comm.c comments.c const.c db.c deity.c fight.c \
-          handler.c hashstr.c hotboot.c imm_host.c interp.c magic.c makeobjs.c mapout.c \
+          handler.c hashstr.c hotboot.c imm_host.c interp.c magic.c makeobjs.c mapout.c mccp.c \
           md5.c misc.c mpxset.c mud_comm.c mud_prog.c planes.c player.c polymorph.c \
           reset.c save.c services.c shops.c skills.c special.c tables.c \
           track.c update.c
-
-ifdef I3
-   C_FILES := i3.c $(C_FILES)
-   C_FLAGS := $(C_FLAGS) -DI3 -DI3SMAUG
-endif
 
 ifdef IMC
    C_FILES := imc.c $(C_FILES)
@@ -66,6 +58,13 @@ smaug: $(O_FILES)
 clean:
 	rm -f o/*.o smaug *~
 endif
+
+indent:
+	indent -ts3 -nut -nsaf -nsai -nsaw -npcs -npsl -ncs -nbc -bls -prs -bap -cbi0 -cli3 -bli0 -l125 -lp -i3 -cdb -c1 -cd1 -sc -pmt $(C_FILES)
+	indent -ts3 -nut -nsaf -nsai -nsaw -npcs -npsl -ncs -nbc -bls -prs -bap -cbi0 -cli3 -bli0 -l125 -lp -i3 -cdb -c1 -cd1 -sc -pmt $(H_FILES)
+
+indentclean:
+	rm *.c~ *.h~
 
 o/%.o: %.c
 	echo "  Compiling $@....";

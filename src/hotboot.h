@@ -23,16 +23,18 @@
  ****************************************************************************/
 
 #ifndef CH
-   #define CH(d)			((d)->original ? (d)->original : (d)->character)
-#endif
+#define CH(d)			((d)->original ? (d)->original : (d)->character)
+#endif /* 
+        */
 
-#define HOTBOOT_FILE SYSTEM_DIR "copyover.dat" /* for hotboots */
+#define HOTBOOT_FILE SYSTEM_DIR "copyover.dat"  /* for hotboots */
 #define EXE_FILE "../src/smaug"
-#define HOTBOOT_DIR "../hotboot/"	/* For storing objects across hotboots */
-#define MOB_FILE	"mobs.dat"		/* For storing mobs across hotboots */
+#define HOTBOOT_DIR "../hotboot/"   /* For storing objects across hotboots */
+#define MOB_FILE	"mobs.dat"  /* For storing mobs across hotboots */
 
 /* warmboot code */
 void hotboot_recover( void );
-void load_world( CHAR_DATA *ch );
+
+void load_world( void );
 
 DECLARE_DO_FUN( do_hotboot ); /* Hotboot command - Samson 3-31-01 */

@@ -2073,7 +2073,7 @@ Minpos       111
 Slot         294
 Mana         60
 Rounds       12
-Code         spell_null
+Code         spell_polymorph
 Dammsg       ~
 Wearoff      !Polymorph!~
 Minlevel     51

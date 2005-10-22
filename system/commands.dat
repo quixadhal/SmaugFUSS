@@ -198,14 +198,6 @@ Log         0
 End
 
 #COMMAND
-Name        atmob~
-Code        (0x81119bc)
-Position    100
-Level       52
-Log         0
-End
-
-#COMMAND
 Name        buy~
 Code        do_buy
 Position    106
@@ -335,6 +327,14 @@ Log         1
 End
 
 #COMMAND
+Name        bolt~
+Code        do_bolt
+Position    100
+Level       0
+Log         0
+End
+
+#COMMAND
 Name        cast~
 Code        do_cast
 Position    104
@@ -398,22 +398,6 @@ Code        do_clans
 Position    100
 Level       0
 Log         0
-End
-
-#COMMAND
-Name        clear~
-Code        do_clear
-Position    100
-Level       0
-Log         0
-End
-
-#COMMAND
-Name        cmenu~
-Code        do_cmenu
-Position    100
-Level       61
-Log         1
 End
 
 #COMMAND
@@ -652,14 +636,6 @@ Log         0
 End
 
 #COMMAND
-Name        diagnose~
-Code        do_diagnose
-Position    100
-Level       62
-Log         0
-End
-
-#COMMAND
 Name        dismiss~
 Code        do_dismiss
 Position    100
@@ -678,6 +654,14 @@ End
 #COMMAND
 Name        date~
 Code        do_time
+Position    100
+Level       0
+Log         0
+End
+
+#COMMAND
+Name        dnd~
+Code        do_dnd
 Position    100
 Level       0
 Log         0
@@ -832,7 +816,7 @@ Name        formpass~
 Code        do_form_password
 Position    100
 Level       61
-Log         1
+Log         0
 End
 
 #COMMAND
@@ -956,14 +940,6 @@ Log         0
 End
 
 #COMMAND
-Name        grub~
-Code        do_grub
-Position    100
-Level       55
-Log         0
-End
-
-#COMMAND
 Name        gold~
 Code        do_gold
 Position    100
@@ -1056,6 +1032,14 @@ Name        hset~
 Code        do_hset
 Position    100
 Level       59
+Log         1
+End
+
+#COMMAND
+Name        hotboot~
+Code        do_hotboot
+Position    100
+Level       60
 Log         1
 End
 
@@ -1674,7 +1658,7 @@ End
 
 #COMMAND
 Name        map~
-Code        do_lookmap
+Code        reserved
 Position    100
 Level       62
 Log         0
@@ -1686,14 +1670,6 @@ Code        do_mapout
 Position    100
 Level       57
 Log         0
-End
-
-#COMMAND
-Name        massign~
-Code        do_massign
-Position    100
-Level       61
-Log         1
 End
 
 #COMMAND
@@ -1745,14 +1721,6 @@ Log         0
 End
 
 #COMMAND
-Name        mmenu~
-Code        do_mmenu
-Position    100
-Level       54
-Log         0
-End
-
-#COMMAND
 Name        mpedit~
 Code        do_mpedit
 Position    100
@@ -1768,14 +1736,6 @@ Position    100
 Level       54
 Log         0
 Flags       1
-End
-
-#COMMAND
-Name        mrange~
-Code        do_mrange
-Position    100
-Level       54
-Log         0
 End
 
 #COMMAND
@@ -1933,14 +1893,6 @@ Flags       1
 End
 
 #COMMAND
-Name        moblog~
-Code        (0x81119bc)
-Position    100
-Level       58
-Log         0
-End
-
-#COMMAND
 Name        mpasupress~
 Code        do_mpasupress
 Position    100
@@ -1991,6 +1943,14 @@ Position    100
 Level       1
 Log         0
 Flags       1
+End
+
+#COMMAND
+Name        morphlist~
+Code        do_morphlist
+Position    100
+Level       51
+Log         0
 End
 
 #COMMAND
@@ -2147,14 +2107,6 @@ Log         0
 End
 
 #COMMAND
-Name        oassign~
-Code        do_oassign
-Position    100
-Level       61
-Log         1
-End
-
-#COMMAND
 Name        ocreate~
 Code        do_ocreate
 Position    100
@@ -2203,14 +2155,6 @@ Log         0
 End
 
 #COMMAND
-Name        omenu~
-Code        do_omenu
-Position    100
-Level       54
-Log         0
-End
-
-#COMMAND
 Name        opedit~
 Code        do_opedit
 Position    100
@@ -2221,14 +2165,6 @@ End
 #COMMAND
 Name        opstat~
 Code        do_opstat
-Position    100
-Level       54
-Log         0
-End
-
-#COMMAND
-Name        orange~
-Code        do_orange
 Position    100
 Level       54
 Log         0
@@ -2275,35 +2211,11 @@ Log         1
 End
 
 #COMMAND
-Name        owhere~
-Code        do_owhere
-Position    100
-Level       53
-Log         0
-End
-
-#COMMAND
-Name        opentourney~
-Code        (0x81119bc)
-Position    100
-Level       65
-Log         1
-End
-
-#COMMAND
 Name        oset~
 Code        do_oset
 Position    100
 Level       54
 Log         3
-End
-
-#COMMAND
-Name        ogrub~
-Code        do_ogrub
-Position    100
-Level       54
-Log         0
 End
 
 #COMMAND
@@ -2327,14 +2239,6 @@ Name        practice~
 Code        do_practice
 Position    104
 Level       0
-Log         0
-End
-
-#COMMAND
-Name        pagelength~
-Code        do_pagelen
-Position    100
-Level       51
 Log         0
 End
 
@@ -2516,14 +2420,6 @@ Log         0
 End
 
 #COMMAND
-Name        rassign~
-Code        do_rassign
-Position    100
-Level       61
-Log         1
-End
-
-#COMMAND
 Name        rat~
 Code        do_rat
 Position    100
@@ -2545,14 +2441,6 @@ Code        do_reboo
 Position    100
 Level       60
 Log         0
-End
-
-#COMMAND
-Name        hotboot~
-Code        do_hotboot
-Position    100
-Level       60
-Log         1
 End
 
 #COMMAND
@@ -2585,22 +2473,6 @@ Code        do_redit
 Position    100
 Level       53
 Log         3
-End
-
-#COMMAND
-Name        redraw~
-Code        do_redraw_page
-Position    100
-Level       52
-Log         0
-End
-
-#COMMAND
-Name        refresh~
-Code        do_refresh_page
-Position    100
-Level       52
-Log         0
 End
 
 #COMMAND
@@ -2732,32 +2604,8 @@ Log         0
 End
 
 #COMMAND
-Name        rset~
-Code        do_rset
-Position    100
-Level       53
-Log         3
-End
-
-#COMMAND
 Name        rstat~
 Code        do_rstat
-Position    100
-Level       53
-Log         0
-End
-
-#COMMAND
-Name        rreset~
-Code        do_rreset
-Position    100
-Level       60
-Log         3
-End
-
-#COMMAND
-Name        rgrub~
-Code        do_rgrub
 Position    100
 Level       53
 Log         0
@@ -2809,6 +2657,14 @@ Name        repeat~
 Code        do_repeat
 Position    100
 Level       51
+Log         0
+End
+
+#COMMAND
+Name        revert~
+Code        do_revert
+Position    100
+Level       0
 Log         0
 End
 
@@ -3280,14 +3136,6 @@ Log         0
 End
 
 #COMMAND
-Name        showlayers~
-Code        do_showlayers
-Position    100
-Level       62
-Log         0
-End
-
-#COMMAND
 Name        tell~
 Code        do_tell
 Position    106
@@ -3346,6 +3194,14 @@ Log         1
 End
 
 #COMMAND
+Name        traffic~
+Code        do_traffic
+Position    100
+Level       0
+Log         0
+End
+
+#COMMAND
 Name        trust~
 Code        do_trust
 Position    100
@@ -3370,18 +3226,18 @@ Log         0
 End
 
 #COMMAND
-Name        unmorph~
-Code        do_imm_unmorph
-Position    100
-Level       51
-Log         0
-End
-
-#COMMAND
 Name        up~
 Code        do_up
 Position    112
 Level       0
+Log         0
+End
+
+#COMMAND
+Name        unmorph~
+Code        do_imm_unmorph
+Position    100
+Level       51
 Log         0
 End
 
@@ -3434,9 +3290,33 @@ Log         1
 End
 
 #COMMAND
+Name        unbolt~
+Code        do_unbolt
+Position    100
+Level       0
+Log         0
+End
+
+#COMMAND
 Name        value~
 Code        do_value
 Position    106
+Level       0
+Log         0
+End
+
+#COMMAND
+Name        vassign~
+Code        do_vassign
+Position    100
+Level       61
+Log         1
+End
+
+#COMMAND
+Name        version~
+Code        do_version
+Position    100
 Level       0
 Log         0
 End

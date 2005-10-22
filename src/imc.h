@@ -15,7 +15,7 @@
  * This name was chosen to represent the ideals of not only the code, but of the
  * network which spawned it.
  */
-#define IMC_VERSION_STRING "IMC2 Freedom CL-1b "
+#define IMC_VERSION_STRING "IMC2 Freedom CL-2 "
 #define IMC_VERSION 2
 
 /* Number of entries to keep in the channel histories */
@@ -33,6 +33,7 @@
 #define IMC_HELP_FILE    IMC_DIR "imc.help"
 #define IMC_CMD_FILE     IMC_DIR "imc.commands"
 #define IMC_HOTBOOT_FILE IMC_DIR "imc.hotboot"
+#define IMC_WHO_FILE     IMC_DIR "imc.who"
 
 /* Make sure you set the macros in the imccfg.h file properly or things get ugly from here. */
 #include "imccfg.h"
@@ -194,25 +195,26 @@ do                                               \
 /* No real functional difference in alot of this, but double linked lists DO seem to handle better,
  * and they look alot neater too. Yes, readability IS important! - Samson
  */
-typedef struct imc_channel IMC_CHANNEL;        /* Channels, both local and non-local */
-typedef struct imc_packet IMC_PACKET;          /* It's a packet! */
-typedef struct imc_packet_data IMC_PDATA;      /* Extra data fields for packets */
-typedef struct imc_siteinfo SITEINFO;          /* The given mud :) */
-typedef struct imc_remoteinfo REMOTEINFO;      /* Information on a mud connected to IMC */
-typedef struct imc_ban_data IMC_BAN;           /* Mud level bans */
-typedef struct imcchar_data IMC_CHARDATA;      /* Player flags */
-typedef struct imc_ignore IMC_IGNORE;	     /* Player level ignores */
-typedef struct imcucache_data IMCUCACHE_DATA;  /* User cache data for gender targetting socials */
-typedef struct imc_color_table IMC_COLOR;      /* The Color config */
-typedef struct imc_command_table IMC_CMD_DATA; /* Command table */
-typedef struct imc_help_table IMC_HELP_DATA;   /* Help table */
-typedef struct imc_cmd_alias IMC_ALIAS;        /* Big, bad, bloated command alias thing */
+typedef struct imc_channel IMC_CHANNEL;   /* Channels, both local and non-local */
+typedef struct imc_packet IMC_PACKET;  /* It's a packet! */
+typedef struct imc_packet_data IMC_PDATA; /* Extra data fields for packets */
+typedef struct imc_siteinfo SITEINFO;  /* The given mud :) */
+typedef struct imc_remoteinfo REMOTEINFO; /* Information on a mud connected to IMC */
+typedef struct imc_ban_data IMC_BAN;   /* Mud level bans */
+typedef struct imcchar_data IMC_CHARDATA; /* Player flags */
+typedef struct imc_ignore IMC_IGNORE;  /* Player level ignores */
+typedef struct imcucache_data IMCUCACHE_DATA;   /* User cache data for gender targetting socials */
+typedef struct imc_color_table IMC_COLOR; /* The Color config */
+typedef struct imc_command_table IMC_CMD_DATA;  /* Command table */
+typedef struct imc_help_table IMC_HELP_DATA; /* Help table */
+typedef struct imc_cmd_alias IMC_ALIAS;   /* Big, bad, bloated command alias thing */
 typedef struct imc_packet_handler IMC_PHANDLER; /* custom packet handlers added dynamically */
+typedef struct who_template WHO_TEMPLATE; /* The who templates */
 
-typedef void IMC_FUN( CHAR_DATA *ch, char *argument );
+typedef void IMC_FUN( CHAR_DATA * ch, char *argument );
 #define IMC_CMD( name ) void (name)( CHAR_DATA *ch, char *argument )
 
-typedef void PACKET_FUN( IMC_PACKET *q, char *packet );
+typedef void PACKET_FUN( IMC_PACKET * q, char *packet );
 #define PFUN( name ) void (name)( IMC_PACKET *q, char *packet )
 
 extern REMOTEINFO *first_rinfo;
@@ -254,9 +256,9 @@ struct imc_color_table
 {
    IMC_COLOR *next;
    IMC_COLOR *prev;
-   char *name;      /* the name of the color */
-   char *mudtag;    /* What the mud uses for the raw tag */
-   char *imctag;    /* The imc tilde code that represents the mudtag to the network */
+   char *name; /* the name of the color */
+   char *mudtag;  /* What the mud uses for the raw tag */
+   char *imctag;  /* The imc tilde code that represents the mudtag to the network */
 };
 
 struct imc_ignore
@@ -277,34 +279,34 @@ struct imcucache_data
 
 struct imcchar_data
 {
-   IMC_IGNORE *imcfirst_ignore; /* List of ignored people */
+   IMC_IGNORE *imcfirst_ignore;  /* List of ignored people */
    IMC_IGNORE *imclast_ignore;
-   char *rreply;      /* IMC reply-to */
-   char *rreply_name; /* IMC reply-to shown to char */
-   char *imc_listen;  /* Channels the player is listening to */
-   char *imc_denied;  /* Channels the player has been denied use of */
-   char *imc_tellhistory[MAX_IMCTELLHISTORY]; /* History of received imctells - Samson 1-21-04 */
-   char *email;       /* Person's email address - for imcfinger - Samson 3-21-04 */
-   char *homepage;    /* Person's homepage - Samson 3-21-04 */
-   char *aim;         /* Person's AOL Instant Messenger screenname - Samson 3-21-04 */
-   char *yahoo;       /* Person's Y! screenname - Samson 3-21-04 */
-   char *msn;         /* Person's MSN Messenger screenname - Samson 3-21-04 */
-   char *comment;     /* Person's personal comment - Samson 3-21-04 */
-   long imcflag;      /* Flags set on the player */
-   int icq;           /* Person's ICQ UIN Number - Samson 3-21-04 */
-   int imcperm;       /* Permission level for the player */
+   char *rreply;  /* IMC reply-to */
+   char *rreply_name;   /* IMC reply-to shown to char */
+   char *imc_listen; /* Channels the player is listening to */
+   char *imc_denied; /* Channels the player has been denied use of */
+   char *imc_tellhistory[MAX_IMCTELLHISTORY];   /* History of received imctells - Samson 1-21-04 */
+   char *email;   /* Person's email address - for imcfinger - Samson 3-21-04 */
+   char *homepage;   /* Person's homepage - Samson 3-21-04 */
+   char *aim;  /* Person's AOL Instant Messenger screenname - Samson 3-21-04 */
+   char *yahoo;   /* Person's Y! screenname - Samson 3-21-04 */
+   char *msn;  /* Person's MSN Messenger screenname - Samson 3-21-04 */
+   char *comment; /* Person's personal comment - Samson 3-21-04 */
+   long imcflag;  /* Flags set on the player */
+   int icq; /* Person's ICQ UIN Number - Samson 3-21-04 */
+   int imcperm;   /* Permission level for the player */
 };
 
 struct imc_channel
 {
    IMC_CHANNEL *next;
    IMC_CHANNEL *prev;
-   char *name;         /* name of channel */
-   char *owner;        /* owner (singular) of channel */
-   char *operators;    /* current operators of channel */
+   char *name; /* name of channel */
+   char *owner;   /* owner (singular) of channel */
+   char *operators;  /* current operators of channel */
    char *invited;
    char *excluded;
-   char *local_name;   /* Operational localname */
+   char *local_name; /* Operational localname */
    char *regformat;
    char *emoteformat;
    char *socformat;
@@ -332,40 +334,42 @@ struct imc_packet
    char route[SMST]; /* This is only used internally and not sent */
 };
 
-/* The mud's connection data for the router */
+/* The mud's connection data for the server */
 struct imc_siteinfo
 {
-   char *routername;    /* name of router */
-   char *rhost;         /* DNS/IP of router */
-   char *network;       /* Network name of the router, set at keepalive - Samson */
-   char *serverpw;      /* server password */
-   char *clientpw;      /* client password */
-   char *localname;     /* One word localname */
-   char *fullname;      /* FULL name of mud */
-   char *ihost;         /* host AND port of mud */
-   char *email;         /* contact address (email) */
-   char *www;           /* homepage */
-   char *base;          /* The mud's codebase name */
-   char *details;       /* BRIEF description of mud */
-   int iport;           /* The port the mud itself is on */
-   int minlevel;        /* Minimum player level */
-   int immlevel;        /* Immortal level */
-   int adminlevel;      /* Admin level */
-   int implevel;        /* Implementor level */
-   unsigned short rport; /* remote port of router */
-   bool md5;            /* Client will support MD5 authentication */
-   bool md5pass;        /* Client is using MD5 authentication */
-   bool autoconnect;    /* Do we autoconnect on bootup or not? - Samson */
+   char *servername; /* name of server */
+   char *rhost;   /* DNS/IP of server */
+   char *network; /* Network name of the server, set at keepalive - Samson */
+   char *serverpw;   /* server password */
+   char *clientpw;   /* client password */
+   char *localname;  /* One word localname */
+   char *fullname;   /* FULL name of mud */
+   char *ihost;   /* host AND port of mud */
+   char *email;   /* contact address (email) */
+   char *www;  /* homepage */
+   char *base; /* The mud's codebase name */
+   char *details; /* BRIEF description of mud */
+   int iport;  /* The port the mud itself is on */
+   int minlevel;  /* Minimum player level */
+   int immlevel;  /* Immortal level */
+   int adminlevel;   /* Admin level */
+   int implevel;  /* Implementor level */
+   unsigned short rport;   /* remote port of server */
+   bool md5;   /* Client will support MD5 authentication */
+   bool md5pass;  /* Client is using MD5 authentication */
+   bool autoconnect; /* Do we autoconnect on bootup or not? - Samson */
 
-   /* Conection parameters - These don't save in the config file */
-   char inbuf[IMC_BUFF_SIZE];   /* input buffer */
-   char incomm[LGST];
-   char *outbuf;		/* output buffer */
-   char *versionid;     /* Transient version id for the imclist */
+   /*
+    * Conection parameters - These don't save in the config file 
+    */
+   char inbuf[IMC_BUFF_SIZE]; /* input buffer */
+   char incomm[IMC_BUFF_SIZE];
+   char *outbuf;  /* output buffer */
+   char *versionid;  /* Transient version id for the imclist */
    unsigned long outsize;
    int outtop;
-   int desc;            /* descriptor */
-   unsigned short state; /* connection state */
+   int desc;   /* descriptor */
+   unsigned short state;   /* connection state */
 };
 
 struct imc_remoteinfo
@@ -377,6 +381,8 @@ struct imc_remoteinfo
    char *network;
    char *path;
    char *url;
+   char *host;
+   char *port;
    bool expired;
 };
 
@@ -396,20 +402,31 @@ struct imc_packet_handler
    char *name;
 };
 
-bool imc_command_hook( CHAR_DATA *ch, char *command, char *argument );
+struct who_template
+{
+   char *head;
+   char *plrheader;
+   char *immheader;
+   char *plrline;
+   char *immline;
+   char *tail;
+   char *master;
+};
+
+bool imc_command_hook( CHAR_DATA * ch, char *command, char *argument );
 void imc_hotboot( void );
 void imc_startup( bool force, int desc, bool connected );
 void imc_shutdown( bool reconnect );
-void imc_initchar( CHAR_DATA *ch );
-bool imc_loadchar( CHAR_DATA *ch, FILE *fp, const char *word );
-void imc_savechar( CHAR_DATA *ch, FILE *fp );
-void imc_freechardata( CHAR_DATA *ch );
+void imc_initchar( CHAR_DATA * ch );
+bool imc_loadchar( CHAR_DATA * ch, FILE * fp, const char *word );
+void imc_savechar( CHAR_DATA * ch, FILE * fp );
+void imc_freechardata( CHAR_DATA * ch );
 void imc_loop( void );
-IMC_CHANNEL *imc_findchannel( char *name ); /* Externalized for comm.c spamguard checks */
-void imc_register_packet_handler( char *name, PACKET_FUN *func );
+IMC_CHANNEL *imc_findchannel( char *name );  /* Externalized for comm.c spamguard checks */
+void imc_register_packet_handler( char *name, PACKET_FUN * func );
 #if defined(_DISKIO_H_)
-void imc_load_pfile( CHAR_DATA *ch, char *tag, int num, char *line );
-void imc_save_pfile( struct CHAR_DATA *ch, FBFILE *fp );
+void imc_load_pfile( CHAR_DATA * ch, char *tag, int num, char *line );
+void imc_save_pfile( struct CHAR_DATA *ch, FBFILE * fp );
 #endif
 
 #endif

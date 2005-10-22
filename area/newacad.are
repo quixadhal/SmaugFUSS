@@ -3549,6 +3549,9 @@ Above you is the entrance to the town of Darkhaven.
 ~
 ~
 0 -1 21280
+R M 0 10399 1 10300
+R D 0 10300 2 1
+R O 0 10401 1 10300
 E
 door~
 You see a solid oak door.
@@ -3653,6 +3656,7 @@ A Stone Corridor
 ~
 ~
 0 -1 10301
+R M 0 10340 1 10303
 S
 #10304
 The Reading Room~
@@ -3731,6 +3735,8 @@ A Stone Corridor
 ~
 ~
 0 -1 10356
+R M 0 10333 1 10305
+R O 0 10401 1 10305
 S
 #10306
 Abbigayle's Language Lessons~
@@ -3753,6 +3759,7 @@ A Stone Corridor
 ~
 ~
 0 -1 10301
+R M 0 10394 1 10306
 S
 #10307
 Wandering the Academy~
@@ -3808,6 +3815,8 @@ A Dank Pit
 ~
 ~
 0 -1 10316
+R M 0 10345 1 10308
+  R E 1 10345 1 3
 S
 #10309
 Wandering Darkhaven Academy~
@@ -3841,6 +3850,7 @@ Back to the beginning
 ~
 ~
 0 -1 10304
+R D 0 10309 0 1
 E
 door~
 You see a solid oak door.
@@ -3867,6 +3877,7 @@ Wandering Darkhaven Academy
 ~
 door~
 3 -1 10309
+R D 0 10310 2 1
 S
 #10311
 Lost in Darkhaven Academy~
@@ -3930,6 +3941,7 @@ Back to the beginning
 ~
 ~
 0 -1 10304
+R D 0 10312 3 1
 E
 tapestry~
 Upon closer inspection you realise that this is not even a tapestry, but
@@ -3979,6 +3991,7 @@ D10
 ~
 crack~
 524288 -1 10302
+R D 0 10313 1 1
 E
 door~
 You see an oak door.
@@ -4119,6 +4132,7 @@ Chamber of Trials for Warriors
 ~
 ~
 0 -1 10325
+R M 0 10352 1 10318
 S
 #10319
 The Academy Healer~
@@ -4143,6 +4157,8 @@ A Marble Corridor
 ~
 ~
 0 -1 10317
+R M 0 10342 1 10319
+R O 0 10401 1 10319
 S
 #10320
 Hall of the Druid~
@@ -4157,6 +4173,7 @@ Chamber of Trials for Druids
 ~
 ~
 0 -1 10326
+R M 0 10354 1 10320
 S
 #10321
 Hall of the Vampire~
@@ -4171,6 +4188,7 @@ Chamber of Trials for Vampires
 ~
 ~
 0 -1 10327
+R M 0 10353 1 10321
 S
 #10322
 Hall of the Thief~
@@ -4185,6 +4203,7 @@ Chamber of Trials for Thieves
 ~
 ~
 0 -1 10328
+R M 0 10351 1 10322
 S
 #10323
 Hall of the Mage~
@@ -4198,6 +4217,7 @@ Chamber of Trials for Mages
 ~
 ~
 0 -1 10329
+R M 0 10349 1 10323
 S
 #10324
 Hall of the Cleric~
@@ -4211,6 +4231,7 @@ Chamber of Trials for Clerics
 ~
 ~
 0 -1 10330
+R M 0 10350 1 10324
 S
 #10325
 Chamber of Trials for Warriors~
@@ -4253,6 +4274,8 @@ A Stone Corridor
 ~
 ~
 0 -1 10356
+R M 0 10334 1 10325
+R O 0 10401 1 10325
 S
 #10326
 Chamber of Trials for Druids~
@@ -4295,6 +4318,8 @@ A Stone Corridor
 ~
 ~
 0 -1 10356
+R M 0 10335 1 10326
+R O 0 10401 1 10326
 S
 #10327
 Chamber of Trials for Vampires~
@@ -4337,6 +4362,8 @@ A Stone Corridor
 ~
 ~
 0 -1 10356
+R M 0 10336 1 10327
+R O 0 10401 1 10327
 S
 #10328
 Chamber of Trials for Thieves~
@@ -4379,6 +4406,8 @@ A Stone Corridor
 ~
 ~
 0 -1 10356
+R M 0 10337 1 10328
+R O 0 10401 1 10328
 S
 #10329
 Chamber of Trials for Mages~
@@ -4421,6 +4450,8 @@ A Stone Corridor
 ~
 ~
 0 -1 10356
+R M 0 10338 1 10329
+R O 0 10401 1 10329
 S
 #10330
 Chamber of Trials for Clerics~
@@ -4463,6 +4494,8 @@ A Stone Corridor
 ~
 ~
 0 -1 10356
+R M 0 10339 1 10330
+R O 0 10401 1 10330
 S
 #10331
 Clerics West Cage~
@@ -4478,6 +4511,12 @@ Chamber of Trials for Clerics
 ~
 ~
 0 -1 10330
+R M 0 10326 2 10331
+  R E 1 10306 14 3
+  R E 1 10319 14 9
+R M 0 10326 2 10331
+  R E 1 10306 14 3
+  R E 1 10319 14 9
 S
 #10332
 Clerics North Cage~
@@ -4500,6 +4539,12 @@ Chamber of Trials for Clerics
 ~
 ~
 0 -1 10330
+R M 0 10305 2 10332
+  R E 1 10302 14 13
+  R E 1 10303 14 7
+R M 0 10305 2 10332
+  R E 1 10302 14 13
+  R E 1 10303 14 7
 S
 #10333
 Clerics South Cage~
@@ -4518,6 +4563,12 @@ Chamber of Trials for Clerics
 ~
 ~
 0 -1 10330
+R M 0 10312 2 10333
+  R E 1 10304 14 6
+  R E 1 10305 14 12
+R M 0 10312 2 10333
+  R E 1 10304 14 6
+  R E 1 10305 14 12
 S
 #10334
 Clerics East Cage~
@@ -4534,6 +4585,12 @@ Chamber of Trials for Clerics
 ~
 ~
 0 -1 10330
+R M 0 10319 2 10334
+  R E 1 10300 14 14
+  R E 1 10301 14 8
+R M 0 10319 2 10334
+  R E 1 10300 14 14
+  R E 1 10301 14 8
 S
 #10335
 Mages North Cage~
@@ -4556,6 +4613,12 @@ Chamber of Trials for Mages
 ~
 ~
 0 -1 10329
+R M 0 10306 2 10335
+  R E 1 10302 14 13
+  R E 1 10303 14 7
+R M 0 10306 2 10335
+  R E 1 10302 14 13
+  R E 1 10303 14 7
 S
 #10336
 Mages South Cage~
@@ -4574,6 +4637,12 @@ Chamber of Trials for Mages
 ~
 ~
 0 -1 10329
+R M 0 10313 2 10336
+  R E 1 10304 14 6
+  R E 1 10305 14 12
+R M 0 10313 2 10336
+  R E 1 10304 14 6
+  R E 1 10305 14 12
 S
 #10337
 Mages West Room~
@@ -4589,6 +4658,12 @@ Chamber of Trials for Mages
 ~
 ~
 0 -1 10329
+R M 0 10327 2 10337
+  R E 1 10306 14 3
+  R E 1 10319 14 9
+R M 0 10327 2 10337
+  R E 1 10306 14 3
+  R E 1 10319 14 9
 S
 #10338
 Mages East Room~
@@ -4605,6 +4680,12 @@ Chamber of Trials for Mages
 ~
 ~
 0 -1 10329
+R M 0 10320 2 10338
+  R E 1 10300 14 14
+  R E 1 10301 14 8
+R M 0 10320 2 10338
+  R E 1 10300 14 14
+  R E 1 10301 14 8
 S
 #10339
 Warriors North Cage~
@@ -4627,6 +4708,12 @@ Chamber of Trials for Warriors
 ~
 ~
 0 -1 10325
+R M 0 10307 2 10339
+  R E 1 10302 14 13
+  R E 1 10303 14 7
+R M 0 10307 2 10339
+  R E 1 10302 14 13
+  R E 1 10303 14 7
 S
 #10340
 Warriors South Cage~
@@ -4645,6 +4732,12 @@ Chamber of Trials for Warriors
 ~
 ~
 0 -1 10325
+R M 0 10314 2 10340
+  R E 1 10304 14 6
+  R E 1 10305 14 12
+R M 0 10314 2 10340
+  R E 1 10304 14 6
+  R E 1 10305 14 12
 S
 #10341
 Warriors West Cage~
@@ -4660,6 +4753,12 @@ Chamber of Trials for Warriors
 ~
 ~
 0 -1 10325
+R M 0 10328 2 10341
+  R E 1 10306 14 3
+  R E 1 10319 14 9
+R M 0 10328 2 10341
+  R E 1 10306 14 3
+  R E 1 10319 14 9
 S
 #10342
 Warriors East Cage~
@@ -4676,6 +4775,12 @@ Chamber of Trials for Warriors
 ~
 ~
 0 -1 10325
+R M 0 10321 2 10342
+  R E 1 10300 14 14
+  R E 1 10301 14 8
+R M 0 10321 2 10342
+  R E 1 10300 14 14
+  R E 1 10301 14 8
 S
 #10343
 Druids North Cage~
@@ -4698,6 +4803,12 @@ Chamber of Trials for Druids
 ~
 ~
 0 -1 10326
+R M 0 10308 2 10343
+  R E 1 10302 14 13
+  R E 1 10303 14 7
+R M 0 10308 2 10343
+  R E 1 10302 14 13
+  R E 1 10303 14 7
 S
 #10344
 Druids South Cage~
@@ -4716,6 +4827,12 @@ Chamber of Trials for Druids
 ~
 ~
 0 -1 10326
+R M 0 10315 2 10344
+  R E 1 10304 14 6
+  R E 1 10305 14 12
+R M 0 10315 2 10344
+  R E 1 10304 14 6
+  R E 1 10305 14 12
 S
 #10345
 Druids West Cage~
@@ -4731,6 +4848,12 @@ Chamber of Trials for Druids
 ~
 ~
 0 -1 10326
+R M 0 10329 2 10345
+  R E 1 10306 14 3
+  R E 1 10319 14 9
+R M 0 10329 2 10345
+  R E 1 10306 14 3
+  R E 1 10319 14 9
 S
 #10346
 Druids East Cage~
@@ -4747,6 +4870,12 @@ Chamber of Trials for Druids
 ~
 ~
 0 -1 10326
+R M 0 10322 2 10346
+  R E 1 10300 14 14
+  R E 1 10301 14 8
+R M 0 10322 2 10346
+  R E 1 10300 14 14
+  R E 1 10301 14 8
 S
 #10347
 Vampires North Cage~
@@ -4769,6 +4898,12 @@ Chamber of Trials for Vampires
 ~
 ~
 0 -1 10327
+R M 0 10309 2 10347
+  R E 1 10302 14 13
+  R E 1 10303 14 7
+R M 0 10309 2 10347
+  R E 1 10302 14 13
+  R E 1 10303 14 7
 S
 #10348
 Vampires South Cage~
@@ -4787,6 +4922,12 @@ Chamber of Trials for Vampires
 ~
 ~
 0 -1 10327
+R M 0 10316 2 10348
+  R E 1 10304 14 6
+  R E 1 10305 14 12
+R M 0 10316 2 10348
+  R E 1 10304 14 6
+  R E 1 10305 14 12
 S
 #10349
 Vampires West Cage~
@@ -4802,6 +4943,12 @@ Chamber of Trials for Vampires
 ~
 ~
 0 -1 10327
+R M 0 10330 2 10349
+  R E 1 10306 14 3
+  R E 1 10319 14 9
+R M 0 10330 2 10349
+  R E 1 10306 14 3
+  R E 1 10319 14 9
 S
 #10350
 Vampires East Cage~
@@ -4818,6 +4965,12 @@ Chamber of Trials for Vampires
 ~
 ~
 0 -1 10327
+R M 0 10323 2 10350
+  R E 1 10300 14 14
+  R E 1 10301 14 8
+R M 0 10323 2 10350
+  R E 1 10300 14 14
+  R E 1 10301 14 8
 S
 #10351
 Thieves North Cage~
@@ -4839,6 +4992,12 @@ Chamber of Trials for Thieves
 ~
 ~
 0 -1 10328
+R M 0 10310 2 10351
+  R E 1 10302 14 13
+  R E 1 10303 14 7
+R M 0 10310 2 10351
+  R E 1 10302 14 13
+  R E 1 10303 14 7
 S
 #10352
 Thieves South Cage~
@@ -4857,6 +5016,12 @@ Chamber of Trials for Thieves
 ~
 ~
 0 -1 10328
+R M 0 10317 2 10352
+  R E 1 10304 14 6
+  R E 1 10305 14 12
+R M 0 10317 2 10352
+  R E 1 10304 14 6
+  R E 1 10305 14 12
 S
 #10353
 Thieves West Cage~
@@ -4872,6 +5037,12 @@ Chamber of Trials for Thieves
 ~
 ~
 0 -1 10328
+R M 0 10331 2 10353
+  R E 1 10306 14 3
+  R E 1 10319 14 9
+R M 0 10331 2 10353
+  R E 1 10306 14 3
+  R E 1 10319 14 9
 S
 #10354
 Thieves East Cage~
@@ -4888,6 +5059,12 @@ Chamber of Trials for Thieves
 ~
 ~
 0 -1 10328
+R M 0 10324 2 10354
+  R E 1 10300 14 14
+  R E 1 10301 14 8
+R M 0 10324 2 10354
+  R E 1 10300 14 14
+  R E 1 10301 14 8
 S
 #10355
 The Room of Portals~
@@ -4904,6 +5081,7 @@ The Academy Healer
 ~
 ~
 0 -1 10319
+R M 0 10346 1 10355
 E
 certificate wall~
 I have enjoyed writing the revision of the Darkhaven Academy. I wanted
@@ -5002,6 +5180,10 @@ A Stone Corridor can be seen to the west.
 ~
 ~
 0 -1 10356
+R M 0 10343 1 10357
+  R G 1 10316 1
+  R G 1 10317 1
+  R G 1 10314 1
 S
 #10358
 A Stone Corridor~
@@ -5080,6 +5262,7 @@ A door leading to the Battlegrounds
 ~
 ~
 3 -1 10362
+R D 0 10361 4 1
 > act_prog P from the east.~
 if mobinroom(10344) < 1
 mpmload 10344
@@ -5121,6 +5304,7 @@ A door that leads to the lower level of the Academy
 ~
 ~
 3 -1 10361
+R D 0 10362 5 1
 S
 #10363
 Along the eastern wall~
@@ -5145,6 +5329,7 @@ D4
 ~
 ~
 16777216 -1 10319
+R M 0 10303 4 10363
 S
 #10364
 North-East Corner~
@@ -5165,6 +5350,7 @@ D4
 ~
 ~
 16777216 -1 10319
+R O 0 10401 1 10364
 S
 #10365
 Along the eastern wall~
@@ -5189,6 +5375,8 @@ D4
 ~
 ~
 16777216 -1 10319
+R M 0 10301 4 10365
+R M 0 10300 4 10365
 S
 #10366
 South-East Corner~
@@ -5209,6 +5397,7 @@ D4
 ~
 ~
 16777216 -1 10319
+R O 0 10401 1 10366
 S
 #10367
 Along the southern wall~
@@ -5233,6 +5422,7 @@ D4
 ~
 ~
 16777216 -1 10319
+R M 0 10301 4 10367
 S
 #10368
 Battle Grounds~
@@ -5261,6 +5451,7 @@ D4
 ~
 ~
 16777216 -1 10319
+R M 0 10301 4 10368
 S
 #10369
 Mid-way in the Battlegrounds~
@@ -5317,6 +5508,9 @@ D4
 ~
 ~
 16777216 -1 10319
+R M 0 10302 4 10370
+R M 0 10302 4 10370
+R M 0 10303 4 10370
 S
 #10371
 Along the northern wall~
@@ -5365,6 +5559,8 @@ D4
 ~
 ~
 16777216 -1 10319
+R M 0 10302 4 10372
+R M 0 10302 4 10372
 S
 #10373
 Central Battlegrounds~
@@ -5400,6 +5596,7 @@ Below is a dark, muddy tunnel, leading deep underground.
 ~
 ~
 16777216 -1 10406
+R M 0 10300 4 10373
 S
 #10374
 The Center of the Battlegrounds~
@@ -5428,6 +5625,8 @@ D4
 ~
 ~
 16777216 -1 10319
+R M 0 10300 4 10374
+R O 0 10401 1 10374
 S
 #10375
 Central Battlegrounds~
@@ -5456,6 +5655,7 @@ D4
 ~
 ~
 16777216 -1 10319
+R M 0 10301 4 10375
 S
 #10376
 In the middle of the southern wall~
@@ -5504,6 +5704,7 @@ D4
 ~
 ~
 16777216 -1 10319
+R M 0 10303 4 10377
 S
 #10378
 Battle Grounds~
@@ -5560,6 +5761,7 @@ D4
 ~
 ~
 16777216 -1 10319
+R M 0 10300 4 10379
 S
 #10380
 Battle Grounds~
@@ -5612,6 +5814,7 @@ D4
 ~
 ~
 16777216 -1 10319
+R M 0 10303 4 10381
 S
 #10382
 North-West Corner~
@@ -5636,6 +5839,8 @@ D4
 ~
 ~
 16777216 -1 10319
+R D 0 10382 0 1
+R O 0 10401 1 10382
 > leave_prog 100~
 if isimmort($n)
 else
@@ -5753,6 +5958,8 @@ D5
 ~
 ~
 3 -1 10392
+R D 0 10386 5 1
+R O 0 10401 1 10386
 E
 Runes~
 Going down into this hole will take you to the domain of the Naga. Be careful
@@ -5776,6 +5983,12 @@ Chamber of Trials
 ~
 ~
 0 -1 10305
+R M 0 10318 2 10387
+  R E 1 10304 14 6
+  R E 1 10305 14 12
+R M 0 10318 2 10387
+  R E 1 10304 14 6
+  R E 1 10305 14 12
 S
 #10388
 Rangers East Cage~
@@ -5792,6 +6005,12 @@ Chamber of Trials
 ~
 ~
 0 -1 10305
+R M 0 10325 2 10388
+  R E 1 10300 14 14
+  R E 1 10301 14 8
+R M 0 10325 2 10388
+  R E 1 10300 14 14
+  R E 1 10301 14 8
 S
 #10389
 Rangers North Cage~
@@ -5814,6 +6033,12 @@ Chamber of Trials
 ~
 ~
 0 -1 10305
+R M 0 10311 2 10389
+  R E 1 10302 14 13
+  R E 1 10303 14 7
+R M 0 10311 2 10389
+  R E 1 10302 14 13
+  R E 1 10303 14 7
 S
 #10390
 Rangers West Cage~
@@ -5829,6 +6054,12 @@ Chamber of Trials
 ~
 ~
 0 -1 10305
+R M 0 10332 2 10390
+  R E 1 10306 14 3
+  R E 1 10319 14 9
+R M 0 10332 2 10390
+  R E 1 10306 14 3
+  R E 1 10319 14 9
 S
 #10391
 Hall of the Ranger~
@@ -5842,6 +6073,7 @@ Chamber of Trials for Rangers
 ~
 ~
 0 -1 10305
+R M 0 10355 1 10391
 S
 #10392
 In a Humid Cavern.~
@@ -5858,6 +6090,7 @@ D4
 ~
 ~
 3 -1 10386
+R D 0 10392 4 1
 > entry_prog 100~
 if level($n) < 4
 mpechoat $n This dark cavern is full of aggressive mobs!  Perhaps you should
@@ -5920,6 +6153,8 @@ D3
 ~
 ~
 0 -1 10394
+R M 0 10396 4 10395
+R M 0 10396 4 10395
 S
 #10396
 In the Cavern~
@@ -5931,6 +6166,8 @@ D1
 ~
 ~
 0 -1 10394
+R M 0 10396 4 10396
+R M 0 10396 4 10396
 S
 #10397
 Cove of the Queen~
@@ -5943,6 +6180,8 @@ D0
 ~
 ~
 0 -1 10395
+R M 0 10397 1 10397
+  R E 1 10318 2 16
 S
 #10398
 DELETE THIS ROOM~
@@ -5963,6 +6202,7 @@ Entrance to Darkhaven Academy
 ~
 ~
 0 -1 10300
+R O 0 10367 1 10398
 > leave_prog 100~
 if isimmort($n)
 else
@@ -6023,6 +6263,7 @@ Chamber of Trials for Augurers.
 ~
 ~
 0 -1 10401
+R M 0 10400 1 10400
 E
 cots~
 Several cots line each wall. They look like they are very comfortable.
@@ -6073,6 +6314,8 @@ A Stone Corridor.
 ~
 ~
 0 -1 10356
+R M 0 10401 1 10401
+R O 0 10401 1 10401
 S
 #10402
 Augurers North Cage~
@@ -6092,6 +6335,12 @@ Chamber of Trials for Augurers.
 ~
 ~
 0 -1 10401
+R M 0 10402 2 10402
+  R E 1 10302 1 13
+  R E 1 10303 1 7
+R M 0 10402 2 10402
+  R E 1 10302 1 13
+  R E 1 10303 1 7
 S
 #10403
 Augurers East Cage~
@@ -6107,6 +6356,12 @@ Chamber of Trials for Augurers.
 ~
 ~
 0 -1 10401
+R M 0 10403 2 10403
+  R E 1 10306 1 3
+  R E 1 10319 1 9
+R M 0 10403 2 10403
+  R E 1 10306 1 3
+  R E 1 10319 1 9
 S
 #10404
 Augurers South Cage~
@@ -6125,6 +6380,12 @@ Chamber of Trials for Augurers.
 ~
 ~
 0 -1 10401
+R M 0 10404 2 10404
+  R E 1 10304 1 6
+  R E 1 10305 1 12
+R M 0 10404 2 10404
+  R E 1 10304 1 6
+  R E 1 10305 1 12
 S
 #10405
 Augurers West Cage~
@@ -6141,6 +6402,12 @@ Chamber of Trials for Augurers.
 ~
 ~
 0 -1 10401
+R M 0 10405 2 10405
+  R E 1 10300 1 14
+  R E 1 10301 1 8
+R M 0 10405 2 10405
+  R E 1 10300 1 14
+  R E 1 10301 1 8
 S
 #10406
 A dark tunnel below the Battlegrounds~
@@ -6184,6 +6451,7 @@ D7
 ~
 ~
 0 -1 10406
+R M 0 10415 1 10407
 S
 #10408
 A dark tunnel below the Battlegrounds~
@@ -6201,6 +6469,7 @@ D1
 ~
 ~
 0 -1 10409
+R M 0 10409 1 10408
 S
 #10409
 A dark tunnel below the Battlegrounds~
@@ -6218,6 +6487,7 @@ D3
 ~
 ~
 0 -1 10408
+R M 0 10418 1 10409
 S
 #10410
 A dark tunnel below the Battlegrounds~
@@ -6260,6 +6530,7 @@ D9
 ~
 ~
 0 -1 10416
+R M 0 10417 1 10411
 S
 #10412
 A dark tunnel below the Battlegrounds~
@@ -6284,6 +6555,7 @@ D9
 ~
 ~
 0 -1 10413
+R M 0 10411 1 10412
 S
 #10413
 A hollow cavern deep underground~
@@ -6309,6 +6581,7 @@ D7
 ~
 ~
 0 -1 10417
+R M 0 10406 1 10413
 S
 #10414
 A hollow cavern deep underground~
@@ -6339,6 +6612,7 @@ D7
 ~
 ~
 0 -1 10418
+R M 0 10416 1 10414
 S
 #10415
 A hollow cavern deep underground~
@@ -6364,6 +6638,7 @@ D7
 ~
 ~
 0 -1 10419
+R M 0 10412 1 10415
 S
 #10416
 A hollow cavern deep underground~
@@ -6482,6 +6757,7 @@ D8
 ~
 ~
 0 -1 10414
+R M 0 10407 1 10418
 S
 #10419
 A dark tunnel below the Battlegrounds~
@@ -6564,6 +6840,7 @@ D9
 ~
 ~
 0 -1 10418
+R M 0 10413 1 10421
 S
 #10422
 A hollow cavern deep underground~
@@ -6593,6 +6870,7 @@ D9
 ~
 ~
 0 -1 10419
+R M 0 10420 1 10422
 S
 #10423
 A dark tunnel below the Battlegrounds~
@@ -6618,6 +6896,7 @@ D8
 ~
 ~
 0 -1 10418
+R M 0 10410 1 10423
 S
 #10424
 A dark tunnel below the Battlegrounds~
@@ -6635,6 +6914,7 @@ D2
 ~
 ~
 0 -1 10423
+R M 0 10408 1 10424
 S
 #10425
 A dark tunnel below the Battlegrounds~
@@ -6652,6 +6932,7 @@ D2
 ~
 ~
 0 -1 10424
+R M 0 10414 1 10425
 S
 #10426
 A dark tunnel below the Battlegrounds~
@@ -6669,6 +6950,7 @@ D3
 ~
 ~
 0 -1 10425
+R M 0 10419 1 10426
 S
 #10427
 A dark tunnel below the Battlegrounds~
@@ -6686,6 +6968,7 @@ D6
 ~
 ~
 0 -1 10406
+R M 0 10421 1 10427
 S
 #10429
 Not currently used~
@@ -6708,297 +6991,10 @@ other than those of the two mobs residing here.  Do not ever move
 or purge either of these mobiles if the pre-auth system is used. **
 ~
 0 1075838980 1
+R M 0 10497 1 10499
+R M 0 10498 1 10499
 S
 #0
-
-
-#RESETS
-M 0 10399 1 10300
-D 0 10300 2 1
-M 0 10340 1 10303
-M 0 10333 1 10305
-M 0 10394 1 10306
-M 0 10345 1 10308
-E 1 10345 1 3
-D 0 10309 0 1
-D 0 10310 2 1
-D 0 10312 3 1
-D 0 10313 1 1
-M 0 10352 1 10318
-M 0 10342 1 10319
-M 0 10354 1 10320
-M 0 10353 1 10321
-M 0 10351 1 10322
-M 0 10349 1 10323
-M 0 10350 1 10324
-M 0 10334 1 10325
-M 0 10335 1 10326
-M 0 10336 1 10327
-M 0 10337 1 10328
-M 0 10338 1 10329
-M 0 10339 1 10330
-M 0 10326 2 10331
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10326 2 10331
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10305 2 10332
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10305 2 10332
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10312 2 10333
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10312 2 10333
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10319 2 10334
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10319 2 10334
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10306 2 10335
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10306 2 10335
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10313 2 10336
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10313 2 10336
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10327 2 10337
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10327 2 10337
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10320 2 10338
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10320 2 10338
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10307 2 10339
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10307 2 10339
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10314 2 10340
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10314 2 10340
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10328 2 10341
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10328 2 10341
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10321 2 10342
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10321 2 10342
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10308 2 10343
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10308 2 10343
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10315 2 10344
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10315 2 10344
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10329 2 10345
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10329 2 10345
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10322 2 10346
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10322 2 10346
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10309 2 10347
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10309 2 10347
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10316 2 10348
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10316 2 10348
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10330 2 10349
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10330 2 10349
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10323 2 10350
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10323 2 10350
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10310 2 10351
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10310 2 10351
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10317 2 10352
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10317 2 10352
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10331 2 10353
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10331 2 10353
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10324 2 10354
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10324 2 10354
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10343 1 10357
-G 1 10316 1
-G 1 10317 1
-G 1 10314 1
-D 0 10361 4 1
-D 0 10362 5 1
-M 0 10303 4 10363
-M 0 10301 4 10365
-M 0 10300 4 10365
-M 0 10301 4 10367
-M 0 10301 4 10368
-M 0 10302 4 10370
-M 0 10302 4 10370
-M 0 10303 4 10370
-M 0 10302 4 10372
-M 0 10302 4 10372
-M 0 10300 4 10373
-M 0 10300 4 10374
-M 0 10301 4 10375
-M 0 10303 4 10377
-M 0 10300 4 10379
-M 0 10303 4 10381
-D 0 10382 0 1
-D 0 10386 5 1
-M 0 10318 2 10387
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10318 2 10387
-E 1 10304 14 6
-E 1 10305 14 12
-M 0 10325 2 10388
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10325 2 10388
-E 1 10300 14 14
-E 1 10301 14 8
-M 0 10311 2 10389
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10311 2 10389
-E 1 10302 14 13
-E 1 10303 14 7
-M 0 10332 2 10390
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10332 2 10390
-E 1 10306 14 3
-E 1 10319 14 9
-M 0 10355 1 10391
-D 0 10392 4 1
-M 0 10396 4 10395
-M 0 10396 4 10395
-M 0 10396 4 10396
-M 0 10396 4 10396
-M 0 10397 1 10397
-E 1 10318 2 16
-O 0 10367 1 10398
-M 0 10401 1 10401
-M 0 10400 1 10400
-M 0 10402 2 10402
-E 1 10302 1 13
-E 1 10303 1 7
-M 0 10402 2 10402
-E 1 10302 1 13
-E 1 10303 1 7
-M 0 10403 2 10403
-E 1 10306 1 3
-E 1 10319 1 9
-M 0 10403 2 10403
-E 1 10306 1 3
-E 1 10319 1 9
-M 0 10405 2 10405
-E 1 10300 1 14
-E 1 10301 1 8
-M 0 10405 2 10405
-E 1 10300 1 14
-E 1 10301 1 8
-M 0 10404 2 10404
-E 1 10304 1 6
-E 1 10305 1 12
-M 0 10404 2 10404
-E 1 10304 1 6
-E 1 10305 1 12
-M 0 10346 1 10355
-M 0 10497 1 10499
-M 0 10498 1 10499
-O 0 10401 1 10300
-O 0 10401 1 10319
-O 0 10401 1 10374
-O 0 10401 1 10386
-O 0 10401 1 10382
-O 0 10401 1 10364
-O 0 10401 1 10366
-O 0 10401 1 10325
-O 0 10401 1 10326
-O 0 10401 1 10327
-O 0 10401 1 10328
-O 0 10401 1 10329
-O 0 10401 1 10330
-O 0 10401 1 10401
-O 0 10401 1 10305
-M 0 10406 1 10413
-M 0 10407 1 10418
-M 0 10408 1 10424
-M 0 10409 1 10408
-M 0 10410 1 10423
-M 0 10411 1 10412
-M 0 10412 1 10415
-M 0 10413 1 10421
-M 0 10414 1 10425
-M 0 10415 1 10407
-M 0 10416 1 10414
-M 0 10417 1 10411
-M 0 10418 1 10409
-M 0 10419 1 10426
-M 0 10420 1 10422
-M 0 10421 1 10427
-S
 
 
 #SHOPS

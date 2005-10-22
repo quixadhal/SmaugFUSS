@@ -1,16 +1,15 @@
 #! /bin/csh -f
 
 # Set the port number.
-set port = 9500
+set port = 4020
 if ( "$1" != "" ) set port="$1"
 
 # Change to area directory.
 cd ../area
 
 # Set limits.
-nohup
-limit stacksize 1024k
 limit coredumpsize unlimited
+limit stacksize unlimited
 if ( -e shutdown.txt ) rm -f shutdown.txt
 
 while ( 1 )
@@ -42,5 +41,5 @@ while ( 1 )
 	rm -f shutdown.txt
 	exit 0
     endif
-    sleep 15
+    sleep 5
 end

@@ -4950,12 +4950,14 @@ resides in a chamber which prevents the usage of magic...
          /     |      |  |      |   \____/    \_____/     ***************
         / 
 
+SMAUG 1.6 FUSS changes by Samson. Other bugfixes and changes provided by
+various members of the SMAUG community. Their contributions are greatly
+appreciated.
 SMAUG 1.4 written by Thoric (Derek Snider) with Altrag, Blodkai, Haus, Narn,
 Scryn, Swordbearer, Tricops, Gorog, Rennard, Grishnakh, Fireblade and Nivek.
-
- Original MERC 2.1 code by Hatchet, Furey, and Kahn.
- Original DikuMUD code by:
-  Hans Staerfeldt, Katja Nyboe, Tom Madsen, Michael Seifert && Sebastian Hammer
+Original MERC 2.1 code by Hatchet, Furey, and Kahn.
+Original DikuMUD code by:
+Hans Staerfeldt, Katja Nyboe, Tom Madsen, Michael Seifert && Sebastian Hammer
 
 Enter your character's name, or type new: ~
 
@@ -6321,12 +6323,13 @@ SEE ALSO: mpedit, opedit, rpedit, ifchecks.
 52 'IFCHECK ISPASSAGE'~
 &r*-------------------------------------------------------------------*
 
-            &GEXAMPLE:     &cif ispassage($n) == 6
+            &GEXAMPLE:     &cif ispassage($n) == northeast
                          'There is a passage leading northeast.
 
         &GDESCRIPTION:     &cThe ISPASSAGE(dir) ifcheck is used to
                          determine if there is an exit in the 
-                         specified direction. (HELP DOORDIRS)
+                         specified direction. (HELP EXITS)
+                         Do NOT use doordirs. Use the exit name.
 
  &r*-------------------------------------------------------------------*
 
@@ -9018,6 +9021,52 @@ For.-+== =================[]===HORIZON=ST==== ==+-X-   10 Scrolls
 NOTES: Archive second floor, all south.  Oracle second floor, all south, east.
 ~
 
+51 MAPOUT~
+Syntax: mapout <write/stat/clear/show/create>
+
+mapout write: create a map in edit buffer.
+mapout stat: get information about a written, but not yet created map.
+mapout clear: clear a written, but not yet created map.
+mapout show: show a written, but not yet created map.
+mapout create: turn a written map into rooms in your assigned room vnum 
+range.
+
+Example of a map:
+[I]-[C]
+
+This would create two rooms, the first would have the sector type inside 
+while the second would have the sector type city. They would be linked east
+and west by a normal exit.
+
+[Letter to use] [Sector type given to room]
+      I         SECT_INSIDE
+      C         SECT_CITY
+      f         SECT_FIELD
+      F         SECT_FOREST
+      H         SECT_HILLS
+      M         SECT_MOUNTAIN
+      s         SECT_WATER_SWIM
+      S         SECT_WATER_NOSWIM
+      A         SECT_AIR
+      D         SECT_DESERT
+      U         SECT_DUNNO
+      O         SECT_OCEANFLOOR
+      u         SECT_UNDERGROUND
+      U         SECT_UNDERWATER
+      L         SECT_LAVA
+      W         SECT_SWAMP
+    [ELSE]      SECT_DUNNO
+
+[Exits to use] [Direction it gives]
+      ^        UP or DOWN
+     = :       Used in all directions except UP and DOWN
+                 Makes a closed door in the direction its used in.
+      /        NORTHEAST or SOUTHWEST
+      \        NORTHWEST or SOUTHEAST
+      |        NORTH or SOUTH
+      -        EAST or WEST
+~
+
 53 MCREATE OCREATE~
 Syntax: mcreate <vnum> <keywords>
 Syntax: ocreate <vnum> <keywords>
@@ -11130,10 +11179,6 @@ specified object.  If a copy of the object exists in the game, it can be
 accessed by its vnum.
  
 See OPEDIT, TRIGGER, OPTRIGGERS, OPCOMMANDS, IFCHECKS, IFCHECKS2 VARIABLES
-~
-
-62 ORANGE~
-This function is under construction.
 ~
 
 0 ORDER~
@@ -13990,6 +14035,25 @@ files.  Neither 'sn' nor 'slot' is used for player files; these operate with
 the actual skill and spell names.
 
 SLOOKUP ALL shows this information for all skills and spells.
+~
+
+-1 FUSS SMAUGFUSS 'SMAUG FUSS'~
+.                          The SMAUG FUSS Project
+                             www.smaugfuss.org
+
+FUSS stands for: [F]ixed [U]p [S]maug [S]ource
+It has also come to be known by the alias: [F]ixed [U]p [S]tock [S]ource
+
+The ongoing goal of this project is to find and eliminate as many of the
+bugs in the stock SMAUG source code as possible so as to provide for a
+clean, stable base for new admins to run a SMAUG mud from.
+
+The project is coordinated by Samson, lead developer of the AFKMud codebase.
+Contributions are made by various members of the SMAUG community.
+
+Most of the fixes are culled from forum posts, emails to the SMAUG mailing
+list, and from continuing work on other SMAUG derivative projects in which
+bugs are found that apply backward to the base distribution.
 ~
 
 -1 SMAUG THORIC~
