@@ -24,13 +24,13 @@ End
 #HELP
 Name imcadmin
 Perm Imp
-Text Syntax: imcadmin <hub> <password> <command> [data]
+Text Syntax: imcadmin <server> <password> <command> [data]
 
-This is the remote administration handler. Since hub administrators are the only ones who
+This is the remote administration handler. Since server administrators are the only ones who
 should have any business using this, details are available in the RemoteAdmin.txt file
 which accompanied the source code for IMC2. Besides, the list is a bit large to put here.
 
-A password provided by the owner of the hub is required to use these commands. If your mud
+A password provided by the owner of the server is required to use these commands. If your mud
 uses MD5 authentication, that password will be encrypted. If not, it isn't wise to use
 these functions as anyone sniffing could potentially do damage in the right conditions.
 ¢
@@ -168,15 +168,17 @@ IMCCHANLIST displays information on channels active on IMC.
 Without arguments, it will produce a display similar to:
 
 Name            Local name      Owner           Perm    Policy
-Hub01:ichat     ichat           Paradigm@Pabulu Imm     Open
-Hub01:icode     icode           Paradigm@Pabulu Imm     Open
-Hub01:pchat     pchat           Paradigm@Pabulu Mort    Open
-Hub01:bridge1   ibchat          Paradigm@Pabulu Imm     Open
-hub00:music     mchat           Xorith@SOR-Live Mort    Open
-hub01:admin     iadmin          Paradigm@Pabulu Admin   Private
-Hub00:00Haven   (not local)     Xorith@SOR-Live Imp     Private
+Server02:test   test            Samson@Alsherok Admin   Private
+Server02:icode  icode           Samson@Alsherok Imm     Open
+Server02:i2chat i2              Samson@Alsherok Imm     Open
+Server01:ichat  ichat           Paradigm@Pabulu Imm     Open
+Server01:pchat  pchat           Paradigm@Pabulu Mort    Open
+Server02:irc    irc             Samson@Alsherok Imm     Open
+Server02:i3chat i3b             Samson@Alsherok Imm     Open
+Server10:UCMMCh UCMMChat        Ntanel@RM       Imm     Private
+Server02:igame  game            Samson@Alsherok Mort    Open
 
-This shows the channel's network name (eg. Hub01:ichat), the local name
+This shows the channel's network name (eg. Server01:ichat), the local name
  eg ichat - which can be used as an abbreviation in IMCSETUP, and which is also
 the command to speak on that channel), the owner of the channel
 (eg. Paradigm@Pabulum), and the channel's policy.
@@ -194,7 +196,7 @@ will have an Unknown flag on it.
 IMCCHANLIST with a channel name will provide detailed information on that
 channel. For example:
 
-Channel Hub01:ichat:
+Channel Server01:ichat:
   Local name: ichat
   Regformat : [ichat] %s: %s
   Emformat  : [ichat] %s %s
@@ -294,9 +296,9 @@ Infoport      : Telnet port of your mud.
 Infoemail     : Email address of the mud's IMC2 administrator.
 InfoWWW       : The Web address of your mud, cannot contain tildes.
 InfoDetails   : SHORT Description of your mud.
-HubName       : Name of the hub your mud connets to IMC2 on.
-HubAddr       : DNS or IP address of the hub you mud connects to.
-HubPort       : Port of the hub your mud connects to.
+ServerName    : Name of the server your mud connets to IMC2 on.
+ServerAddr    : DNS or IP address of the server you mud connects to.
+ServerPort    : Port of the server your mud connects to.
 ClientPwd     : Client password for your mud.
 ServerPwd     : Server password for your mud.
 
@@ -370,9 +372,9 @@ problems with individual users on your mud before resorting to this. All
 incoming traffic from the offending mud is simply dropped and no further
 action taken on the packets. If this level of action fails to stop the
 problems you are having, document the incidents and proceed to the next
-level and seek assistance from the hub administrator of the hub you are
-connected to. They will be able to direct you further, and can issue
-bans at the hub or network level if need be.
+level and seek assistance from the server administrator of the server you
+are connected to. They will be able to direct you further, and can issue
+bans at the server or network level if need be.
 ¢
 End
 
@@ -382,9 +384,9 @@ Perm Mort
 Text Syntax: imclist                  - get a list of active muds on IMC2
 
 'IMCLIST' lists active muds on IMC2. It lists all the muds which this mud 
-knows about on the IMC2 network, what client version they run ( or hub version
-in the case of hubs ), what network they claim to be registered with, and what
-hub they are routed from.
+knows about on the IMC2 network, what client version they run ( or server version
+in the case of servers ), what network they claim to be registered with, and what
+server they are routed from.
 ¢
 End
 
@@ -445,7 +447,7 @@ configuration on other muds.
 IMCSETUP setlocal configures a channel. It connects the specified channel
 (of the form nodename:channelname) to a local name.
 
-For example: IMCSETUP setlocal Hub:IMCChat imcchat. The local name is also the
+For example: IMCSETUP setlocal Server01:IMCChat imcchat. The local name is also the
 command used to speak on the channel.
 
 When the channel is configured, default values are filled in for
@@ -528,5 +530,15 @@ The only thing invisibility does not stop is your ability to use network channel
 ¢
 End
 
+#HELP
+Name imctemplates
+Perm Admin
+Text Syntax: imctemplates           - reloads the template file set from disk.
+
+Issuing this command will refresh any editing you've done to your template files.
+This saves you from needing to disconnect from the network and reconnect just to
+test changes.
+¢
+End
 
 #END

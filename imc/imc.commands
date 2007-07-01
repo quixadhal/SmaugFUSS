@@ -250,4 +250,11 @@ Perm      Admin
 Connected 1
 End
 
+#COMMAND
+Name      imctemplates
+Code      imctemplates
+Perm      Admin
+Connected 0
+End
+
 #END

@@ -12,10 +12,17 @@
  * Original Diku Mud copyright (C) 1990, 1991 by Sebastian Hammer,          *
  * Michael Seifert, Hans Henrik St{rfeldt, Tom Madsen, and Katja Nyboe.     *
  * ------------------------------------------------------------------------ *
- *			   "Special procedure" module			    *
+ *                        "Special procedure" module                        *
  ****************************************************************************/
 
 #include <stdio.h>
+#if !defined(WIN32)
+#include <dlfcn.h>
+#else
+#include <windows.h>
+#define dlsym( handle, name ) ( (void*)GetProcAddress( (HINSTANCE) (handle), (name) ) )
+#define dlerror() GetLastError()
+#endif
 #include "mud.h"
 
 /*
@@ -39,93 +46,101 @@ DECLARE_SPEC_FUN( spec_mayor );
 DECLARE_SPEC_FUN( spec_poison );
 DECLARE_SPEC_FUN( spec_thief );
 
+SPEC_LIST *first_specfun;
+SPEC_LIST *last_specfun;
 
-
-/*
- * Given a name, return the appropriate spec fun.
- */
-SPEC_FUN *spec_lookup( const char *name )
+void free_specfuns( void )
 {
-   if( !str_cmp( name, "spec_breath_any" ) )
-      return spec_breath_any;
-   if( !str_cmp( name, "spec_breath_acid" ) )
-      return spec_breath_acid;
-   if( !str_cmp( name, "spec_breath_fire" ) )
-      return spec_breath_fire;
-   if( !str_cmp( name, "spec_breath_frost" ) )
-      return spec_breath_frost;
-   if( !str_cmp( name, "spec_breath_gas" ) )
-      return spec_breath_gas;
-   if( !str_cmp( name, "spec_breath_lightning" ) )
-      return spec_breath_lightning;
-   if( !str_cmp( name, "spec_cast_adept" ) )
-      return spec_cast_adept;
-   if( !str_cmp( name, "spec_cast_cleric" ) )
-      return spec_cast_cleric;
-   if( !str_cmp( name, "spec_cast_mage" ) )
-      return spec_cast_mage;
-   if( !str_cmp( name, "spec_cast_undead" ) )
-      return spec_cast_undead;
-   if( !str_cmp( name, "spec_executioner" ) )
-      return spec_executioner;
-   if( !str_cmp( name, "spec_fido" ) )
-      return spec_fido;
-   if( !str_cmp( name, "spec_guard" ) )
-      return spec_guard;
-   if( !str_cmp( name, "spec_janitor" ) )
-      return spec_janitor;
-   if( !str_cmp( name, "spec_mayor" ) )
-      return spec_mayor;
-   if( !str_cmp( name, "spec_poison" ) )
-      return spec_poison;
-   if( !str_cmp( name, "spec_thief" ) )
-      return spec_thief;
-   return 0;
+   SPEC_LIST *specfun, *next_specfun;
+
+   for( specfun = first_specfun; specfun; specfun = next_specfun )
+   {
+      next_specfun = specfun->next;
+
+      UNLINK( specfun, first_specfun, last_specfun, next, prev );
+      DISPOSE( specfun->name );
+      DISPOSE( specfun );
+   }
+}
+
+/* Simple load function - no OLC support for now.
+ * This is probably something you DONT want builders playing with.
+ */
+void load_specfuns( void )
+{
+   SPEC_LIST *specfun;
+   FILE *fp;
+   char filename[256];
+   char *word;
+
+   first_specfun = NULL;
+   last_specfun = NULL;
+
+   snprintf( filename, 256, "%sspecfuns.dat", SYSTEM_DIR );
+   if( !( fp = fopen( filename, "r" ) ) )
+   {
+      bug( "%s: FATAL - cannot load specfuns.dat, exiting.", __FUNCTION__ );
+      perror( filename );
+      exit( 1 );
+   }
+   else
+   {
+      for( ;; )
+      {
+         if( feof( fp ) )
+         {
+            bug( "%s: Premature end of file!", __FUNCTION__ );
+            fclose( fp );
+            fp = NULL;
+            return;
+         }
+         word = fread_word( fp );
+         if( !str_cmp( word, "$" ) )
+            break;
+
+         CREATE( specfun, SPEC_LIST, 1 );
+         specfun->name = str_dup( word );
+         LINK( specfun, first_specfun, last_specfun, next, prev );
+      }
+      fclose( fp );
+      fp = NULL;
+   }
+   return;
+}
+
+/* Simple validation function to be sure a function can be used on mobs */
+bool validate_spec_fun( char *name )
+{
+   SPEC_LIST *specfun;
+
+   for( specfun = first_specfun; specfun; specfun = specfun->next )
+   {
+      if( !str_cmp( specfun->name, name ) )
+         return TRUE;
+   }
+   return FALSE;
 }
 
 /*
- * Given a pointer, return the appropriate spec fun text.
+ * Given a name, return the appropriate spec_fun.
  */
-char *lookup_spec( SPEC_FUN * special )
+SPEC_FUN *spec_lookup( char *name )
 {
-   if( special == spec_breath_any )
-      return "spec_breath_any";
+   void *funHandle;
+#if !defined(WIN32)
+   const char *error;
+#else
+   DWORD error;
+#endif
 
-   if( special == spec_breath_acid )
-      return "spec_breath_acid";
-   if( special == spec_breath_fire )
-      return "spec_breath_fire";
-   if( special == spec_breath_frost )
-      return "spec_breath_frost";
-   if( special == spec_breath_gas )
-      return "spec_breath_gas";
-   if( special == spec_breath_lightning )
-      return "spec_breath_lightning";
-   if( special == spec_cast_adept )
-      return "spec_cast_adept";
-   if( special == spec_cast_cleric )
-      return "spec_cast_cleric";
-   if( special == spec_cast_mage )
-      return "spec_cast_mage";
-   if( special == spec_cast_undead )
-      return "spec_cast_undead";
-   if( special == spec_executioner )
-      return "spec_executioner";
-   if( special == spec_fido )
-      return "spec_fido";
-   if( special == spec_guard )
-      return "spec_guard";
-   if( special == spec_janitor )
-      return "spec_janitor";
-   if( special == spec_mayor )
-      return "spec_mayor";
-   if( special == spec_poison )
-      return "spec_poison";
-   if( special == spec_thief )
-      return "spec_thief";
-   return "";
+   funHandle = dlsym( sysdata.dlHandle, name );
+   if( ( error = dlerror(  ) ) )
+   {
+      bug( "Error locating function %s in symbol table.", name );
+      return NULL;
+   }
+   return ( SPEC_FUN * ) funHandle;
 }
-
 
 /* if a spell casting mob is hating someone... try and summon them */
 void summon_if_hating( CHAR_DATA * ch )
@@ -759,8 +774,6 @@ bool spec_guard( CHAR_DATA * ch )
    return FALSE;
 }
 
-
-
 bool spec_janitor( CHAR_DATA * ch )
 {
    OBJ_DATA *trash;
@@ -774,6 +787,8 @@ bool spec_janitor( CHAR_DATA * ch )
       trash_next = trash->next_content;
       if( !IS_SET( trash->wear_flags, ITEM_TAKE ) || IS_OBJ_STAT( trash, ITEM_BURIED ) )
          continue;
+      if( IS_OBJ_STAT( trash, ITEM_PROTOTYPE ) && !xIS_SET( ch->act, ACT_PROTOTYPE ) )
+         continue;
       if( trash->item_type == ITEM_DRINK_CON
           || trash->item_type == ITEM_TRASH
           || trash->cost < 10 || ( trash->pIndexData->vnum == OBJ_VNUM_SHOPPING_BAG && !trash->first_content ) )
@@ -784,11 +799,8 @@ bool spec_janitor( CHAR_DATA * ch )
          return TRUE;
       }
    }
-
    return FALSE;
 }
-
-
 
 bool spec_mayor( CHAR_DATA * ch )
 {

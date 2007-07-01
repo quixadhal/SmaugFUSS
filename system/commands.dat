@@ -1657,14 +1657,6 @@ Log         1
 End
 
 #COMMAND
-Name        map~
-Code        reserved
-Position    100
-Level       62
-Log         0
-End
-
-#COMMAND
 Name        mapout~
 Code        do_mapout
 Position    100

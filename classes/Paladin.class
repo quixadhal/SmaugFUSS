@@ -1,6 +1,8 @@
 Name        Paladin~
 Class       8
-Attrprime   1
+AttrPrime   1
+AttrSecond   0
+AttrDeficient   0
 Weapon      10313
 Guild       3013
 Skilladept  90
@@ -10,6 +12,9 @@ Hpmin       12
 Hpmax       15
 Mana        2
 Expbase     1500
+Affected    0
+Resist	 0
+Suscept	 0
 Skill 'aqua breath' 18 85
 Skill 'armor' 1 90
 Skill 'benefic aura' 30 85

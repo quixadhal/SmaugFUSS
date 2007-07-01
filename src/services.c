@@ -9,7 +9,7 @@
  * ------------------------------------------------------------------------ *
  * Win32 port by Nick Gammon                                                *
  * ------------------------------------------------------------------------ *
- *			    Win32 services routines 			    *
+ *                         Win32 services routines                          *
  ****************************************************************************/
 
 /* Author: Nick Gammon */
@@ -42,7 +42,7 @@ void kill_timer( void );
 extern bool mud_down;
 extern bool service_shut_down;
 
-SERVICE_STATUS ssStatus;   // current status of the service
+SERVICE_STATUS ssStatus;   /* current status of the service */
 
 SERVICE_STATUS_HANDLE sshStatusHandle;
 DWORD dwGlobalErr;
@@ -52,8 +52,8 @@ HANDLE threadHandle = NULL;
 SC_HANDLE service = NULL;
 SC_HANDLE SCmanager = NULL;
 
-//  declare the service threads:
-//
+/*  declare the service threads: */
+
 static VOID service_main( DWORD dwArgc, LPTSTR * lpszArgv );
 static VOID WINAPI service_ctrl( DWORD dwCtrlCode );
 static BOOL ReportStatusToSCMgr( DWORD dwCurrentState, DWORD dwWin32ExitCode, DWORD dwCheckPoint, DWORD dwWaitHint );
@@ -98,7 +98,7 @@ Get the command line parameters and see what the user wants us to do.
       else if( !_stricmp( "run", argv[1] + 1 ) )
       {
 
-// do not start the SMAUG if it is already a running service
+/* do not start the SMAUG if it is already a running service */
 
          status = get_service_status( &svcstatus, TRUE );
          if( status == 0 && svcstatus.dwCurrentState == SERVICE_RUNNING )
@@ -116,7 +116,9 @@ Get the command line parameters and see what the user wants us to do.
    else
    {
 
-      // do not start the SMAUG if it is already a running service
+      /*
+       * do not start the SMAUG if it is already a running service 
+       */
 
       status = get_service_status( &svcstatus, TRUE );
       if( status == 0 && svcstatus.dwCurrentState == SERVICE_RUNNING )
@@ -125,8 +127,9 @@ Get the command line parameters and see what the user wants us to do.
          return 1;
       }
 
-      // Under Windows 95 they won't be able to use the service manager
-
+      /*
+       * Under Windows 95 they won't be able to use the service manager 
+       */
       if( status == ERROR_CALL_NOT_IMPLEMENTED )
       {
          worker_thread( NULL );
@@ -148,84 +151,90 @@ Get the command line parameters and see what the user wants us to do.
          worker_thread( NULL );
       }
 
-   }  // end of argc == 1
+   }  /* end of argc == 1 */
 
    return 0;
 }  /* end of main */
 
 
-//  service_main() --
-//      this function takes care of actually starting the service,
-//      informing the service controller at each step along the way.
-//      After launching the worker thread, it waits on the event
-//      that the worker thread will signal at its termination.
-//
+/*  service_main() --
+      this function takes care of actually starting the service,
+      informing the service controller at each step along the way.
+      After launching the worker thread, it waits on the event
+      that the worker thread will signal at its termination.
+*/
 static VOID service_main( DWORD dwArgc, LPTSTR * lpszArgv )
 {
    DWORD dwWait;
 
-   // register our service control handler:
-   //
+   /*
+    * register our service control handler: 
+    */
    sshStatusHandle = RegisterServiceCtrlHandler( THIS_SERVICE, service_ctrl );
 
    if( !sshStatusHandle )
       goto cleanup;
 
-   // SERVICE_STATUS members that don't change in example
-   //
+   /*
+    * SERVICE_STATUS members that don't change in example 
+    */
    ssStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
    ssStatus.dwServiceSpecificExitCode = 0;
 
 
-   // report the status to Service Control Manager.
-   //
-   if( !ReportStatusToSCMgr( SERVICE_START_PENDING,   // service state
-                             NO_ERROR, // exit code
-                             1,  // checkpoint
-                             3000 ) )  // wait hint
+   /*
+    * report the status to Service Control Manager. 
+    */
+   if( !ReportStatusToSCMgr( SERVICE_START_PENDING,   /* service state */
+                             NO_ERROR, /* exit code */
+                             1,  /* checkpoint */
+                             3000 ) )  /* wait hint */
       goto cleanup;
 
 
-   // start the thread that performs the work of the service.
-   //
-   threadHandle = ( HANDLE ) _beginthreadex( NULL, // security attributes
-                                             0, // stack size (0 means inherit parent's stack size)
-                                             ( LPTHREAD_START_ROUTINE ) worker_thread, NULL, // argument to thread
-                                             0, // thread creation flags
-                                             &TID );  // pointer to thread ID
+   /*
+    * start the thread that performs the work of the service. 
+    */
+   threadHandle = ( HANDLE ) _beginthreadex( NULL, /* security attributes */
+                                             0, /* stack size (0 means inherit parent's stack size) */
+                                             ( LPTHREAD_START_ROUTINE ) worker_thread, NULL, /* argument to thread */
+                                             0, /* thread creation flags */
+                                             &TID );  /* pointer to thread ID */
 
    if( !threadHandle )
       goto cleanup;
 
-   // report the status to the service control manager.
-   //
-   if( !ReportStatusToSCMgr( SERVICE_RUNNING,   // service state
-                             NO_ERROR, // exit code
-                             0,  // checkpoint
-                             0 ) )  // wait hint
+   /*
+    * report the status to the service control manager. 
+    */
+   if( !ReportStatusToSCMgr( SERVICE_RUNNING,   /* service state */
+                             NO_ERROR, /* exit code */
+                             0,  /* checkpoint */
+                             0 ) )  /* wait hint */
       goto cleanup;
 
-   // wait indefinitely until threadHandle is signaled.
-   // The thread handle is signalled when the thread terminates
-   //
-
-   dwWait = WaitForSingleObject( threadHandle,  // event object
-                                 INFINITE ); // wait indefinitely
+   /*
+    * wait indefinitely until threadHandle is signaled.
+    * The thread handle is signalled when the thread terminates
+    */
+   dwWait = WaitForSingleObject( threadHandle,  /* event object */
+                                 INFINITE ); /* wait indefinitely */
 
  cleanup:
 
-   // try to report the stopped status to the service control manager.
-   //
+   /*
+    * try to report the stopped status to the service control manager. 
+    */
    if( sshStatusHandle )
       ( VOID ) ReportStatusToSCMgr( SERVICE_STOPPED, dwGlobalErr, 0, 0 );
 
-   // When SERVICE MAIN FUNCTION returns in a single service
-   // process, the StartServiceCtrlDispatcher function in
-   // the main thread returns, terminating the process.
-   //
-
+   /*
+    * When SERVICE MAIN FUNCTION returns in a single service
+    * process, the StartServiceCtrlDispatcher function in
+    * the main thread returns, terminating the process.
+    */
    return;
-}  // end of service_main
+}  /* end of service_main */
 
 //  service_ctrl() --
 //      this function is called by the Service Controller whenever
@@ -848,5 +857,11 @@ static char *convert_error( DWORD error )
    else
       return formattedmsg;
 }  // end of convert_error
+
+void gettimeofday( struct timeval *tv, struct timezone *tz )
+{
+   tv->tv_sec = time( 0 );
+   tv->tv_usec = 0;
+}
 
 #endif /* WIN32 */
