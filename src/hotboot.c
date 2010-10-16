@@ -26,6 +26,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <ctype.h>
 #if !defined(WIN32)
 #include <dlfcn.h>
 #else
@@ -412,7 +413,7 @@ CHAR_DATA *load_mobile( FILE * fp )
    }
 }
 
-void read_obj_file( char *dirname, char *filename )
+bool read_obj_file( const char *dirname, const char *filename )
 {
    ROOM_INDEX_DATA *room;
    FILE *fp;
@@ -425,8 +426,7 @@ void read_obj_file( char *dirname, char *filename )
    if( ( room = get_room_index( vnum ) ) == NULL )
    {
       bug( "read_obj_file: ARGH! Missing room index for %d!", vnum );
-      unlink( fname );
-      return;
+      return FALSE;
    }
 
    if( ( fp = fopen( fname, "r" ) ) != NULL )
@@ -496,36 +496,37 @@ void read_obj_file( char *dirname, char *filename )
       release_supermob(  );
    }
    else
+   {
       log_string( "Cannot open obj file" );
+      return FALSE;
+   }
 
-   return;
+   return TRUE;
 }
 
 void load_obj_files( void )
 {
    DIR *dp;
    struct dirent *dentry;
-   char directory_name[100];
 
    log_string( "World state: loading objs" );
-   snprintf( directory_name, 100, "%s", HOTBOOT_DIR );
-   dp = opendir( directory_name );
-   dentry = readdir( dp );
-   while( dentry )
+   for( (dp = opendir( HOTBOOT_DIR )) && (dentry = readdir(dp)); dentry; dentry = readdir(dp) )
    {
       /*
        * Added by Tarl 3 Dec 02 because we are now using CVS 
        */
       if( !str_cmp( dentry->d_name, "CVS" ) )
-      {
-         dentry = readdir( dp );
          continue;
-      }
-      if( dentry->d_name[0] != '.' )
-         read_obj_file( directory_name, dentry->d_name );
-      dentry = readdir( dp );
+      if( dentry->d_name[0] == '.' )
+         continue;
+      if( !isdigit(dentry->d_name[0]) )
+         continue;
+
+      if(read_obj_file( HOTBOOT_DIR, dentry->d_name ))
+          unlink(dentry->d_name);
    }
-   closedir( dp );
+   if( dp )
+      closedir( dp );
    return;
 }
 
@@ -721,6 +722,7 @@ void do_hotboot( CHAR_DATA* ch, const char* argument)
 
    set_alarm( 0 );
    dlclose( sysdata.dlHandle );
+   bug( "do_hotboot: execl() arguments: %s %s %s %s %s %s %s",  EXE_FILE, "smaug", buf, "hotboot", buf2, buf3, buf4 );
    execl( EXE_FILE, "smaug", buf, "hotboot", buf2, buf3, buf4, ( char * )NULL );
 
    /*

@@ -59,7 +59,7 @@
             like %^BOLD%^RED%^ are found before %^RED%^ is, to avoid orphaned
             %^BOLD tags that would break native color code.
 
-2012.10.22  Quixadhal (1.9q3)
+2012.10.22  Quixadhal
             Files:
                 area/boot.txt, area/shutdown.txt, system/shutdown.txt
                 src/.gitignore src/act_info.c src/act_wiz.c src/ban.c
@@ -74,4 +74,17 @@
             and thus shouldn't care if you start the MUD in the area subdir, or
             the src subdir, or any subdir.  Because of the way it works, it'll
             still fail if you start in the top level directory.
+
+2012.10.23  Quixadhal (1.9q3)
+            Files:
+                src/hotboot.c src/comm.c
+
+            Fixed a bug introduced by my changes above.  This had to do with
+            the assumption that only object save data was in hotboot/, so any
+            entries that weren't valid got unlinked.  Problem is, we put the
+            mob and copyover files in there now, so they were getting unlinked
+            before we were done with them.
+
+            Easy fix, just have the obj restore thing skip files that don't
+            start with a digit, since the filename is just the vnum.
 
