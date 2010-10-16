@@ -2637,6 +2637,7 @@ void write_char_mobile( CHAR_DATA * ch, char *argument )
  * This will read in the saved mobile for a char --Shaddai
  */
 
+#if 0
 void read_char_mobile( char *argument )
 {
    FILE *fp;
@@ -2651,3 +2652,5 @@ void read_char_mobile( char *argument )
    fclose( fp );
    return;
 }
+#endif
+

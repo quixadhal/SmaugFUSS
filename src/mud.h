@@ -4836,7 +4836,7 @@ void fwrite_obj args( ( CHAR_DATA * ch, OBJ_DATA * obj, FILE * fp, int iNest, sh
 void fread_obj args( ( CHAR_DATA * ch, FILE * fp, short os_type ) );
 void de_equip_char args( ( CHAR_DATA * ch ) );
 void re_equip_char args( ( CHAR_DATA * ch ) );
-void read_char_mobile args( ( char *argument ) );
+/* void read_char_mobile args( ( char *argument ) ); */
 void write_char_mobile args( ( CHAR_DATA * ch, char *argument ) );
 CHAR_DATA *fread_mobile args( ( FILE * fp ) );
 void fwrite_mobile args( ( FILE * fp, CHAR_DATA * mob ) );

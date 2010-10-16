@@ -1,0 +1,30 @@
+2012.09.30  Quixadhal
+
+            I found all the original SmaugFUSS archives I could find and
+            imported them into git, to provide a history from version 1.4a
+            up to the present version 1.9.
+
+            for i in 1.4a 1.6 1.7 1.8 1.9; do
+                git ls-files -z | xargs -0 rm -f
+                find . -maxdepth 1 -type d -print0 | grep -z '^./[a-zA-Z0-9_]' | xargs -0 rm -rf
+                cp -rp ../smaug_archive/$i/* .
+                RECENT=`find . -type f -printf '%TY-%Tm-%Td %TT %p\n' | grep -v .git | colrm 20 | sort -r | head -1`
+                export GIT_AUTHOR_DATE="$RECENT"
+                export GIT_COMMITTER_DATE="$RECENT"
+                echo -en "$i\t$RECENT\n" >VERSION
+                find . -type d -empty -exec touch -d "$RECENT" {}/.gitignore \;
+                git add -A
+                git commit -m "SmaugFUSS $i"
+                git tag $i
+            done
+
+2012.10.01  Quixadhal
+            Files:
+                src/act_move.c src/act_wiz.c src/ban.c src/clans.c src/comm.c
+                src/db.c src/fight.c src/hint.c src/hotboot.c src/imc.c
+                src/magic.c src/mapout.c src/mud.h src/mud_comm.c src/mud_prog.c
+                src/save.c src/skills.c imc/imc.config
+
+            These changes were simply to get gcc 4.7 to compile things cleanly.
+            In most cases, this was the removal of unused variables.
+
