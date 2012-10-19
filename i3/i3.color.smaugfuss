@@ -1,0 +1,734 @@
+#COLOR
+Name   Reset
+Mudtag &d
+I3tag  &d
+I3fish %^RESET%^
+End
+
+#COLOR
+Name   ResetCustom
+Mudtag &D
+I3tag  &D
+I3fish %^RESET%^
+End
+
+
+
+
+#COLOR
+Name   BLRandom
+Mudtag }Z
+I3tag  }Z
+I3fish %^RESET%^
+End
+
+#COLOR
+Name   BLDGrey
+Mudtag }z
+I3tag  }z
+I3fish %^FLASH%^%^BOLD%^%^BLACK%^
+End
+
+#COLOR
+Name   BLDGrey2
+Mudtag }z
+I3tag  }z
+I3fish %^FLASH%^BOLD%^BLACK%^
+End
+
+#COLOR
+Name   BLRed
+Mudtag }R
+I3tag  }R
+I3fish %^FLASH%^%^BOLD%^%^RED%^
+End
+
+#COLOR
+Name   BLRed2
+Mudtag }R
+I3tag  }R
+I3fish %^FLASH%^BOLD%^RED%^
+End
+
+#COLOR
+Name   BLGreen
+Mudtag }G
+I3tag  }G
+I3fish %^FLASH%^%^BOLD%^%^GREEN%^
+End
+
+#COLOR
+Name   BLGreen2
+Mudtag }G
+I3tag  }G
+I3fish %^FLASH%^BOLD%^GREEN%^
+End
+
+#COLOR
+Name   BLBlue
+Mudtag }B
+I3tag  }B
+I3fish %^FLASH%^%^BOLD%^%^BLUE%^
+End
+
+#COLOR
+Name   BLBlue2
+Mudtag }B
+I3tag  }B
+I3fish %^FLASH%^BOLD%^BLUE%^
+End
+
+#COLOR
+Name   BLPink
+Mudtag }P
+I3tag  }P
+I3fish %^FLASH%^%^BOLD%^%^MAGENTA%^
+End
+
+#COLOR
+Name   BLPink2
+Mudtag }P
+I3tag  }P
+I3fish %^FLASH%^BOLD%^MAGENTA%^
+End
+
+#COLOR
+Name   BLLBlue
+Mudtag }C
+I3tag  }C
+I3fish %^FLASH%^%^BOLD%^%^CYAN%^
+End
+
+#COLOR
+Name   BLLBlue2
+Mudtag }C
+I3tag  }C
+I3fish %^FLASH%^BOLD%^CYAN%^
+End
+
+#COLOR
+Name   BLWhite
+Mudtag }W
+I3tag  }W
+I3fish %^FLASH%^%^BOLD%^%^WHITE%^
+End
+
+#COLOR
+Name   BLWhite2
+Mudtag }W
+I3tag  }W
+I3fish %^FLASH%^BOLD%^WHITE%^
+End
+
+#COLOR
+Name   BLBlack
+Mudtag }x
+I3tag  }x
+I3fish %^FLASH%^%^BLACK%^
+End
+
+#COLOR
+Name   BLBlack2
+Mudtag }x
+I3tag  }x
+I3fish %^FLASH%^BLACK%^
+End
+
+#COLOR
+Name   BLDRed
+Mudtag }r
+I3tag  }r
+I3fish %^FLASH%^%^RED%^
+End
+
+#COLOR
+Name   BLDRed2
+Mudtag }r
+I3tag  }r
+I3fish %^FLASH%^RED%^
+End
+
+#COLOR
+Name   BLDGreen
+Mudtag }g
+I3tag  }g
+I3fish %^FLASH%^%^GREEN%^
+End
+
+#COLOR
+Name   BLDGreen2
+Mudtag }g
+I3tag  }g
+I3fish %^FLASH%^GREEN%^
+End
+
+#COLOR
+Name   BLOrange
+Mudtag }O
+I3tag  }O
+I3fish %^FLASH%^%^ORANGE%^
+End
+
+#COLOR
+Name   BLOrange2
+Mudtag }O
+I3tag  }O
+I3fish %^FLASH%^ORANGE%^
+End
+
+#COLOR
+Name   BLDBlue
+Mudtag }b
+I3tag  }b
+I3fish %^FLASH%^%^BLUE%^
+End
+
+#COLOR
+Name   BLDBlue2
+Mudtag }b
+I3tag  }b
+I3fish %^FLASH%^BLUE%^
+End
+
+#COLOR
+Name   BLPurple
+Mudtag }p
+I3tag  }p
+I3fish %^FLASH%^%^MAGENTA%^
+End
+
+#COLOR
+Name   BLPurple2
+Mudtag }p
+I3tag  }p
+I3fish %^FLASH%^MAGENTA%^
+End
+
+#COLOR
+Name   BLCyan
+Mudtag }c
+I3tag  }c
+I3fish %^FLASH%^%^CYAN%^
+End
+
+#COLOR
+Name   BLCyan2
+Mudtag }c
+I3tag  }c
+I3fish %^FLASH%^CYAN%^
+End
+
+#COLOR
+Name   BLGrey
+Mudtag }w
+I3tag  }w
+I3fish %^FLASH%^%^WHITE%^
+End
+
+#COLOR
+Name   BLGrey2
+Mudtag }w
+I3tag  }w
+I3fish %^FLASH%^WHITE%^
+End
+
+
+
+
+#COLOR
+Name   BGRandom
+Mudtag ^Z
+I3tag  ^Z
+I3fish %^RESET%^
+End
+
+#COLOR
+Name   BGDGrey
+Mudtag ^z
+I3tag  ^z
+I3fish %^BOLD%^%^B_BLACK%^
+End
+
+#COLOR
+Name   BGDGrey2
+Mudtag ^z
+I3tag  ^z
+I3fish %^BOLD%^B_BLACK%^
+End
+
+#COLOR
+Name   BGDGrey3
+Mudtag ^z
+I3tag  ^z
+I3fish %^B_BLACK%^BOLD%^
+End
+
+#COLOR
+Name   BGRed
+Mudtag ^R
+I3tag  ^R
+I3fish %^BOLD%^%^B_RED%^
+End
+
+#COLOR
+Name   BGRed2
+Mudtag ^R
+I3tag  ^R
+I3fish %^BOLD%^B_RED%^
+End
+
+#COLOR
+Name   BGRed3
+Mudtag ^R
+I3tag  ^R
+I3fish %^B_RED%^BOLD%^
+End
+
+#COLOR
+Name   BGGreen
+Mudtag ^G
+I3tag  ^G
+I3fish %^BOLD%^%^B_GREEN%^
+End
+
+#COLOR
+Name   BGGreen2
+Mudtag ^G
+I3tag  ^G
+I3fish %^BOLD%^B_GREEN%^
+End
+
+#COLOR
+Name   BGGreen3
+Mudtag ^G
+I3tag  ^G
+I3fish %^B_GREEN%^BOLD%^
+End
+
+#COLOR
+Name   BGBlue
+Mudtag ^B
+I3tag  ^B
+I3fish %^BOLD%^%^B_BLUE%^
+End
+
+#COLOR
+Name   BGBlue2
+Mudtag ^B
+I3tag  ^B
+I3fish %^BOLD%^B_BLUE%^
+End
+
+#COLOR
+Name   BGBlue3
+Mudtag ^B
+I3tag  ^B
+I3fish %^B_BLUE%^BOLD%^
+End
+
+#COLOR
+Name   BGPink
+Mudtag ^P
+I3tag  ^P
+I3fish %^BOLD%^%^B_MAGENTA%^
+End
+
+#COLOR
+Name   BGPink2
+Mudtag ^P
+I3tag  ^P
+I3fish %^BOLD%^B_MAGENTA%^
+End
+
+#COLOR
+Name   BGPink3
+Mudtag ^P
+I3tag  ^P
+I3fish %^B_MAGENTA%^BOLD%^
+End
+
+#COLOR
+Name   BGLBlue
+Mudtag ^C
+I3tag  ^C
+I3fish %^BOLD%^%^B_CYAN%^
+End
+
+#COLOR
+Name   BGLBlue2
+Mudtag ^C
+I3tag  ^C
+I3fish %^BOLD%^B_CYAN%^
+End
+
+#COLOR
+Name   BGLBlue3
+Mudtag ^C
+I3tag  ^C
+I3fish %^B_CYAN%^BOLD%^
+End
+
+#COLOR
+Name   BGWhite
+Mudtag ^W
+I3tag  ^W
+I3fish %^BOLD%^%^B_WHITE%^
+End
+
+#COLOR
+Name   BGWhite2
+Mudtag ^W
+I3tag  ^W
+I3fish %^BOLD%^B_WHITE%^
+End
+
+#COLOR
+Name   BGWhite3
+Mudtag ^W
+I3tag  ^W
+I3fish %^B_WHITE%^BOLD%^
+End
+
+#COLOR
+Name   BGBlack
+Mudtag ^x
+I3tag  ^x
+I3fish %^B_BLACK%^
+End
+
+#COLOR
+Name   BGDRed
+Mudtag ^r
+I3tag  ^r
+I3fish %^B_RED%^
+End
+
+#COLOR
+Name   BGDGreen
+Mudtag ^g
+I3tag  ^g
+I3fish %^B_GREEN%^
+End
+
+#COLOR
+Name   BGOrange
+Mudtag ^O
+I3tag  ^O
+I3fish %^B_ORANGE%^
+End
+
+#COLOR
+Name   BGDBlue
+Mudtag ^b
+I3tag  ^b
+I3fish %^B_BLUE%^
+End
+
+#COLOR
+Name   BGPurple
+Mudtag ^p
+I3tag  ^p
+I3fish %^B_MAGENTA%^
+End
+
+#COLOR
+Name   BGCyan
+Mudtag ^c
+I3tag  ^c
+I3fish %^B_CYAN%^
+End
+
+#COLOR
+Name   BGGrey
+Mudtag ^w
+I3tag  ^w
+I3fish %^B_WHITE%^
+End
+
+
+
+
+#COLOR
+Name   Random
+Mudtag &Z
+I3tag  &Z
+I3fish %^RESET%^
+End
+
+#COLOR
+Name   DGrey
+Mudtag &z
+I3tag  &z
+I3fish %^BOLD%^%^BLACK%^
+End
+
+#COLOR
+Name   DGrey2
+Mudtag &z
+I3tag  &z
+I3fish %^BOLD%^BLACK%^
+End
+
+#COLOR
+Name   DGrey3
+Mudtag &z
+I3tag  &z
+I3fish %^BLACK%^BOLD%^
+End
+
+#COLOR
+Name   Red
+Mudtag &R
+I3tag  &R
+I3fish %^BOLD%^%^RED%^
+End
+
+#COLOR
+Name   Red2
+Mudtag &R
+I3tag  &R
+I3fish %^BOLD%^RED%^
+End
+
+#COLOR
+Name   Red3
+Mudtag &R
+I3tag  &R
+I3fish %^RED%^BOLD%^
+End
+
+#COLOR
+Name   Green
+Mudtag &G
+I3tag  &G
+I3fish %^BOLD%^%^GREEN%^
+End
+
+#COLOR
+Name   Green2
+Mudtag &G
+I3tag  &G
+I3fish %^BOLD%^GREEN%^
+End
+
+#COLOR
+Name   Green3
+Mudtag &G
+I3tag  &G
+I3fish %^GREEN%^BOLD%^
+End
+
+#COLOR
+Name   Blue
+Mudtag &B
+I3tag  &B
+I3fish %^BOLD%^%^BLUE%^
+End
+
+#COLOR
+Name   Blue2
+Mudtag &B
+I3tag  &B
+I3fish %^BOLD%^BLUE%^
+End
+
+#COLOR
+Name   Blue3
+Mudtag &B
+I3tag  &B
+I3fish %^BLUE%^BOLD%^
+End
+
+#COLOR
+Name   Pink
+Mudtag &P
+I3tag  &P
+I3fish %^BOLD%^%^MAGENTA%^
+End
+
+#COLOR
+Name   Pink2
+Mudtag &P
+I3tag  &P
+I3fish %^BOLD%^MAGENTA%^
+End
+
+#COLOR
+Name   Pink3
+Mudtag &P
+I3tag  &P
+I3fish %^MAGENTA%^BOLD%^
+End
+
+#COLOR
+Name   LBlue
+Mudtag &C
+I3tag  &C
+I3fish %^BOLD%^%^CYAN%^
+End
+
+#COLOR
+Name   LBlue2
+Mudtag &C
+I3tag  &C
+I3fish %^BOLD%^CYAN%^
+End
+
+#COLOR
+Name   LBlue3
+Mudtag &C
+I3tag  &C
+I3fish %^CYAN%^BOLD%^
+End
+
+#COLOR
+Name   White
+Mudtag &W
+I3tag  &W
+I3fish %^BOLD%^%^WHITE%^
+End
+
+#COLOR
+Name   White2
+Mudtag &W
+I3tag  &W
+I3fish %^BOLD%^WHITE%^
+End
+
+#COLOR
+Name   White3
+Mudtag &W
+I3tag  &W
+I3fish %^WHITE%^BOLD%^
+End
+
+#COLOR
+Name   Black
+Mudtag &x
+I3tag  &x
+I3fish %^BLACK%^
+End
+
+#COLOR
+Name   DRed
+Mudtag &r
+I3tag  &r
+I3fish %^RED%^
+End
+
+#COLOR
+Name   DGreen
+Mudtag &g
+I3tag  &g
+I3fish %^GREEN%^
+End
+
+#COLOR
+Name   Orange
+Mudtag &O
+I3tag  &O
+I3fish %^ORANGE%^
+End
+
+#COLOR
+Name   DBlue
+Mudtag &b
+I3tag  &b
+I3fish %^BLUE%^
+End
+
+#COLOR
+Name   Purple
+Mudtag &p
+I3tag  &p
+I3fish %^MAGENTA%^
+End
+
+#COLOR
+Name   Cyan
+Mudtag &c
+I3tag  &c
+I3fish %^CYAN%^
+End
+
+#COLOR
+Name   Grey
+Mudtag &w
+I3tag  &w
+I3fish %^WHITE%^
+End
+
+
+
+
+#COLOR
+Name   Bold
+Mudtag &L
+I3tag  &L
+I3fish %^BOLD%^
+End
+
+#COLOR
+Name   Italic
+Mudtag &i
+I3tag  &i
+I3fish %^ITALIC%^
+End
+
+#COLOR
+Name   Italic2
+Mudtag &I
+I3tag  &I
+I3fish %^ITALIC%^
+End
+
+#COLOR
+Name   Underline
+Mudtag &u
+I3tag  &u
+I3fish %^UNDERLINE%^
+End
+
+#COLOR
+Name   Underline2
+Mudtag &U
+I3tag  &U
+I3fish %^UNDERLINE%^
+End
+
+#COLOR
+Name   Blink
+Mudtag &$
+I3tag  &$
+I3fish %^FLASH%^
+End
+
+#COLOR
+Name   Reverse
+Mudtag &v
+I3tag  &v
+I3fish %^REVERSE%^
+End
+
+#COLOR
+Name   Reverse2
+Mudtag &V
+I3tag  &V
+I3fish %^REVERSE%^
+End
+
+#COLOR
+Name   Strikeout
+Mudtag &s
+I3tag  &s
+I3fish %^STRIKEOUT%^
+End
+
+#COLOR
+Name   Strikeout2
+Mudtag &S
+I3tag  &S
+I3fish %^STRIKEOUT%^
+End
+
+#END

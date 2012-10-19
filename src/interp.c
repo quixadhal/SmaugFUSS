@@ -465,6 +465,9 @@ void interpret( CHAR_DATA * ch, char *argument )
           && !mprog_command_trigger( ch, origarg )
           && !oprog_command_trigger( ch, origarg )
           && !check_social( ch, command, argument ) && !news_cmd_hook( ch, command, argument )
+#ifdef I3
+          && !i3_command_hook( ch, command, argument )
+#endif
 #ifdef IMC
           && !imc_command_hook( ch, command, argument )
 #endif

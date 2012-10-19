@@ -940,6 +940,11 @@ int colorcode( const char *src, char *dst, DESCRIPTOR_DATA * d, int dstlen, int 
                   *vislen = 2;
                return 2;
 
+            case 'L':  /* Bold text */
+               if( ansi )
+                  mudstrlcpy( dst, ANSI_BOLD, dstlen );
+               break;
+
             case 'i':  /* Italic text */
             case 'I':
                if( ansi )
@@ -956,6 +961,12 @@ int colorcode( const char *src, char *dst, DESCRIPTOR_DATA * d, int dstlen, int 
             case 'U':
                if( ansi )
                   mudstrlcpy( dst, ANSI_UNDERLINE, dstlen );
+               break;
+
+            case 'f':  /* Blink/Flash */
+            case 'F':
+               if( ansi )
+                  mudstrlcpy( dst, ANSI_BLINK, dstlen );
                break;
 
             case 's':  /* Strikeover */
@@ -1357,6 +1368,356 @@ char *color_align( const char *argument, int size, int align )
    return buf;
 }
 
+#if 0
+/*
+ * Quixadhal - Replicate ^, &, or } characters found inside a word
+ * that looks like a url.  Urls are not SUPPOSED to have non-encoded
+ * whitespace (space should be %20), so let's hope that's what
+ * we actually see.  The alternative is to scan for quotes.
+ */
+char *escape_url( const char *txt )
+{
+    bool in_bare_url = FALSE;
+    bool in_single_quote_url = FALSE;
+    bool in_double_quote_url = FALSE;
+    static char buf[MAX_STRING_LENGTH];
+    char *bp;
+    const char *tp;
+
+    *buf = '\0';
+
+    if(!txt || !*txt)
+        return buf;
+
+    if(!strcasestr(txt, "http"))
+    {
+        mudstrlcpy(buf, txt, MAX_STRING_LENGTH);
+        return buf;
+    }
+
+    memset(buf, '\0', MAX_STRING_LENGTH);
+    fprintf(stderr, "Original: %s\n", txt);
+
+    for(bp = buf, tp = txt; *tp && (bp - buf) < (MAX_STRING_LENGTH - 1); tp++) {
+        *bp++ = *tp;
+        switch(*tp) {
+            default:
+                break;
+            case '&':  /* NORMAL, Foreground colour */
+            case '^':  /* BACKGROUND colour */
+            case '}':  /* BLINK Foreground colour */
+                if(in_bare_url)
+                {
+                    /* Check for RESET before url closing characters */
+                    if( *tp == '&' && *(tp+1) == 'd' && 
+                        ( 
+                          ( *(tp+2) == '\r' ) ||
+                          ( *(tp+2) == '\n' ) ||
+                          ( *(tp+2) == ' ' )  ||
+                          ( *(tp+2) == '\t' ) ||
+                          ( *(tp+2) == '\0' ) ) )
+                    {
+                        fprintf(stderr, "Leaving special-case reset alone on &d%02x\n", (int)*tp);
+                        /* Don't escape this one */
+                    }
+                    else
+                    {
+                        *bp++ = *tp;
+                    }
+                }
+                else if(in_single_quote_url)
+                {
+                    /* Check for RESET before url closing characters */
+                    if( *tp == '&' && *(tp+1) == 'd' && 
+                        ( 
+                          ( *(tp+2) == '\r' ) ||
+                          ( *(tp+2) == '\n' ) ||
+                          ( *(tp+2) == '\'' ) ||
+                          ( *(tp+2) == '\0' ) ) )
+                    {
+                        fprintf(stderr, "Leaving special-case reset alone inside single-quotes on &d%02x\n", (int)*tp);
+                        /* Don't escape this one */
+                    }
+                    else
+                    {
+                        *bp++ = *tp;
+                    }
+                }
+                else if(in_double_quote_url)
+                {
+                    /* Check for RESET before url closing characters */
+                    if( *tp == '&' && *(tp+1) == 'd' && 
+                        ( 
+                          ( *(tp+2) == '\r' ) ||
+                          ( *(tp+2) == '\n' ) ||
+                          ( *(tp+2) == '\"' ) ||
+                          ( *(tp+2) == '\0' ) ) )
+                    {
+                        fprintf(stderr, "Leaving special-case reset alone inside double-quotes on &d%02x\n", (int)*tp);
+                        /* Don't escape this one */
+                    }
+                    else
+                    {
+                        *bp++ = *tp;
+                    }
+                }
+                break;
+            case '\'':
+                if(!in_double_quote_url && !in_bare_url) {
+                    if(!in_single_quote_url && (tp+1) == strcasestr((tp+1), "http"))
+                    {
+                        in_single_quote_url = TRUE;
+                        fprintf(stderr, "in_single_quote_url now %s on \'%c\'\n", in_single_quote_url ? "true" : "false", *tp);
+                    }
+                    else if(in_single_quote_url)
+                    {
+                        in_single_quote_url = FALSE;
+                        fprintf(stderr, "in_single_quote_url now %s on \'%c\'\n", in_single_quote_url ? "true" : "false", *tp);
+                    }
+                }
+                break;
+            case '\"':
+                if(!in_single_quote_url && !in_bare_url) {
+                    if(!in_double_quote_url && (tp+1) == strcasestr((tp+1), "http"))
+                    {
+                        in_double_quote_url = TRUE;
+                        fprintf(stderr, "in_double_quote_url now %s on \'%c\'\n", in_double_quote_url ? "true" : "false", *tp);
+                    }
+                    else if(in_double_quote_url)
+                    {
+                        in_double_quote_url = FALSE;
+                        fprintf(stderr, "in_double_quote_url now %s on \'%c\'\n", in_double_quote_url ? "true" : "false", *tp);
+                    }
+                }
+                break;
+            case 'h':
+            case 'H':
+                if(!in_single_quote_url && !in_double_quote_url)
+                {
+                    if(!in_bare_url && tp == strcasestr(tp, "http"))
+                    {
+                        in_bare_url = TRUE;
+                        fprintf(stderr, "in_bare_url now %s on \'%c\'\n", in_bare_url ? "true" : "false", *tp);
+                    }
+                }
+                break;
+            case ' ':
+            case '\t':
+                if(in_bare_url)
+                {
+                    in_bare_url = FALSE;
+                    fprintf(stderr, "in_bare_url now %s on \'%c\'\n", in_bare_url ? "true" : "false", *tp);
+                }
+                break;
+            case '\r':
+            case '\n':
+            case '\0':
+                in_bare_url = FALSE;
+                in_single_quote_url = FALSE;
+                in_double_quote_url = FALSE;
+                fprintf(stderr, "%s\n", "END OF LINE/STRING closes urls.");
+                break;
+            case '\\':
+                *bp++ = *tp++;
+                fprintf(stderr, "escaped %02x detected\n", (int)*tp);
+                break;
+        }
+    }
+    return buf;
+}
+#endif
+
+/*
+ * Quixadhal - Replicate ^, &, or } characters found inside a word
+ * that looks like a url.  Urls are not SUPPOSED to have non-encoded
+ * whitespace (space should be %20), so let's hope that's what
+ * we actually see.  The alternative is to scan for quotes.
+ *
+ * NOTE:  This is hardcoded for SmaugFUSS right now.
+ *
+ * SmaugFUSS uses the following color code syntax:
+ *
+ * First characer:
+ *      &   foreground
+ *      ^   background
+ *      }   blinking foreground
+ *
+ * Second character:
+ *      &   self-escape if first was &
+ *      ^   self-escape if first was ^
+ *      }   self-escape if first was }
+ *      [   start of custom color by name
+ *      Z   random
+ *
+ *      d   client default (reset)
+ *      D   custom reset (reset + restore default page color)
+ *      L   bold
+ *      i   italic
+ *      I   italic
+ *      u   underline
+ *      U   underline
+ *      $   blink
+ *      v   reverse (forground/background flip)
+ *      V   reverse
+ *      s   strikeover
+ *      S   strikeover
+ *
+ *      x   black
+ *      r   red
+ *      g   green
+ *      O   orange
+ *      b   blue
+ *      p   purple (MAGENTA)
+ *      c   cyan
+ *      w   grey (WHITE)
+ *      z   dark grey (BOLD + BLACK)
+ *      R   bright red (BOLD + RED)
+ *      G   bright green (BOLD + GREEN)
+ *      Y   yellow (BOLD + ORANGE)
+ *      B   bright blue (BOLD + BLUE)
+ *      P   pink (BOLD + MAGENTA)
+ *      C   bright cyan (BOLD + CYAN)
+ *      W   white (BOLD + WHITE)
+ */
+char *escape_url( const char *txt )
+{
+    bool in_bare_url = FALSE;
+    bool in_single_quote_url = FALSE;
+    bool in_double_quote_url = FALSE;
+    static char buf[MAX_STRING_LENGTH];
+    char *bp;
+    const char *tp;
+
+    *buf = '\0';
+
+    if(!txt || !*txt)
+        return buf;
+
+    if(!strcasestr(txt, "http"))
+    {
+        mudstrlcpy(buf, txt, MAX_STRING_LENGTH);
+        return buf;
+    }
+
+    memset(buf, '\0', MAX_STRING_LENGTH);
+
+    for(bp = buf, tp = txt; *tp && (bp - buf) < (MAX_STRING_LENGTH - 1); tp++) {
+        *bp++ = *tp;
+        switch(*tp) {
+            default:
+                break;
+            case '&':  /* NORMAL, Foreground colour */
+            case '^':  /* BACKGROUND colour */
+            case '}':  /* BLINK Foreground colour */
+                if(in_bare_url)
+                {
+                    /* Check for RESET before url closing characters */
+                    if( *tp == '&' && *(tp+1) == 'd' && 
+                        ( 
+                          ( *(tp+2) == '\r' ) ||
+                          ( *(tp+2) == '\n' ) ||
+                          ( *(tp+2) == ' ' )  ||
+                          ( *(tp+2) == '\t' ) ||
+                          ( *(tp+2) == '\0' ) ) )
+                    {
+                        /* Don't escape this one */
+                    }
+                    else
+                    {
+                        *bp++ = *tp;
+                    }
+                }
+                else if(in_single_quote_url)
+                {
+                    /* Check for RESET before url closing characters */
+                    if( *tp == '&' && *(tp+1) == 'd' && 
+                        ( 
+                          ( *(tp+2) == '\r' ) ||
+                          ( *(tp+2) == '\n' ) ||
+                          ( *(tp+2) == '\'' ) ||
+                          ( *(tp+2) == '\0' ) ) )
+                    {
+                        /* Don't escape this one */
+                    }
+                    else
+                    {
+                        *bp++ = *tp;
+                    }
+                }
+                else if(in_double_quote_url)
+                {
+                    /* Check for RESET before url closing characters */
+                    if( *tp == '&' && *(tp+1) == 'd' && 
+                        ( 
+                          ( *(tp+2) == '\r' ) ||
+                          ( *(tp+2) == '\n' ) ||
+                          ( *(tp+2) == '\"' ) ||
+                          ( *(tp+2) == '\0' ) ) )
+                    {
+                        /* Don't escape this one */
+                    }
+                    else
+                    {
+                        *bp++ = *tp;
+                    }
+                }
+                break;
+            case '\'':
+                if(!in_double_quote_url && !in_bare_url) {
+                    if(!in_single_quote_url && (tp+1) == strcasestr((tp+1), "http"))
+                    {
+                        in_single_quote_url = TRUE;
+                    }
+                    else if(in_single_quote_url)
+                    {
+                        in_single_quote_url = FALSE;
+                    }
+                }
+                break;
+            case '\"':
+                if(!in_single_quote_url && !in_bare_url) {
+                    if(!in_double_quote_url && (tp+1) == strcasestr((tp+1), "http"))
+                    {
+                        in_double_quote_url = TRUE;
+                    }
+                    else if(in_double_quote_url)
+                    {
+                        in_double_quote_url = FALSE;
+                    }
+                }
+                break;
+            case 'h':
+            case 'H':
+                if(!in_single_quote_url && !in_double_quote_url)
+                {
+                    if(!in_bare_url && tp == strcasestr(tp, "http"))
+                    {
+                        in_bare_url = TRUE;
+                    }
+                }
+                break;
+            case ' ':
+            case '\t':
+                if(in_bare_url)
+                {
+                    in_bare_url = FALSE;
+                }
+                break;
+            case '\r':
+            case '\n':
+            case '\0':
+                in_bare_url = FALSE;
+                in_single_quote_url = FALSE;
+                in_double_quote_url = FALSE;
+                break;
+            case '\\':
+                *bp++ = *tp++;
+                break;
+        }
+    }
+    return buf;
+}
+
 /*
  * Quixadhal - This takes a string and converts any and all color tokens
  * in it to the desired output tokens, using the provided character's
@@ -1365,19 +1726,22 @@ char *color_align( const char *argument, int size, int align )
 char *colorize( const char *txt, DESCRIPTOR_DATA * d )
 {
    static char result[MAX_STRING_LENGTH];
+   const char *escaped = NULL;
 
    *result = '\0';
 
    if( txt && *txt && d )
    {
-      const char *colstr;
-      const char *prevstr = txt;
+      const char *colstr = NULL;
+      const char *prevstr = NULL;
       char colbuf[20];
       int ln;
 
-      while( ( colstr = strpbrk( prevstr, "&^}hH" ) ) != NULL )
+      escaped = escape_url(txt);
+      prevstr = escaped;
+      while( ( colstr = strpbrk( prevstr, "&^}" ) ) != NULL )
       {
-         register int reslen = 0;
+         int reslen = 0;
 
          if( colstr > prevstr )
          {
@@ -1389,20 +1753,6 @@ char *colorize( const char *txt, DESCRIPTOR_DATA * d )
             strncat( result, prevstr, ( colstr - prevstr ) );  /* Leave this one alone! BAD THINGS(TM) will happen if you don't! */
             result[reslen + ( colstr - prevstr )] = '\0';   /* strncat will NOT NULL terminate this! */
          }
-
-         if( colstr[0] == 'h' || colstr[0] == 'H' )
-            if( colstr[1] == 't' || colstr[1] == 'T' )
-               if( colstr[2] == 't' || colstr[2] == 'T' )
-                  if( colstr[3] == 'p' || colstr[3] == 'P' )
-                  {
-                     char http[MAX_INPUT_LENGTH];
-
-                     one_argument( colstr, http );
-                     mudstrlcat( result, http, sizeof( result ) );
-                     ln = strlen( http );
-                     prevstr = colstr + ln;
-                     continue;
-                  }
 
          ln = colorcode( colstr, colbuf, d, 20, NULL );
          if( ln > 0 )

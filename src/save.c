@@ -565,6 +565,9 @@ void fwrite_char( CHAR_DATA * ch, FILE * fp )
 #ifdef IMC
    imc_savechar( ch, fp );
 #endif
+#ifdef I3
+   i3_save_char( ch, fp );
+#endif
 
    fprintf( fp, "End\n\n" );
    return;
@@ -812,6 +815,9 @@ bool load_char_obj( DESCRIPTOR_DATA * d, char *name, bool preload, bool copyover
 
 #ifdef IMC
    imc_initchar( ch );
+#endif
+#ifdef I3
+   i3_init_char( ch );
 #endif
 
    found = FALSE;
@@ -1404,6 +1410,10 @@ void fread_char( CHAR_DATA * ch, FILE * fp, bool preload, bool copyover )
             KEY( "Immune", ch->immune, fread_number( fp ) );
 #ifdef IMC
             if( ( fMatch = imc_loadchar( ch, fp, word ) ) )
+               break;
+#endif
+#ifdef I3  
+            if( ( fMatch = i3_load_char( ch, fp, word ) ) )
                break;
 #endif
             break;

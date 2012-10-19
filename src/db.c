@@ -3085,6 +3085,9 @@ void free_char( CHAR_DATA * ch )
 #ifdef IMC
       imc_freechardata( ch );
 #endif
+#ifdef I3
+      i3_free_chardata( ch );
+#endif
       DISPOSE( ch->pcdata );
    }
 

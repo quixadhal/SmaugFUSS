@@ -391,6 +391,9 @@ struct extended_bitvector
 #ifdef IMC
 #include "imc.h"
 #endif
+#ifdef I3
+#include "i3.h"
+#endif
 
 /*
  * Structure for a morph -- Shaddai
@@ -2387,6 +2390,9 @@ struct pc_data
 #ifdef IMC
    IMC_CHARDATA *imcchardata;
 #endif
+#ifdef I3
+    I3_CHARDATA *i3chardata;
+#endif
    bool hotboot;  /* hotboot tracker */
    short age_bonus;
    short age;
@@ -4215,20 +4221,21 @@ DECLARE_SPELL_FUN( spell_sacral_divinity );
  * Most output files (bug, idea, typo, shutdown) are append-only.
  *
  */
-#define PLAYER_DIR	"../player/"   /* Player files         */
-#define BACKUP_DIR	"../backup/"   /* Backup Player files   */
-#define GOD_DIR		"../gods/"  /* God Info Dir         */
-#define BOARD_DIR	      "../boards/"   /* Board data dir    */
-#define CLAN_DIR	      "../clans/" /* Clan data dir     */
-#define COUNCIL_DIR  	"../councils/" /* Council data dir    */
-#define DEITY_DIR	      "../deity/" /* Deity data dir    */
-#define BUILD_DIR       "../building/" /* Online building save dir     */
-#define SYSTEM_DIR	"../system/"   /* Main system files    */
-#define PROG_DIR	      "../mudprogs/" /* MUDProg files     */
-#define CORPSE_DIR	"../corpses/"  /* Corpses        */
-#define CLASS_DIR	      "../classes/"  /* Classes        */
-#define RACE_DIR 	      "../races/" /* Races */
-#define WATCH_DIR	      "../watch/" /* Imm watch files --Gorog      */
+#define PLAYER_DIR      "../player/"    /* Player files         */
+#define BACKUP_DIR      "../backup/"    /* Backup Player files   */
+#define GOD_DIR	        "../gods/"      /* God Info Dir         */
+#define BOARD_DIR       "../boards/"    /* Board data dir    */
+#define CLAN_DIR        "../clans/"     /* Clan data dir     */
+#define COUNCIL_DIR     "../councils/"  /* Council data dir    */
+#define DEITY_DIR       "../deity/"     /* Deity data dir    */
+#define BUILD_DIR       "../building/"  /* Online building save dir     */
+#define SYSTEM_DIR      "../system/"    /* Main system files    */
+#define PROG_DIR        "../mudprogs/"  /* MUDProg files     */
+#define CORPSE_DIR      "../corpses/"   /* Corpses        */
+#define CLASS_DIR       "../classes/"   /* Classes        */
+#define RACE_DIR        "../races/"     /* Races */
+#define WATCH_DIR       "../watch/"     /* Imm watch files --Gorog      */
+#define AREA_DIR        "../area/"      /* World files         */
 
 /*
  * The watch directory contains a maximum of one file for each immortal
@@ -4236,44 +4243,44 @@ DECLARE_SPELL_FUN( spell_sacral_divinity );
  * in this directory is the name of the immortal who requested the watch
  */
 
-#define AREA_LIST	      "area.lst"  /* List of areas     */
+#define AREA_LIST       "area.lst"  /* List of areas     */
 #define WATCH_LIST      "watch.lst" /* List of watches              */
 #define BAN_LIST        "ban.lst"   /* List of bans                 */
-#define RESERVED_LIST	"reserved.lst" /* List of reserved names  */
-#define CLAN_LIST	      "clan.lst"  /* List of clans     */
-#define COUNCIL_LIST	"council.lst"  /* List of councils     */
+#define RESERVED_LIST   "reserved.lst" /* List of reserved names  */
+#define CLAN_LIST       "clan.lst"  /* List of clans     */
+#define COUNCIL_LIST    "council.lst"  /* List of councils     */
 #define GUILD_LIST      "guild.lst" /* List of guilds               */
-#define GOD_LIST	      "gods.lst"  /* List of gods         */
-#define DEITY_LIST	"deity.lst" /* List of deities      */
-#define CLASS_LIST	"class.lst" /* List of classes      */
-#define RACE_LIST	      "race.lst"  /* List of races     */
+#define GOD_LIST        "gods.lst"  /* List of gods         */
+#define DEITY_LIST      "deity.lst" /* List of deities      */
+#define CLASS_LIST      "class.lst" /* List of classes      */
+#define RACE_LIST       "race.lst"  /* List of races     */
 #define MORPH_FILE      "morph.dat" /* For morph data */
-#define BOARD_FILE	"boards.txt"   /* For bulletin boards   */
-#define SHUTDOWN_FILE	"shutdown.txt" /* For 'shutdown'  */
+#define BOARD_FILE      "boards.txt"   /* For bulletin boards   */
+#define SHUTDOWN_FILE   "shutdown.txt" /* For 'shutdown'  */
 #define IMM_HOST_FILE   SYSTEM_DIR "immortal.host" /* For stoping hackers */
-#define RIPSCREEN_FILE	SYSTEM_DIR "mudrip.rip"
-#define RIPTITLE_FILE	SYSTEM_DIR "mudtitle.rip"
-#define ANSITITLE_FILE	SYSTEM_DIR "mudtitle.ans"
-#define ASCTITLE_FILE	SYSTEM_DIR "mudtitle.asc"
-#define BOOTLOG_FILE	SYSTEM_DIR "boot.txt"   /* Boot up error file  */
-#define PBUG_FILE	      SYSTEM_DIR "pbugs.txt"  /* For 'bug' command   */
-#define IDEA_FILE	      SYSTEM_DIR "ideas.txt"  /* For 'idea'       */
-#define TYPO_FILE	      SYSTEM_DIR "typos.txt"  /* For 'typo'       */
-#define FIXED_FILE	SYSTEM_DIR "fixed.txt"  /* For 'fixed' command */
-#define LOG_FILE	      SYSTEM_DIR "log.txt" /* For talking in logged rooms */
-#define MOBLOG_FILE	SYSTEM_DIR "moblog.txt" /* For mplog messages  */
-#define WIZLIST_FILE	SYSTEM_DIR "WIZLIST" /* Wizlist       */
-#define WHO_FILE	      SYSTEM_DIR "WHO"  /* Who output file  */
-#define WEBWHO_FILE	SYSTEM_DIR "WEBWHO"  /* WWW Who output file */
-#define REQUEST_PIPE	SYSTEM_DIR "REQUESTS"   /* Request FIFO  */
-#define SKILL_FILE	SYSTEM_DIR "skills.dat" /* Skill table   */
-#define LOGIN_MSG	"login.msg" /* List of login msgs      */
-#define HERB_FILE	      SYSTEM_DIR "herbs.dat"  /* Herb table       */
-#define TONGUE_FILE	SYSTEM_DIR "tongues.dat"   /* Tongue tables    */
-#define SOCIAL_FILE	SYSTEM_DIR "socials.dat"   /* Socials       */
-#define COMMAND_FILE	SYSTEM_DIR "commands.dat"  /* Commands      */
-#define PROJECTS_FILE	SYSTEM_DIR "projects.txt"  /* For projects  */
-#define PLANE_FILE	SYSTEM_DIR "planes.dat" /* For planes       */
+#define RIPSCREEN_FILE  SYSTEM_DIR "mudrip.rip"
+#define RIPTITLE_FILE   SYSTEM_DIR "mudtitle.rip"
+#define ANSITITLE_FILE  SYSTEM_DIR "mudtitle.ans"
+#define ASCTITLE_FILE   SYSTEM_DIR "mudtitle.asc"
+#define BOOTLOG_FILE    SYSTEM_DIR "boot.txt"   /* Boot up error file  */
+#define PBUG_FILE       SYSTEM_DIR "pbugs.txt"  /* For 'bug' command   */
+#define IDEA_FILE       SYSTEM_DIR "ideas.txt"  /* For 'idea'       */
+#define TYPO_FILE       SYSTEM_DIR "typos.txt"  /* For 'typo'       */
+#define FIXED_FILE      SYSTEM_DIR "fixed.txt"  /* For 'fixed' command */
+#define LOG_FILE        SYSTEM_DIR "log.txt" /* For talking in logged rooms */
+#define MOBLOG_FILE     SYSTEM_DIR "moblog.txt" /* For mplog messages  */
+#define WIZLIST_FILE    SYSTEM_DIR "WIZLIST" /* Wizlist       */
+#define WHO_FILE        SYSTEM_DIR "WHO"  /* Who output file  */
+#define WEBWHO_FILE     SYSTEM_DIR "WEBWHO"  /* WWW Who output file */
+#define REQUEST_PIPE    SYSTEM_DIR "REQUESTS"   /* Request FIFO  */
+#define SKILL_FILE      SYSTEM_DIR "skills.dat" /* Skill table   */
+#define LOGIN_MSG       "login.msg" /* List of login msgs      */
+#define HERB_FILE       SYSTEM_DIR "herbs.dat"  /* Herb table       */
+#define TONGUE_FILE     SYSTEM_DIR "tongues.dat"   /* Tongue tables    */
+#define SOCIAL_FILE     SYSTEM_DIR "socials.dat"   /* Socials       */
+#define COMMAND_FILE    SYSTEM_DIR "commands.dat"  /* Commands      */
+#define PROJECTS_FILE   SYSTEM_DIR "projects.txt"  /* For projects  */
+#define PLANE_FILE      SYSTEM_DIR "planes.dat" /* For planes       */
 
 /*
  * Our function prototypes.

@@ -582,7 +582,7 @@ void do_hotboot( CHAR_DATA* ch, const char* argument)
    FILE *fp;
    CHAR_DATA *victim = NULL;
    DESCRIPTOR_DATA *d, *de_next;
-   char buf[100], buf2[100], buf3[100];
+   char buf[100], buf2[100], buf3[100], buf4[100];
    char log_buf[MAX_STRING_LENGTH];
    extern int control;
    int count = 0;
@@ -678,6 +678,14 @@ void do_hotboot( CHAR_DATA* ch, const char* argument)
 #ifdef IMC
    imc_hotboot(  );
 #endif
+#ifdef I3
+   if( i3_is_connected() )
+   {    
+      i3_save_chanlist();
+      i3_save_mudlist();
+      i3_save_history();
+   }
+#endif
 
    /*
     * added this in case there's a need to debug the contents of the various files 
@@ -700,13 +708,23 @@ void do_hotboot( CHAR_DATA* ch, const char* argument)
       snprintf( buf3, 100, "%d", this_imcmud->desc );
    else
       strncpy( buf3, "-1", 100 );
+#ifdef I3
+   snprintf( buf4, 100, "%d", I3_socket );
+#else
+   strncpy( buf4, "-1", 100 );
+#endif
+#else
+#ifdef I3
+   snprintf( buf3, 100, "%d", I3_socket );
 #else
    strncpy( buf3, "-1", 100 );
+#endif
+   strncpy( buf4, "-1", 100 );
 #endif
 
    set_alarm( 0 );
    dlclose( sysdata.dlHandle );
-   execl( EXE_FILE, "smaug", buf, "hotboot", buf2, buf3, ( char * )NULL );
+   execl( EXE_FILE, "smaug", buf, "hotboot", buf2, buf3, buf4, ( char * )NULL );
 
    /*
     * Failed - sucessful exec will not return 

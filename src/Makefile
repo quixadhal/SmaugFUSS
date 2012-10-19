@@ -18,6 +18,9 @@ EXPORT_SYMBOLS = -export-dynamic
 #IMC2 - Comment out to disable IMC2 support
 IMC = 1
 
+#I3 - Comment out to disable I3 support
+I3 = 1
+
 W_FLAGS = -Wall -Werror -Wshadow -Wformat-security -Wpointer-arith -Wcast-align -Wredundant-decls
 
 C_FLAGS = -g2 $(W_FLAGS) $(SOLARIS_FLAG) $(PROF) $(EXPORT_SYMBOLS)
@@ -38,6 +41,11 @@ ifdef IMC
    C_FLAGS := $(C_FLAGS) -DIMC -DIMCSMAUG
 endif
 
+ifdef I3
+   C_FILES := i3.c $(C_FILES)
+   C_FLAGS := $(C_FLAGS) -DI3 -DI3SMAUG
+endif
+
 O_FILES := $(patsubst %.c,o/%.o,$(C_FILES))
 
 H_FILES = $(wildcard *.h) 
@@ -46,18 +54,28 @@ all:
 	$(MAKE) -s smaug
 	$(MAKE) -s dns
 
+ifdef CYGWIN
+dependencies.d: $(C_FILES)
+	@echo "Generating dependency file ...";
+	@$(CC) -MM $(C_FLAGS) $(C_FILES) > dependencies.d
+	@perl -pi -e 's.^([a-z]).o/$$1.g' dependencies.d
+else
+dependencies.d: $(C_FILES)
+	@echo "Generating dependency file ...";
+	@$(CC) -MM $(C_FLAGS) $(C_FILES) > dependencies.d
+	@perl -pi -e 's.^([a-z]).o/$$1.g' dependencies.d
+endif
+
 # pull in dependency info for *existing* .o files
 -include dependencies.d
 
 ifdef CYGWIN
 smaug: $(O_FILES)
+	@echo "Linking executable ...";
 	rm -f smaug.exe
 	dlltool --export-all --output-def smaug.def $(O_FILES)
 	dlltool --dllname smaug.exe --output-exp smaug.exp --def smaug.def
 	$(CC) -o smaug.exe $(O_FILES) smaug.exp $(L_FLAGS)
-	@echo "Generating dependency file ...";
-	@$(CC) -MM $(C_FLAGS) $(C_FILES) > dependencies.d
-	@perl -pi -e 's.^([a-z]).o/$$1.g' dependencies.d
 	@echo "Done compiling mud.";
 	chmod g+w smaug.exe
 	chmod a+x smaug.exe
@@ -68,27 +86,25 @@ clean:
 
 else
 smaug: $(O_FILES)
+	@echo "Linking executable ...";
 	rm -f smaug
 	$(CC) -export-dynamic -o smaug $(O_FILES) $(L_FLAGS)
-	@echo "Generating dependency file ...";
-	@$(CC) -MM $(C_FLAGS) $(C_FILES) > dependencies.d
-	@perl -pi -e 's.^([a-z]).o/$$1.g' dependencies.d
 	@echo "Done compiling mud.";
 	chmod g+w smaug
 	chmod a+x smaug
 	chmod g+w $(O_FILES)
 
 clean:
-	@rm -f o/*.o smaug dependencies.d resolver resolver.o *~
+	@rm -f o/*.o smaug dependencies.d resolver o/resolver.o *~
 endif
 
-dns: resolver.o
+dns: o/resolver.o
 	rm -f resolver
-	$(CC) $(D_FLAGS) -o resolver resolver.o
+	$(CC) $(D_FLAGS) -o resolver o/resolver.o
 	@echo "Done compiling DNS resolver.";
 	chmod g+w resolver
 	chmod a+x resolver
-	chmod g+w resolver.o
+	chmod g+w o/resolver.o
 
 indent:
 	indent -ts3 -nut -nsaf -nsai -nsaw -npcs -npsl -ncs -nbc -bls -prs -bap -cbi0 -cli3 -bli0 -l125 -lp -i3 -cdb -c1 -cd1 -sc -pmt $(C_FILES)

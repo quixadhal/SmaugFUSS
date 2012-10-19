@@ -18,7 +18,7 @@
                 git tag $i
             done
 
-2012.10.01  Quixadhal
+2012.10.01  Quixadhal (1.9q1)
             Files:
                 src/act_move.c src/act_wiz.c src/ban.c src/clans.c src/comm.c
                 src/db.c src/fight.c src/hint.c src/hotboot.c src/imc.c
@@ -27,4 +27,35 @@
 
             These changes were simply to get gcc 4.7 to compile things cleanly.
             In most cases, this was the removal of unused variables.
+
+2012.10.01  Quixadhal
+            Files:
+                player/a/Admin
+                i3/ACK.txt i3/CHANGES.LOG i3/Circle.txt i3/I3Install.txt
+                i3/I3ember.txt i3/LICENSE i3/Merc.txt i3/Rom.txt
+                i3/STRLCPY-STRLCAT-LICENSE i3/Smaug.txt i3/i3.channels
+                i3/i3.color i3/i3.color.ack i3/i3.color.ansi i3/i3.color.lope
+                i3/i3.color.samson i3/i3.color.smaug i3/i3.commands
+                i3/i3.config i3/i3.help i3/i3.routers i3/i3packets.txt
+                src/Makefile src/comm.c src/db.c src/hotboot.c src/i3.c
+                src/i3.h src/i3cfg.h src/interp.c src/mud.h src/save.c
+
+            This installs the last I3 client software into SmaugFUSS and sets
+            up a new default router and a handful of channels.  The admin player
+            file has the i3 data fields included, as i3 appears not to work unless
+            you save and re-enter the game.
+
+2012.10.19  Quixadhal (1.9q2)
+            Files:
+                i3/i3.color i3/i3.color.smaugfuss src/i3.h src/i3.c src/color.c
+
+            I finally got I3 support fixed, along with some other minor fixes
+            to general color handling, so that URL's are properly escaped and
+            should not be screwed up if they contain ampersands.
+
+            Pinkfish conversion (to and from) was rewritten entirely, and the
+            order things come in the i3.color file now MATTERS!  Strings must
+            be checked in order, from longest to shortest, so that combinations
+            like %^BOLD%^RED%^ are found before %^RED%^ is, to avoid orphaned
+            %^BOLD tags that would break native color code.
 

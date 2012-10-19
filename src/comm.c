@@ -68,6 +68,9 @@ void shutdown_checkpoint( void );
 void imc_delete_info( void );
 void free_imcdata( bool complete );
 #endif
+#ifdef I3
+void free_i3data( bool complete );
+#endif
 void dispose_ban( BAN_DATA * ban, int type );
 void close_all_areas( void );
 void free_commands( void );
@@ -167,6 +170,10 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "IMC2 Data.\n" );
    free_imcdata( TRUE );
    imc_delete_info(  );
+#endif
+#ifdef I3
+   fprintf( stdout, "%s", "I3 Data.\n" );
+   i3_free_data( TRUE );
 #endif
 
    fprintf( stdout, "%s", "Project Data.\n" );
@@ -472,6 +479,13 @@ int main( int argc, char **argv )
          control = atoi( argv[3] );
 #ifdef IMC
          imcsocket = atoi( argv[4] );
+#ifdef I3  
+         I3_socket = atoi( argv[5] );
+#endif
+#else
+#ifdef I3  
+         I3_socket = atoi( argv[4] );
+#endif
 #endif
       }
       else
@@ -521,6 +535,10 @@ int main( int argc, char **argv )
     */
    imc_startup( FALSE, imcsocket, fCopyOver );
 #endif
+#ifdef I3
+   /* Initialize and connect to Intermud-3 */
+   i3_startup( FALSE, port, fCopyOver );
+#endif
 
    log_printf( "%s ready on port %d.", sysdata.mud_name, port );
 
@@ -536,6 +554,9 @@ int main( int argc, char **argv )
 
 #ifdef IMC
    imc_shutdown( FALSE );
+#endif
+#ifdef I3
+   i3_shutdown( 0 );
 #endif
 
 #ifdef WIN32
@@ -801,7 +822,7 @@ void game_loop( void )
          }
          else if( ( !d->character && d->idle > 360 )  /* 2 mins */
                   || ( d->connected != CON_PLAYING && d->idle > 1200 )  /* 5 mins */
-                  || d->idle > 28800 ) /* 2 hrs  */
+                  || ( d->character && !IS_IMMORTAL(d->character) && d->idle > 28800 ) ) /* 2 hrs  */
          {
             write_to_descriptor( d, "Idle timeout... disconnecting.\r\n", 0 );
             d->outtop = 0;
@@ -875,6 +896,9 @@ void game_loop( void )
 
 #ifdef IMC
       imc_loop(  );
+#endif
+#ifdef I3
+      i3_loop();
 #endif
 
       /*
@@ -1367,7 +1391,7 @@ void read_from_buffer( DESCRIPTOR_DATA * d )
     */
    for( i = 0, k = 0; d->inbuf[i] != '\n' && d->inbuf[i] != '\r'; i++ )
    {
-      if( k >= 254 )
+      if( k >= MAX_INBUF_SIZE - 2 )
       {
          write_to_descriptor( d, "Line too long.\r\n", 0 );
 
@@ -2972,6 +2996,12 @@ char *act_string( const char *format, CHAR_DATA * to, CHAR_DATA * ch, const void
                bug( "Act: bad code %c.", *str );
                i = " <@@@> ";
                break;
+
+#ifdef I3
+            case '$':
+               i = "$";
+               break;
+#endif
 
             case 'd':
                if( !arg2 || ( ( char * )arg2 )[0] == '\0' )
