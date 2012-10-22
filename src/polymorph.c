@@ -325,10 +325,10 @@ void save_morphs( void )
    MORPH_DATA *morph;
    FILE *fp;
 
-   if( !( fp = fopen( SYSTEM_DIR MORPH_FILE, "w" ) ) )
+   if( !( fp = fopen( MORPH_FILE, "w" ) ) )
    {
       bug( "%s", "Save_morph: fopen" );
-      perror( SYSTEM_DIR MORPH_FILE );
+      perror( MORPH_FILE );
       return;
    }
    for( morph = morph_start; morph; morph = morph->next )
@@ -1933,10 +1933,10 @@ void load_morphs( void )
    bool my_continue = TRUE;
    bool fMatch = FALSE;
 
-   if( !( fp = fopen( SYSTEM_DIR MORPH_FILE, "r" ) ) )
+   if( !( fp = fopen( MORPH_FILE, "r" ) ) )
    {
       bug( "%s", "Load_morph: fopen" );
-      perror( SYSTEM_DIR MORPH_FILE );
+      perror( MORPH_FILE );
       return;
    }
 

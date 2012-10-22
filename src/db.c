@@ -7759,11 +7759,13 @@ void load_area_file( AREA_DATA * tarea, const char *filename )
 {
    char *word;
    int aversion = 0;
+   char pathname[256];
 
-   if( !( fpArea = fopen( filename, "r" ) ) )
+   snprintf(pathname, 256, "%s%s", AREA_DIR, filename);
+   if( !( fpArea = fopen( pathname, "r" ) ) )
    {
-      perror( filename );
-      bug( "%s: error loading file (can't open) %s", __FUNCTION__, filename );
+      perror( pathname );
+      bug( "%s: error loading file (can't open) %s", __FUNCTION__, pathname );
       return;
    }
 
@@ -7888,7 +7890,7 @@ void load_area_file( AREA_DATA * tarea, const char *filename )
    if( tarea )
       process_sorting( tarea );
    else
-      fprintf( stderr, "(%s)\n", filename );
+      fprintf( stderr, "(%s)\n", pathname );
 }
 
 void load_reserved( void )
@@ -7896,7 +7898,7 @@ void load_reserved( void )
    RESERVE_DATA *res;
    FILE *fp;
 
-   if( !( fp = fopen( SYSTEM_DIR RESERVED_LIST, "r" ) ) )
+   if( !( fp = fopen( RESERVED_LIST, "r" ) ) )
       return;
 
    for( ;; )
@@ -8554,7 +8556,7 @@ void load_watchlist( void )
    int number;
    CMDTYPE *cmd;
 
-   if( !( fp = fopen( SYSTEM_DIR WATCH_LIST, "r" ) ) )
+   if( !( fp = fopen( WATCH_LIST, "r" ) ) )
       return;
 
    for( ;; )
@@ -8827,14 +8829,12 @@ void tail_chain( void )
 
 void load_projects( void ) /* Copied load_boards structure for simplicity */
 {
-   char filename[MAX_INPUT_LENGTH];
    FILE *fp;
    PROJECT_DATA *project;
 
    first_project = NULL;
    last_project = NULL;
-   snprintf( filename, MAX_INPUT_LENGTH, "%s", PROJECTS_FILE );
-   if( !( fp = fopen( filename, "r" ) ) )
+   if( !( fp = fopen( PROJECTS_FILE, "r" ) ) )
       return;
 
    while( ( project = read_project( fp ) ) != NULL )
@@ -9025,13 +9025,11 @@ void write_projects(  )
    PROJECT_DATA *project;
    NOTE_DATA *nlog;
    FILE *fpout;
-   char filename[MAX_INPUT_LENGTH];
 
-   snprintf( filename, MAX_INPUT_LENGTH, "%s", PROJECTS_FILE );
-   fpout = fopen( filename, "w" );
+   fpout = fopen( PROJECTS_FILE, "w" );
    if( !fpout )
    {
-      bug( "FATAL: cannot open %s for writing!\r\n", filename );
+      bug( "FATAL: cannot open %s for writing!\r\n", PROJECTS_FILE );
       return;
    }
    for( project = first_project; project; project = project->next )
@@ -9209,12 +9207,10 @@ void fread_loginmsg( FILE * fp )
 void load_loginmsg(  )
 {
    FILE *fp;
-   char filename[256];
 
    first_lmsg = last_lmsg = NULL;
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, LOGIN_MSG );
-   if( ( fp = fopen( filename, "r" ) ) == NULL )
+   if( ( fp = fopen( LOGIN_MSG, "r" ) ) == NULL )
    {
       boot_log( "Load_loginmsg: Cannot open login message file." );
       return;
@@ -9262,11 +9258,9 @@ void load_loginmsg(  )
 void save_loginmsg(  )
 {
    FILE *fp;
-   char filename[256];
    LMSG_DATA *lmsg;
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, LOGIN_MSG );
-   if( ( fp = fopen( filename, "w" ) ) == NULL )
+   if( ( fp = fopen( LOGIN_MSG, "w" ) ) == NULL )
    {
       bug( "%s: Cannot open login message file.", __FUNCTION__ );
       return;

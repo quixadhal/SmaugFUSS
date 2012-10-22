@@ -59,3 +59,19 @@
             like %^BOLD%^RED%^ are found before %^RED%^ is, to avoid orphaned
             %^BOLD tags that would break native color code.
 
+2012.10.22  Quixadhal (1.9q3)
+            Files:
+                area/boot.txt, area/shutdown.txt, system/shutdown.txt
+                src/.gitignore src/act_info.c src/act_wiz.c src/ban.c
+                src/boards.c src/clans.c src/db.c src/deity.c src/dns.c
+                src/hint.c src/hotboot.c src/hotboot.h src/i3.c src/liquids.c
+                src/liquids.h src/mssp.c src/mud.h src/news.c src/news.h
+                src/o/.gitignore src/polymorph.c src/shutdown.txt src/tables.c
+                src/weather.c src/weather.h
+
+            I went through and renamed every instance of a file access I could
+            find so that EVERYTHING uses full pathnames (relative, actually)
+            and thus shouldn't care if you start the MUD in the area subdir, or
+            the src subdir, or any subdir.  Because of the way it works, it'll
+            still fail if you start in the top level directory.
+

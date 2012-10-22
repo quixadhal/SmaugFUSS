@@ -103,13 +103,11 @@ void write_hint( void )
 {
    HINT_DATA *hintData;
    FILE *fp;
-   char filename[256];
 
-   sprintf( filename, "%s", HINT_FILE );
-   if( ( fp = fopen( filename, "w" ) ) == NULL )
+   if( ( fp = fopen( HINT_FILE, "w" ) ) == NULL )
    {
       bug( "%s: fopen", __FUNCTION__ );
-      perror( filename );
+      perror( HINT_FILE );
       return;
    }
    else
@@ -320,7 +318,7 @@ void do_hintedit( CHAR_DATA* ch, const char* argument)
    }
 }
 
-HINT_DATA *read_hint( char *filename, FILE * fp )
+HINT_DATA *read_hint( FILE * fp )
 {
    HINT_DATA *hintData;
    const char *word;
@@ -388,17 +386,15 @@ HINT_DATA *read_hint( char *filename, FILE * fp )
 
 void load_hint( void )
 {
-   char filename[256];
    FILE *fp;
    HINT_DATA *hintData;
 
    first_hint = last_hint = NULL;
 
-   snprintf( filename, 256, "%s", HINT_FILE );
-   if( ( fp = fopen( filename, "r" ) ) == NULL )
+   if( ( fp = fopen( HINT_FILE, "r" ) ) == NULL )
       return;
 
-   while( ( hintData = read_hint( filename, fp ) ) != NULL )
+   while( ( hintData = read_hint( fp ) ) != NULL )
       LINK( hintData, first_hint, last_hint, next, prev );
 
    return;

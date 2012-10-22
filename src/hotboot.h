@@ -27,10 +27,10 @@
 #endif /* 
         */
 
-#define HOTBOOT_FILE SYSTEM_DIR "copyover.dat"  /* for hotboots */
-#define EXE_FILE "../src/smaug"
-#define HOTBOOT_DIR "../hotboot/"   /* For storing objects across hotboots */
-#define MOB_FILE	"mobs.dat"  /* For storing mobs across hotboots */
+#define HOTBOOT_DIR     "../hotboot/"   /* For storing objects across hotboots */
+#define HOTBOOT_FILE    HOTBOOT_DIR "copyover.dat"  /* for hotboots */
+#define MOB_FILE        HOTBOOT_DIR "mobs.dat"  /* For storing mobs across hotboots */
+#define EXE_FILE        "../src/smaug"
 
 /* warmboot code */
 void hotboot_recover( void );

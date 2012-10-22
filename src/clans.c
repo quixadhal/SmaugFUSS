@@ -334,13 +334,11 @@ void write_clan_list(  )
 {
    CLAN_DATA *tclan;
    FILE *fpout;
-   char filename[256];
 
-   snprintf( filename, 256, "%s%s", CLAN_DIR, CLAN_LIST );
-   fpout = fopen( filename, "w" );
+   fpout = fopen( CLAN_LIST, "w" );
    if( !fpout )
    {
-      bug( "FATAL: cannot open %s for writing!\r\n", filename );
+      bug( "FATAL: cannot open %s for writing!\r\n", CLAN_LIST );
       return;
    }
    for( tclan = first_clan; tclan; tclan = tclan->next )
@@ -982,30 +980,28 @@ void load_clans(  )
 {
    FILE *fpList;
    const char *filename;
-   char clanlist[256];
 
    first_clan = NULL;
    last_clan = NULL;
 
    log_string( "Loading clans..." );
 
-   snprintf( clanlist, 256, "%s%s", CLAN_DIR, CLAN_LIST );
-   if( ( fpList = fopen( clanlist, "r" ) ) == NULL )
+   if( ( fpList = fopen( CLAN_LIST, "r" ) ) == NULL )
    {
-      perror( clanlist );
+      perror( CLAN_LIST );
       exit( 1 );
    }
 
    for( ;; )
    {
       filename = feof( fpList ) ? "$" : fread_word( fpList );
-      log_string( filename );
+      log_string( CLAN_LIST );
       if( filename[0] == '$' )
          break;
 
-      if( !load_clan_file( filename ) )
+      if( !load_clan_file( CLAN_LIST ) )
       {
-         bug( "Cannot load clan file: %s", filename );
+         bug( "Cannot load clan file: %s", CLAN_LIST );
       }
    }
    fclose( fpList );

@@ -2264,14 +2264,12 @@ int version;
 void save_weathermap( void )
 {
    int x, y;
-   char filename[MIL];
    FILE *fp;
 
-   snprintf( filename, MIL, "%s%s", SYSTEM_DIR, WEATHER_FILE );
-   if( !( fp = fopen( filename, "w" ) ) )
+   if( !( fp = fopen( WEATHER_FILE, "w" ) ) )
    {
       bug( "%s: fopen", __FUNCTION__ );
-      perror( filename );
+      perror( WEATHER_FILE );
       return;
    }
 
@@ -2402,15 +2400,13 @@ void fread_cell( FILE * fp, int x, int y )
 bool load_weathermap( void )
 {
    FILE *fp = NULL;
-   char filename[256];
    int x, y;
 
    version = 0;
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, WEATHER_FILE );
-   if( !( fp = fopen( filename, "r" ) ) )
+   if( !( fp = fopen( WEATHER_FILE, "r" ) ) )
    {
-      bug( "load_weathermap(): cannot open %s for reading", filename );
+      bug( "load_weathermap(): cannot open %s for reading", WEATHER_FILE );
       return FALSE;
    }
    for( ;; )

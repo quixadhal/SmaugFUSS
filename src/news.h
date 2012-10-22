@@ -33,8 +33,8 @@
  * generated and included via a PHP; SSL; or a TXT include.
  */
 
-#define NEWS_FILE "news.dat"
-#define NEWS_INCLUDE_FILE "news.txt"
+#define NEWS_FILE           SYSTEM_DIR "news.dat"
+#define NEWS_INCLUDE_FILE   "news.txt"
 #define NEWS_TOP "\r\n"
 #define NEWS_HEADER "\r\n"
 #define NEWS_HEADER_ALL "&g( &W#&g)                          (&WSubject&g)\r\n"

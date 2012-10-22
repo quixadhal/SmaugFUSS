@@ -5548,7 +5548,7 @@ void i3_save_config( void )
    if( this_i3mud->mud_type )
       fprintf( fp, "mudtype      %s\n", this_i3mud->mud_type );
    if( this_i3mud->base_mudlib )
-      fprintf( fp, "baselib   %s\n", this_i3mud->base_mudlib );
+      fprintf( fp, "basemudlib   %s\n", this_i3mud->base_mudlib );
    if( this_i3mud->mudlib && strcasecmp( this_i3mud->mudlib, this_i3mud->base_mudlib ) )
       fprintf( fp, "mudlib       %s\n", this_i3mud->mudlib );
    fprintf( fp, "minlevel     %d\n", this_i3mud->minlevel );
@@ -5611,7 +5611,7 @@ void I3_fread_config_file( FILE * fin )
             break;
 
          case 'b':
-            I3KEY( "baselib", this_i3mud->base_mudlib, i3_fread_line( fin ) );
+            I3KEY( "basemudlib", this_i3mud->base_mudlib, i3_fread_line( fin ) );
             I3KEY( "beep", this_i3mud->beep, i3_fread_number( fin ) );
             break;
 
@@ -6150,7 +6150,7 @@ void fread_mudlist( FILE * fin, I3_MUD * mud )
 
          case 'B':
             I3KEY( "Banner", mud->banner, i3_fread_line( fin ) );
-            I3KEY( "Baselib", mud->base_mudlib, i3_fread_line( fin ) );
+            I3KEY( "basemudlib", mud->base_mudlib, i3_fread_line( fin ) );
             break;
 
          case 'D':
@@ -6406,7 +6406,7 @@ void i3_save_mudlist( void )
       fprintf( fp, "Status		%d\n", mud->status );
       fprintf( fp, "IP			%s\n", mud->ipaddress );
       fprintf( fp, "Mudlib		%s\n", mud->mudlib );
-      fprintf( fp, "Baselib		%s\n", mud->base_mudlib );
+      fprintf( fp, "Basemudlib		%s\n", mud->base_mudlib );
       fprintf( fp, "Driver		%s\n", mud->driver );
       fprintf( fp, "Type		%s\n", mud->mud_type );
       fprintf( fp, "Openstatus	%s\n", mud->open_status );
@@ -8446,7 +8446,7 @@ I3_CMD( i3_setconfig )
       i3_to_char( "&wEmail      : &GThe email address of your mud's administrator. Needs to be valid!!\r\n", ch );
       i3_to_char( "&wStatus     : &GThe open status of your mud. IE: Public, Development, etc.\r\n", ch );
       i3_to_char( "&wMudtype    : &GWhat type of mud you have. Diku, LP, CoffeeMUD, etc.\r\n", ch );
-      i3_to_char( "&wBaselib    : &GThe base version of the codebase you have. DikuMUD Alfa, Merc, Smaug, etc.\r\n", ch );
+      i3_to_char( "&wBasemudlib : &GThe base version of the codebase you have. DikuMUD Alfa, Merc, Smaug, etc.\r\n", ch );
       i3_to_char( "&wMudlib     : &GWhat you call the current version of your codebase.  Such as SmaugFUSS 1.23\r\n", ch );
       i3_to_char( "&wMinlevel   : &GMinimum level at which I3 will recognize your players.\r\n", ch );
       i3_to_char( "&wImmlevel   : &GThe level at which immortal commands become available.\r\n", ch );
@@ -8464,7 +8464,7 @@ I3_CMD( i3_setconfig )
       i3_printf( ch, "&wEmail         : &G%s\r\n", this_i3mud->admin_email );
       i3_printf( ch, "&wStatus        : &G%s\r\n", this_i3mud->open_status );
       i3_printf( ch, "&wMudtype       : &G%s\r\n", this_i3mud->mud_type );
-      i3_printf( ch, "&wBaselib       : &G%s\r\n", this_i3mud->base_mudlib );
+      i3_printf( ch, "&wBasemudlib    : &G%s\r\n", this_i3mud->base_mudlib );
       i3_printf( ch, "&wMudlib        : &G%s\r\n", this_i3mud->mudlib );
       i3_printf( ch, "&wMinlevel      : &G%d\r\n", this_i3mud->minlevel );
       i3_printf( ch, "&wImmlevel      : &G%d\r\n", this_i3mud->immlevel );
@@ -8594,7 +8594,7 @@ I3_CMD( i3_setconfig )
       return;
    }
 
-   if( !strcasecmp( arg, "baselib" ) )
+   if( !strcasecmp( arg, "basemudlib" ) )
    {
       I3STRFREE( this_i3mud->base_mudlib );
       this_i3mud->base_mudlib = I3STRALLOC( argument );

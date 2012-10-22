@@ -249,7 +249,6 @@ void load_classes(  )
 {
    FILE *fpList;
    const char *filename;
-   char classlist[256];
    int i;
 
    MAX_PC_CLASS = 0;
@@ -260,10 +259,9 @@ void load_classes(  )
    for( i = 0; i < MAX_CLASS; ++i )
       class_table[i] = NULL;
 
-   snprintf( classlist, 256, "%s%s", CLASS_DIR, CLASS_LIST );
-   if( ( fpList = fopen( classlist, "r" ) ) == NULL )
+   if( ( fpList = fopen( CLASS_LIST, "r" ) ) == NULL )
    {
-      perror( classlist );
+      perror( CLASS_LIST );
       exit( 1 );
    }
 
@@ -342,7 +340,6 @@ void load_races(  )
 {
    FILE *fpList;
    const char *filename;
-   char racelist[256];
    int i;
 
    MAX_PC_RACE = 0;
@@ -352,10 +349,9 @@ void load_races(  )
    for( i = 0; i < MAX_RACE; ++i )
       race_table[i] = NULL;
 
-   snprintf( racelist, 256, "%s%s", RACE_DIR, RACE_LIST );
-   if( ( fpList = fopen( racelist, "r" ) ) == NULL )
+   if( ( fpList = fopen( RACE_LIST, "r" ) ) == NULL )
    {
-      perror( racelist );
+      perror( RACE_LIST );
       exit( 1 );
    }
 

@@ -180,13 +180,11 @@ void write_boards_txt( void )
 {
    BOARD_DATA *tboard;
    FILE *fpout;
-   char filename[256];
 
-   snprintf( filename, 256, "%s%s", BOARD_DIR, BOARD_FILE );
-   fpout = fopen( filename, "w" );
+   fpout = fopen( BOARD_FILE, "w" );
    if( !fpout )
    {
-      bug( "FATAL: cannot open %s for writing!", filename );
+      bug( "FATAL: cannot open %s for writing!", BOARD_FILE );
       return;
    }
    for( tboard = first_board; tboard; tboard = tboard->next )
@@ -1491,14 +1489,12 @@ void load_boards( void )
    FILE *note_fp;
    BOARD_DATA *board;
    NOTE_DATA *pnote;
-   char boardfile[256];
    char notefile[256];
 
    first_board = NULL;
    last_board = NULL;
 
-   snprintf( boardfile, 256, "%s%s", BOARD_DIR, BOARD_FILE );
-   if( !( board_fp = fopen( boardfile, "r" ) ) )
+   if( !( board_fp = fopen( BOARD_FILE, "r" ) ) )
       return;
 
    while( ( board = read_board( board_fp ) ) != NULL )

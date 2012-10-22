@@ -490,10 +490,8 @@ void save_news( void )
    NEWS *news = NULL;
    NEWS_TYPE *type = NULL;
    FILE *fp = NULL;
-   char filename[256];
 
-   sprintf( filename, "%s%s", SYSTEM_DIR, NEWS_FILE );
-   if( ( fp = fopen( filename, "w" ) ) == NULL )
+   if( ( fp = fopen( NEWS_FILE, "w" ) ) == NULL )
    {
       perror( "save_news(): cannot open file" );
       return;
@@ -532,10 +530,8 @@ void save_news( void )
 void load_news( void )
 {
    FILE *fp = NULL;
-   char filename[256];
 
-   sprintf( filename, "%s%s", SYSTEM_DIR, NEWS_FILE );
-   if( ( fp = fopen( filename, "r" ) ) == NULL )
+   if( ( fp = fopen( NEWS_FILE, "r" ) ) == NULL )
    {
       perror( "load_news(): cannot open file" );
       return;

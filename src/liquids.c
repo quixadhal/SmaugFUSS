@@ -80,13 +80,11 @@ void save_liquids( void )
 {
    FILE *fp = NULL;
    LIQ_TABLE *liq = NULL;
-   char filename[256];
    int i;
 
-   snprintf( filename, 256, "%sliquids.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename, "w" ) ) )
+   if( !( fp = fopen( LIQUIDS_FILE, "w" ) ) )
    {
-      bug( "%s: cannot open %s for writing", __FUNCTION__, filename );
+      bug( "%s: cannot open %s for writing", __FUNCTION__, LIQUIDS_FILE );
       return;
    }
 
@@ -187,12 +185,10 @@ LIQ_TABLE *fread_liquid( FILE * fp )
 void load_liquids( void )
 {
    FILE *fp = NULL;
-   char filename[256];
 
-   snprintf( filename, 256, "%sliquids.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename, "r" ) ) )
+   if( !( fp = fopen( LIQUIDS_FILE, "r" ) ) )
    {
-      bug( "load_liquids(): cannot open %s for reading", filename );
+      bug( "load_liquids(): cannot open %s for reading", LIQUIDS_FILE );
       return;
    }
 
@@ -250,12 +246,10 @@ void save_mixtures( void )
 {
    MIX_TABLE *mix = NULL;
    FILE *fp = NULL;
-   char filename[256];
 
-   snprintf( filename, 256, "%smixtures.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename, "w" ) ) )
+   if( !( fp = fopen( MIXTURES_FILE, "w" ) ) )
    {
-      bug( "%s: cannot open %s for writing", __FUNCTION__, filename );
+      bug( "%s: cannot open %s for writing", __FUNCTION__, MIXTURES_FILE );
       return;
    }
 
@@ -343,12 +337,10 @@ MIX_TABLE *fread_mixture( FILE * fp )
 void load_mixtures( void )
 {
    FILE *fp = NULL;
-   char filename[256];
 
-   snprintf( filename, 256, "%smixtures.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename, "r" ) ) )
+   if( !( fp = fopen( MIXTURES_FILE, "r" ) ) )
    {
-      bug( "%s: cannot open %s for reading", __FUNCTION__, filename );
+      bug( "%s: cannot open %s for reading", __FUNCTION__, MIXTURES_FILE );
       return;
    }
 

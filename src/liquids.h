@@ -43,6 +43,9 @@
  * mortals.
  */
 
+#define LIQUIDS_FILE    SYSTEM_DIR "liquids.dat"
+#define MIXTURES_FILE   SYSTEM_DIR "mixtures.dat"
+
 /* hard-coded max liquids */
 #define MAX_LIQUIDS 100
 

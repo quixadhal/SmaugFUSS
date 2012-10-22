@@ -4710,7 +4710,7 @@ void save_watchlist( void )
    WATCH_DATA *pwatch;
    FILE *fp;
 
-   if( !( fp = fopen( SYSTEM_DIR WATCH_LIST, "w" ) ) )
+   if( !( fp = fopen( WATCH_LIST, "w" ) ) )
    {
       bug( "Save_watchlist: Cannot open %s", WATCH_LIST );
       perror( WATCH_LIST );
@@ -7782,7 +7782,6 @@ void do_setclass( CHAR_DATA* ch, const char* argument)
 {
    char arg1[MAX_INPUT_LENGTH], arg2[MAX_INPUT_LENGTH];
    FILE *fpList;
-   char classlist[256];
    struct class_type *Class;
    int cl, value, i;
 
@@ -7851,8 +7850,7 @@ void do_setclass( CHAR_DATA* ch, const char* argument)
       write_class_file( MAX_PC_CLASS );
       MAX_PC_CLASS++;
 
-      snprintf( classlist, 256, "%s%s", CLASS_DIR, CLASS_LIST );
-      if( !( fpList = fopen( classlist, "w" ) ) )
+      if( !( fpList = fopen( CLASS_LIST, "w" ) ) )
       {
          bug( "%s", "Can't open class list for writing." );
          return;
@@ -7938,8 +7936,7 @@ void do_setclass( CHAR_DATA* ch, const char* argument)
       ch_printf( ch, "class renamed to %s.\r\n", arg1 );
       write_class_file( cl );
 
-      snprintf( classlist, 256, "%s%s", CLASS_DIR, CLASS_LIST );
-      if( !( fpList = fopen( classlist, "w" ) ) )
+      if( !( fpList = fopen( CLASS_LIST, "w" ) ) )
       {
          bug( "%s", "Can't open class list for writing." );
          return;
@@ -8228,7 +8225,6 @@ void do_setrace( CHAR_DATA* ch, const char* argument)
    RACE_TYPE *race;
    char arg1[MAX_INPUT_LENGTH], arg2[MAX_INPUT_LENGTH], arg3[MAX_INPUT_LENGTH];
    FILE *fpList = NULL;
-   char racelist[256];
    int value, v2, ra, i;
 
    set_char_color( AT_PLAIN, ch );
@@ -8296,8 +8292,7 @@ void do_setrace( CHAR_DATA* ch, const char* argument)
       }
       write_race_file( MAX_PC_RACE );
       MAX_PC_RACE++;
-      snprintf( racelist, 256, "%s%s", RACE_DIR, RACE_LIST );
-      if( !( fpList = fopen( racelist, "w" ) ) )
+      if( !( fpList = fopen( RACE_LIST, "w" ) ) )
       {
          bug( "%s", "Error opening racelist." );
          return;
@@ -9049,7 +9044,7 @@ void save_reserved( void )
    RESERVE_DATA *res;
    FILE *fp;
 
-   if( !( fp = fopen( SYSTEM_DIR RESERVED_LIST, "w" ) ) )
+   if( !( fp = fopen( RESERVED_LIST, "w" ) ) )
    {
       bug( "%s: cannot open %s", __FUNCTION__, RESERVED_LIST );
       perror( RESERVED_LIST );

@@ -87,14 +87,11 @@ void free_mssp_info( void )
 void save_mssp_info( void )
 {
    FILE *fp;
-   char filename[256];
 
-   snprintf( filename, 256, "%s", MSSP_FILE );
-
-   if( ( fp = fopen( filename, "w" ) ) == NULL )
+   if( ( fp = fopen( MSSP_FILE, "w" ) ) == NULL )
    {
       bug( "%s: can't open file", __FUNCTION__ );
-      perror( filename );
+      perror( MSSP_FILE );
    }
    else
    {
@@ -155,16 +152,14 @@ void save_mssp_info( void )
  */
 bool load_mssp_data( void )
 {
-   char filename[MAX_INPUT_LENGTH];
    FILE *fp;
    bool found;
 
    CREATE( mssp_info, struct mssp_info, 1 );
 
    found = FALSE;
-   sprintf( filename, "%s", MSSP_FILE );
 
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( MSSP_FILE, "r" ) ) != NULL )
    {
       found = TRUE;
 

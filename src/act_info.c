@@ -2404,7 +2404,7 @@ void do_hset( CHAR_DATA* ch, const char* argument)
       log_string_plus( "Saving help.are...", LOG_NORMAL, LEVEL_GREATER );
 
       rename( "help.are", "help.are.bak" );
-      if( ( fpout = fopen( "help.are", "w" ) ) == NULL )
+      if( ( fpout = fopen( AREA_DIR "help.are", "w" ) ) == NULL )
       {
          bug( "%s: cant open help.are", __FUNCTION__ );
          perror( "help.are" );

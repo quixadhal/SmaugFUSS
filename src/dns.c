@@ -148,16 +148,13 @@ void fread_dns( DNS_DATA * cache, FILE * fp )
 
 void load_dns( void )
 {
-   char filename[256];
    DNS_DATA *cache;
    FILE *fp;
 
    first_cache = NULL;
    last_cache = NULL;
 
-   snprintf( filename, 256, "%s", DNS_FILE );
-
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( DNS_FILE, "r" ) ) != NULL )
    {
       for( ;; )
       {
@@ -203,14 +200,11 @@ void save_dns( void )
 {
    DNS_DATA *cache;
    FILE *fp;
-   char filename[256];
 
-   snprintf( filename, 256, "%s", DNS_FILE );
-
-   if( !( fp = fopen( filename, "w" ) ) )
+   if( !( fp = fopen( DNS_FILE, "w" ) ) )
    {
       bug( "%s: fopen", __FUNCTION__ );
-      perror( filename );
+      perror( DNS_FILE );
    }
    else
    {

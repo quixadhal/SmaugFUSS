@@ -65,12 +65,10 @@ void write_deity_list(  )
 {
    DEITY_DATA *tdeity;
    FILE *fpout;
-   char filename[256];
 
-   snprintf( filename, 256, "%s%s", DEITY_DIR, DEITY_LIST );
-   fpout = fopen( filename, "w" );
+   fpout = fopen( DEITY_LIST, "w" );
    if( !fpout )
-      bug( "FATAL: cannot open %s for writing!\r\n", filename );
+      bug( "FATAL: cannot open %s for writing!\r\n", DEITY_LIST );
    else
    {
       for( tdeity = first_deity; tdeity; tdeity = tdeity->next )
@@ -324,29 +322,27 @@ void load_deity(  )
 {
    FILE *fpList;
    const char *filename;
-   char deitylist[256];
 
    first_deity = NULL;
    last_deity = NULL;
 
    log_string( "Loading deities..." );
 
-   snprintf( deitylist, 256, "%s%s", DEITY_DIR, DEITY_LIST );
-   if( ( fpList = fopen( deitylist, "r" ) ) == NULL )
+   if( ( fpList = fopen( DEITY_LIST, "r" ) ) == NULL )
    {
-      perror( deitylist );
+      perror( DEITY_LIST );
       exit( 1 );
    }
 
    for( ;; )
    {
       filename = feof( fpList ) ? "$" : fread_word( fpList );
-      log_string( filename );
+      log_string( DEITY_LIST );
       if( filename[0] == '$' )
          break;
-      if( !load_deity_file( filename ) )
+      if( !load_deity_file( DEITY_LIST ) )
       {
-         bug( "Cannot load deity file: %s", filename );
+         bug( "Cannot load deity file: %s", DEITY_LIST );
       }
    }
    fclose( fpList );

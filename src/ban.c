@@ -47,7 +47,7 @@ void load_banlist( void )
    FILE *fp;
    bool fMatch = FALSE;
 
-   if( !( fp = fopen( SYSTEM_DIR BAN_LIST, "r" ) ) )
+   if( !( fp = fopen( BAN_LIST, "r" ) ) )
    {
       bug( "%s: Cannot open %s", __FUNCTION__, BAN_LIST );
       perror( BAN_LIST );
@@ -197,7 +197,7 @@ void save_banlist( void )
    BAN_DATA *pban;
    FILE *fp;
 
-   if( !( fp = fopen( SYSTEM_DIR BAN_LIST, "w" ) ) )
+   if( !( fp = fopen( BAN_LIST, "w" ) ) )
    {
       bug( "Save_banlist: Cannot open %s", BAN_LIST );
       perror( BAN_LIST );

@@ -132,11 +132,10 @@ void save_world( void )
 
    log_string( "Preserving world state...." );
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, MOB_FILE );
-   if( !( mobfp = fopen( filename, "w" ) ) )
+   if( !( mobfp = fopen( MOB_FILE, "w" ) ) )
    {
       bug( "%s", "save_world: fopen mob file" );
-      perror( filename );
+      perror( MOB_FILE );
    }
    else
       mobfile++;
@@ -533,16 +532,14 @@ void load_obj_files( void )
 void load_world( void )
 {
    FILE *mobfp;
-   char file1[256];
    char *word;
    int done = 0;
    bool mobfile = FALSE;
 
-   snprintf( file1, 256, "%s%s", SYSTEM_DIR, MOB_FILE );
-   if( ( mobfp = fopen( file1, "r" ) ) == NULL )
+   if( ( mobfp = fopen( MOB_FILE, "r" ) ) == NULL )
    {
       bug( "%s", "load_world: fopen mob file" );
-      perror( file1 );
+      perror( MOB_FILE );
    }
    else
       mobfile = TRUE;
@@ -572,7 +569,7 @@ void load_world( void )
    /*
     * Once loaded, the data needs to be purged in the event it causes a crash so that it won't try to reload 
     */
-   unlink( file1 );
+   unlink( MOB_FILE );
    return;
 }
 
