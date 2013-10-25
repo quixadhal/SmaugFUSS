@@ -1322,7 +1322,12 @@ I3_MUD *find_I3_mud_by_name( const char *name )
 
 I3_MUD *new_I3_mud( char *name )
 {
-   I3_MUD *cnew, *mud_prev;
+   I3_MUD *cnew, *mud_prev, *mud;
+
+   mud = find_I3_mud_by_name( name );
+
+   if(mud)
+       return mud;
 
    I3CREATE( cnew, I3_MUD, 1 );
    cnew->name = I3STRALLOC( name );
