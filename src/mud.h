@@ -2307,6 +2307,7 @@ struct char_data
    int home_vnum; /* hotboot tracker */
    int resetvnum;
    int resetnum;
+   bool loadedself; /* Used to see if mpmloaded self, if so skip changing the reset for it currently */
 };
 
 struct killed_data
@@ -2340,6 +2341,7 @@ struct pc_data
    NUISANCE_DATA *nuisance;   /* New Nuisance structure */
    KILLED_DATA killed[MAX_KILLTRACK];
    const char *homepage;
+   const char *pointing;
    const char *clan_name;
    const char *council_name;
    const char *deity_name;
@@ -3940,6 +3942,8 @@ DECLARE_DO_FUN( do_sacrifice );
 DECLARE_DO_FUN( do_save );
 DECLARE_DO_FUN( do_savearea );
 DECLARE_DO_FUN( do_say );
+DECLARE_DO_FUN( do_say2 );
+DECLARE_DO_FUN( do_pointing );
 DECLARE_DO_FUN( do_scan );
 DECLARE_DO_FUN( do_scatter );
 DECLARE_DO_FUN( do_score );
@@ -4281,6 +4285,10 @@ DECLARE_SPELL_FUN( spell_sacral_divinity );
 #define COMMAND_FILE    SYSTEM_DIR  "commands.dat"  /* Commands      */
 #define PROJECTS_FILE   SYSTEM_DIR  "projects.txt"  /* For projects  */
 #define PLANE_FILE      SYSTEM_DIR  "planes.dat" /* For planes       */
+#define SYSDATA_FILE    SYSTEM_DIR  "sysdata.dat" /* System Data */
+#define SPECFUNS_FILE   SYSTEM_DIR  "specfuns.dat" /* Special Functions */
+#define TIME_FILE       SYSTEM_DIR  "time.dat" /* Time Information */
+#define HOLIDAY_FILE    SYSTEM_DIR  "holidays.dat" /* Holiday chart */
 
 /*
  * Our function prototypes.

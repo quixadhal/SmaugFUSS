@@ -209,11 +209,6 @@ size_t imcstrlcat( char *dst, const char *src, size_t siz )
 void imclog( const char *format, ... )
 {
    char buf[LGST], buf2[LGST];
-#if defined(IMCSMAUG)
-#elif defined(IMCACK)
-#else
-   char *strtime;
-#endif
    va_list ap;
 
    va_start( ap, format );
@@ -222,26 +217,13 @@ void imclog( const char *format, ... )
 
    snprintf( buf2, LGST, "IMC: %s", buf );
 
-#if defined(IMCSMAUG)
    log_string( buf2 );
-#elif defined(IMCACK)
-   monitor_chan( buf2, MONITOR_IMC );
-#else
-   strtime = ctime( &imc_time );
-   strtime[strlen( strtime ) - 1] = '\0';
-   fprintf( stderr, "%s :: %s\n", strtime, buf2 );
-#endif
 }
 
 /* Generic bug logging function which will route the message to the appropriate function that handles bug logs */
 void imcbug( const char *format, ... )
 {
    char buf[LGST], buf2[LGST];
-#if defined(IMCSMAUG)
-#elif defined(IMCACK)
-#else
-   char *strtime;
-#endif
    va_list ap;
 
    va_start( ap, format );
@@ -250,15 +232,7 @@ void imcbug( const char *format, ... )
 
    snprintf( buf2, LGST, " IMC: %s", buf );
 
-#if defined(IMCSMAUG)
    bug( "%s", buf2 );
-#elif defined(IMCACK)
-   monitor_chan( buf2, MONITOR_IMC );
-#else
-   strtime = ctime( &imc_time );
-   strtime[strlen( strtime ) - 1] = '\0';
-   fprintf( stderr, "%s :: ***BUG*** %s\n", strtime, buf2 );
-#endif
 }
 
 /*

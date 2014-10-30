@@ -2043,7 +2043,7 @@ void nanny_get_old_password( DESCRIPTOR_DATA * d, char *argument )
 {
    CHAR_DATA *ch;
    char buf[MAX_STRING_LENGTH];
-   bool chk;
+   bool fOld, chk;
 
    ch = d->character;
    write_to_buffer( d, "\r\n", 2 );
@@ -2079,7 +2079,9 @@ void nanny_get_old_password( DESCRIPTOR_DATA * d, char *argument )
    d->character->desc = NULL;
    free_char( d->character );
    d->character = NULL;
-   load_char_obj( d, buf, FALSE, FALSE );
+   fOld = load_char_obj( d, buf, FALSE, FALSE );
+   if( !fOld )
+      bug( "%s: failed to load_char_obj for %s.", __FUNCTION__, buf );
    ch = d->character;
    if( ch->position == POS_FIGHTING
        || ch->position == POS_EVASIVE

@@ -2659,6 +2659,8 @@ void read_char_mobile( char *argument )
       return;
    }
    mob = fread_mobile( fp );
+   if( !mob )
+      bug( "%s: failed to fread_mobile.", __FUNCTION__ );
    fclose( fp );
    return;
 }

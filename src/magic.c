@@ -408,10 +408,12 @@ void successful_casting( SKILLTYPE * skill, CHAR_DATA * ch, CHAR_DATA * victim, 
 {
    short chitroom = ( skill->type == SKILL_SPELL ? AT_MAGIC : AT_ACTION );
    short chit = ( skill->type == SKILL_SPELL ? AT_MAGIC : AT_HIT );
+   /* short chitme = ( skill->type == SKILL_SPELL ? AT_MAGIC : AT_HITME ); */
 
    if( skill->target != TAR_CHAR_OFFENSIVE )
    {
       chit = chitroom;
+      /* chitme = chitroom; */
    }
 
    if( ch && ch != victim )
@@ -453,10 +455,12 @@ void successful_casting( SKILLTYPE * skill, CHAR_DATA * ch, CHAR_DATA * victim, 
 void failed_casting( SKILLTYPE * skill, CHAR_DATA * ch, CHAR_DATA * victim, OBJ_DATA * obj )
 {
    short chitroom = ( skill->type == SKILL_SPELL ? AT_MAGIC : AT_ACTION );
+   /* short chit = ( skill->type == SKILL_SPELL ? AT_MAGIC : AT_HIT ); */
    short chitme = ( skill->type == SKILL_SPELL ? AT_MAGIC : AT_HITME );
 
    if( skill->target != TAR_CHAR_OFFENSIVE )
    {
+      /* chit = chitroom; */
       chitme = chitroom;
    }
 
@@ -501,10 +505,12 @@ void immune_casting( SKILLTYPE * skill, CHAR_DATA * ch, CHAR_DATA * victim, OBJ_
 {
    short chitroom = ( skill->type == SKILL_SPELL ? AT_MAGIC : AT_ACTION );
    short chit = ( skill->type == SKILL_SPELL ? AT_MAGIC : AT_HIT );
+   /* short chitme = ( skill->type == SKILL_SPELL ? AT_MAGIC : AT_HITME ); */
 
    if( skill->target != TAR_CHAR_OFFENSIVE )
    {
       chit = chitroom;
+      /* chitme = chitroom; */
    }
 
    if( ch && ch != victim )

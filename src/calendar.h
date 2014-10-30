@@ -44,9 +44,6 @@
 #define SUMMER_THIRST 1
 #define SUMMER_THIRST_DESERT 2
 
-/* Holiday chart */
-#define HOLIDAY_FILE "holidays.dat"
-
 typedef struct holiday_data HOLIDAY_DATA;
 
 extern HOLIDAY_DATA *first_holiday;

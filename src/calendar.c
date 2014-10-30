@@ -388,14 +388,11 @@ void fread_timedata( FILE * fp )
 /* Load time information from saved file - Samson 1-21-99 */
 bool load_timedata( void )
 {
-   char filename[256];
    FILE *fp;
    bool found;
 
    found = FALSE;
-   snprintf( filename, 256, "%stime.dat", SYSTEM_DIR );
-
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( TIME_FILE, "r" ) ) != NULL )
    {
 
       found = TRUE;
@@ -441,14 +438,11 @@ bool load_timedata( void )
 void save_timedata( void )
 {
    FILE *fp;
-   char filename[256];
 
-   snprintf( filename, 256, "%stime.dat", SYSTEM_DIR );
-
-   if( ( fp = fopen( filename, "w" ) ) == NULL )
+   if( ( fp = fopen( TIME_FILE, "w" ) ) == NULL )
    {
       bug( "%s", "pcdata->save_timedata: fopen" );
-      perror( filename );
+      perror( TIME_FILE );
    }
    else
    {
@@ -760,7 +754,6 @@ void fread_day( HOLIDAY_DATA * day, FILE * fp )
 /* Load the holiday file */
 void load_holidays( void )
 {
-   char filename[256];
    HOLIDAY_DATA *day;
    FILE *fp;
    short daycount;
@@ -768,9 +761,7 @@ void load_holidays( void )
    first_holiday = NULL;
    last_holiday = NULL;
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, HOLIDAY_FILE );
-
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( HOLIDAY_FILE, "r" ) ) != NULL )
    {
       daycount = 0;
       for( ;; )
@@ -825,14 +816,11 @@ void save_holidays( void )
 {
    HOLIDAY_DATA *day;
    FILE *fp;
-   char filename[256];
 
-   snprintf( filename, 256, "%s%s", SYSTEM_DIR, HOLIDAY_FILE );
-
-   if( !( fp = fopen( filename, "w" ) ) )
+   if( !( fp = fopen( HOLIDAY_FILE, "w" ) ) )
    {
       bug( "%s", "save_holidays: fopen" );
-      perror( filename );
+      perror( HOLIDAY_FILE );
    }
    else
    {

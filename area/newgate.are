@@ -1205,8 +1205,7 @@ Keywords spiral staircase~
 Type     furniture~
 Short    a staircase~
 Long     A spiral staircase leads down from center of the room, with an inscribed
-
-golden plaque attached to its banister.  [look plaque]~
+golden plaque attached to its banister.  [look plaque]~
 Values   0 0 0 0 0 0
 Stats    1 0 0 0 0
 #EXDESC

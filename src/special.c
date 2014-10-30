@@ -73,17 +73,15 @@ void load_specfuns( void )
 {
    SPEC_LIST *specfun;
    FILE *fp;
-   char filename[256];
    char *word;
 
    first_specfun = NULL;
    last_specfun = NULL;
 
-   snprintf( filename, 256, "%sspecfuns.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename, "r" ) ) )
+   if( !( fp = fopen( SPECFUNS_FILE, "r" ) ) )
    {
       bug( "%s: FATAL - cannot load specfuns.dat, exiting.", __FUNCTION__ );
-      perror( filename );
+      perror( SPECFUNS_FILE );
       exit( 1 );
    }
    else

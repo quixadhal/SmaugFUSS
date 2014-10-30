@@ -5747,7 +5747,7 @@ void process_sorting( AREA_DATA * tarea )
 EXTRA_DESCR_DATA *fread_fuss_exdesc( FILE * fp )
 {
    EXTRA_DESCR_DATA *ed;
-   bool fMatch;
+   bool fMatch;   // Unused, but needed to shut the compiler up about the KEY macro
 
    CREATE( ed, EXTRA_DESCR_DATA, 1 );
 
@@ -5755,18 +5755,20 @@ EXTRA_DESCR_DATA *fread_fuss_exdesc( FILE * fp )
    {
       const char *word = ( feof( fp ) ? "#ENDEXDESC" : fread_word( fp ) );
 
-      fMatch = FALSE;
       if( word[0] == '\0' )
       {
          log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
          word = "#ENDEXDESC";
       }
 
+      fMatch = FALSE;
+
       switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
             fread_to_eol( fp );
+            fMatch = TRUE;
             break;
 
          case '#':
@@ -5792,8 +5794,12 @@ EXTRA_DESCR_DATA *fread_fuss_exdesc( FILE * fp )
             KEY( "ExDesc", ed->description, fread_string( fp ) );
             break;
       }
+
       if( !fMatch )
-         bug( "%s: no match: %s", __FUNCTION__, word );
+      {
+         bug( "%s: unknown word: %s", __FUNCTION__, word );
+         fread_to_eol( fp );
+      }
    }
 
    // Reach this point, you fell through somehow. The data is no longer valid.
@@ -5841,30 +5847,31 @@ AFFECT_DATA *fread_fuss_affect( FILE * fp, const char *word )
 void fread_fuss_exit( FILE * fp, ROOM_INDEX_DATA * pRoomIndex )
 {
    EXIT_DATA *pexit = NULL;
-   bool fMatch;
+   bool fMatch;   // Unused, but needed to shut the compiler up about the KEY macro
 
    for( ;; )
    {
       const char *word = ( feof( fp ) ? "#ENDEXIT" : fread_word( fp ) );
 
-      fMatch = FALSE;
       if( word[0] == '\0' )
       {
          log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
          word = "#ENDEXIT";
       }
 
+      fMatch = FALSE;
+
       switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
             fread_to_eol( fp );
+            fMatch = TRUE;
             break;
 
          case '#':
             if( !str_cmp( word, "#ENDEXIT" ) )
             {
-               fMatch = TRUE;
                if( !pexit->description )
                   pexit->description = STRALLOC( "" );
                if( !pexit->keyword )
@@ -5881,7 +5888,6 @@ void fread_fuss_exit( FILE * fp, ROOM_INDEX_DATA * pRoomIndex )
             {
                int door = get_dir( fread_flagstring( fp ) );
 
-               fMatch = TRUE;
                if( door < 0 || door > DIR_SOMEWHERE )
                {
                   bug( "%s: vnum %d has bad door number %d.", __FUNCTION__, pRoomIndex->vnum, door );
@@ -5889,6 +5895,8 @@ void fread_fuss_exit( FILE * fp, ROOM_INDEX_DATA * pRoomIndex )
                      return;
                }
                pexit = make_exit( pRoomIndex, NULL, door );
+               fMatch = TRUE;
+               break;
             }
             break;
 
@@ -5899,9 +5907,9 @@ void fread_fuss_exit( FILE * fp, ROOM_INDEX_DATA * pRoomIndex )
                char flag[MAX_INPUT_LENGTH];
                int value;
 
-               fMatch = TRUE;
                exitflags = fread_flagstring( fp );
 
+               fMatch = TRUE;
                while( exitflags[0] != '\0' )
                {
                   exitflags = one_argument( exitflags, flag );
@@ -5923,9 +5931,9 @@ void fread_fuss_exit( FILE * fp, ROOM_INDEX_DATA * pRoomIndex )
          case 'P':
             if( !str_cmp( word, "Pull" ) )
             {
+               fMatch = TRUE;
                pexit->pulltype = fread_number( fp );
                pexit->pull = fread_number( fp );
-               fMatch = TRUE;
                break;
             }
             break;
@@ -5935,7 +5943,10 @@ void fread_fuss_exit( FILE * fp, ROOM_INDEX_DATA * pRoomIndex )
             break;
       }
       if( !fMatch )
-         bug( "%s: no match: %s", __FUNCTION__, word );
+      {
+         bug( "%s: unknown word: %s", __FUNCTION__, word );
+         fread_to_eol( fp );
+      }
    }
 
    // Reach this point, you fell through somehow. The data is no longer valid.
@@ -6065,13 +6076,12 @@ void rprog_file_read( ROOM_INDEX_DATA * prog_target, const char *f )
 
 void fread_fuss_roomprog( FILE * fp, MPROG_DATA * mprg, ROOM_INDEX_DATA * prog_target )
 {
-   bool fMatch;
+   bool fMatch;   // Unused, but needed to shut the compiler up about the KEY macro
 
    for( ;; )
    {
       const char *word = ( feof( fp ) ? "#ENDPROG" : fread_word( fp ) );
 
-      fMatch = FALSE;
       if( word[0] == '\0' )
       {
          log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
@@ -6079,22 +6089,21 @@ void fread_fuss_roomprog( FILE * fp, MPROG_DATA * mprg, ROOM_INDEX_DATA * prog_t
       }
 
       if( !str_cmp( word, "#ENDPROG" ) )
-      {
-         fMatch = TRUE;
          return;
-      }
+
+      fMatch = FALSE;
 
       switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
             fread_to_eol( fp );
+            fMatch = TRUE;
             break;
 
          case 'A':
             if( !str_cmp( word, "Arglist" ) )
             {
-               fMatch = TRUE;
                mprg->arglist = fread_string( fp );
                mprg->fileprog = false;
 
@@ -6106,6 +6115,8 @@ void fread_fuss_roomprog( FILE * fp, MPROG_DATA * mprg, ROOM_INDEX_DATA * prog_t
                   default:
                      break;
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6117,15 +6128,18 @@ void fread_fuss_roomprog( FILE * fp, MPROG_DATA * mprg, ROOM_INDEX_DATA * prog_t
          case 'P':
             if( !str_cmp( word, "Progtype" ) )
             {
-               fMatch = TRUE;
                mprg->type = mprog_name_to_type( fread_flagstring( fp ) );
                xSET_BIT( prog_target->progtypes, mprg->type );
+               fMatch = TRUE;
                break;
             }
             break;
       }
       if( !fMatch )
-         bug( "%s: no match: %s", __FUNCTION__, word );
+      {
+         bug( "%s: unknown word: %s", __FUNCTION__, word );
+         fread_to_eol( fp );
+      }
    }
 }
 
@@ -6133,30 +6147,31 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
 {
    ROOM_INDEX_DATA *pRoomIndex = NULL;
    bool oldroom = false;
-   bool fMatch;
+   bool fMatch;   // Unused, but needed to shut the compiler up about the KEY macro
 
    for( ;; )
    {
       const char *word = ( feof( fp ) ? "#ENDROOM" : fread_word( fp ) );
 
-      fMatch = FALSE;
       if( word[0] == '\0' )
       {
          log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
          word = "#ENDROOM";
       }
 
+      fMatch = FALSE;
+
       switch ( word[0] )
       {
          default:
             bug( "%s: no match: %s", __FUNCTION__, word );
             fread_to_eol( fp );
+            fMatch = TRUE;
             break;
 
          case '#':
             if( !str_cmp( word, "#ENDROOM" ) )
             {
-               fMatch = TRUE;
                if( !pRoomIndex->description )
                   pRoomIndex->description = STRALLOC( "" );
 
@@ -6173,8 +6188,8 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
 
             if( !str_cmp( word, "#EXIT" ) )
             {
-               fMatch = TRUE;
                fread_fuss_exit( fp, pRoomIndex );
+               fMatch = TRUE;
                break;
             }
 
@@ -6182,9 +6197,10 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
             {
                EXTRA_DESCR_DATA *ed = fread_fuss_exdesc( fp );
 
-               fMatch = TRUE;
                if( ed )
                   LINK( ed, pRoomIndex->first_extradesc, pRoomIndex->last_extradesc, next, prev );
+
+               fMatch = TRUE;
                break;
             }
 
@@ -6192,11 +6208,12 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
             {
                MPROG_DATA *mprg;
 
-               fMatch = TRUE;
                CREATE( mprg, MPROG_DATA, 1 );
                fread_fuss_roomprog( fp, mprg, pRoomIndex );
                mprg->next = pRoomIndex->mudprogs;
                pRoomIndex->mudprogs = mprg;
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6206,9 +6223,10 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
             {
                AFFECT_DATA *af = fread_fuss_affect( fp, word );
 
-               fMatch = TRUE;
                if( af )
                   LINK( af, pRoomIndex->first_permaffect, pRoomIndex->last_permaffect, next, prev );
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6224,7 +6242,6 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
                char flag[MAX_INPUT_LENGTH];
                int value;
 
-               fMatch = TRUE;
                roomflags = fread_flagstring( fp );
 
                while( roomflags[0] != '\0' )
@@ -6236,6 +6253,8 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
                   else
                      xSET_BIT( pRoomIndex->room_flags, value );
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6247,8 +6266,9 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
          case 'R':
             if( !str_cmp( word, "Reset" ) )
             {
-               fMatch = TRUE;
                load_room_reset( pRoomIndex, fp );
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6258,7 +6278,6 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
             {
                int sector = get_secflag( fread_flagstring( fp ) );
 
-               fMatch = TRUE;
                if( sector < 0 || sector >= SECT_MAX )
                {
                   bug( "%s: Room #%d has bad sector type.", __FUNCTION__, pRoomIndex->vnum );
@@ -6266,6 +6285,8 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
                }
 
                pRoomIndex->sector_type = sector;
+
+               fMatch = TRUE;
                break;
             }
 
@@ -6274,7 +6295,6 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
                char *ln = fread_line( fp );
                int x1, x2, x3;
 
-               fMatch = TRUE;
                x1 = x2 = x3 = 0;
                sscanf( ln, "%d %d %d", &x1, &x2, &x3 );
 
@@ -6282,6 +6302,7 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
                pRoomIndex->tele_vnum = x2;
                pRoomIndex->tunnel = x3;
 
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6294,7 +6315,6 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
 
                int vnum = fread_number( fp );
 
-               fMatch = TRUE;
                if( get_room_index( vnum ) )
                {
                   if( tmpBootDb )
@@ -6335,12 +6355,17 @@ void fread_fuss_room( FILE * fp, AREA_DATA * tarea )
                   if( vnum > tarea->hi_r_vnum )
                      tarea->hi_r_vnum = vnum;
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
       }
       if( !fMatch )
-         bug( "%s: no match: %s", __FUNCTION__, word );
+      {
+         bug( "%s: unknown word: %s", __FUNCTION__, word );
+         fread_to_eol( fp );
+      }
    }
 }
 
@@ -6350,7 +6375,7 @@ void oprog_file_read( OBJ_INDEX_DATA * prog_target, const char *f )
    char MUDProgfile[256];
    FILE *progfile;
    char letter;
-   bool fMatch;
+   bool fMatch;   // Unused, but needed to shut the compiler up about the KEY macro
 
    snprintf( MUDProgfile, 256, "%s%s", PROG_DIR, f );
 
@@ -6464,13 +6489,12 @@ void oprog_file_read( OBJ_INDEX_DATA * prog_target, const char *f )
 
 void fread_fuss_objprog( FILE * fp, MPROG_DATA * mprg, OBJ_INDEX_DATA * prog_target )
 {
-   bool fMatch;
+   bool fMatch;   // Unused, but needed to shut the compiler up about the KEY macro
 
    for( ;; )
    {
       const char *word = ( feof( fp ) ? "#ENDPROG" : fread_word( fp ) );
 
-      fMatch = FALSE;
       if( word[0] == '\0' )
       {
          log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
@@ -6478,22 +6502,21 @@ void fread_fuss_objprog( FILE * fp, MPROG_DATA * mprg, OBJ_INDEX_DATA * prog_tar
       }
 
       if( !str_cmp( word, "#ENDPROG" ) )
-      {
-         fMatch = TRUE;
          return;
-      }
+
+      fMatch = FALSE;
 
       switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
             fread_to_eol( fp );
+            fMatch = TRUE;
             break;
 
          case 'A':
             if( !str_cmp( word, "Arglist" ) )
             {
-               fMatch = TRUE;
                mprg->arglist = fread_string( fp );
                mprg->fileprog = false;
 
@@ -6505,6 +6528,8 @@ void fread_fuss_objprog( FILE * fp, MPROG_DATA * mprg, OBJ_INDEX_DATA * prog_tar
                   default:
                      break;
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6516,15 +6541,19 @@ void fread_fuss_objprog( FILE * fp, MPROG_DATA * mprg, OBJ_INDEX_DATA * prog_tar
          case 'P':
             if( !str_cmp( word, "Progtype" ) )
             {
-               fMatch = TRUE;
                mprg->type = mprog_name_to_type( fread_flagstring( fp ) );
                xSET_BIT( prog_target->progtypes, mprg->type );
+
+               fMatch = TRUE;
                break;
             }
             break;
       }
       if( !fMatch )
-         bug( "%s: no match: %s", __FUNCTION__, word );
+      {
+         bug( "%s: unknown word: %s", __FUNCTION__, word );
+         fread_to_eol( fp );
+      }
    }
 }
 
@@ -6532,7 +6561,7 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
 {
    OBJ_INDEX_DATA *pObjIndex = NULL;
    bool oldobj = false;
-   bool fMatch;
+   bool fMatch;   // Unused, but needed to shut the compiler up about the KEY macro
 
    for( ;; )
    {
@@ -6540,24 +6569,25 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
       char flag[MAX_INPUT_LENGTH];
       int value = 0;
 
-      fMatch = FALSE;
       if( word[0] == '\0' )
       {
          log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
          word = "#ENDOBJECT";
       }
 
+      fMatch = FALSE;
+
       switch ( word[0] )
       {
          default:
             bug( "%s: no match: %s", __FUNCTION__, word );
             fread_to_eol( fp );
+            fMatch = TRUE;
             break;
 
          case '#':
             if( !str_cmp( word, "#ENDOBJECT" ) )
             {
-               fMatch = TRUE;
                if( !pObjIndex->description )
                   pObjIndex->description = STRALLOC( "" );
                if( !pObjIndex->action_desc )
@@ -6575,10 +6605,11 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
 
             if( !str_cmp( word, "#EXDESC" ) )
             {
-               fMatch = TRUE;
                EXTRA_DESCR_DATA *ed = fread_fuss_exdesc( fp );
                if( ed )
                   LINK( ed, pObjIndex->first_extradesc, pObjIndex->last_extradesc, next, prev );
+
+               fMatch = TRUE;
                break;
             }
 
@@ -6586,11 +6617,12 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
             {
                MPROG_DATA *mprg;
 
-               fMatch = TRUE;
                CREATE( mprg, MPROG_DATA, 1 );
                fread_fuss_objprog( fp, mprg, pObjIndex );
                mprg->next = pObjIndex->mudprogs;
                pObjIndex->mudprogs = mprg;
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6602,9 +6634,10 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
             {
                AFFECT_DATA *af = fread_fuss_affect( fp, word );
 
-               fMatch = TRUE;
                if( af )
                   LINK( af, pObjIndex->first_affect, pObjIndex->last_affect, next, prev );
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6614,7 +6647,6 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
             {
                const char *eflags = fread_flagstring( fp );
 
-               fMatch = TRUE;
                while( eflags[0] != '\0' )
                {
                   eflags = one_argument( eflags, flag );
@@ -6624,6 +6656,8 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
                   else
                      xSET_BIT( pObjIndex->extra_flags, value );
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6640,7 +6674,6 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
             KEY( "Short", pObjIndex->short_descr, fread_string( fp ) );
             if( !str_cmp( word, "Spells" ) )
             {
-               fMatch = TRUE;
                switch ( pObjIndex->item_type )
                {
                   default:
@@ -6664,6 +6697,8 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
                      pObjIndex->value[5] = skill_lookup( fread_word( fp ) );
                      break;
                }
+
+               fMatch = TRUE;
                break;
             }
 
@@ -6672,7 +6707,6 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
                char *ln = fread_line( fp );
                int x1, x2, x3, x4, x5;
 
-               fMatch = TRUE;
                x1 = x2 = x3 = x4 = x5 = 0;
                sscanf( ln, "%d %d %d %d %d", &x1, &x2, &x3, &x4, &x5 );
 
@@ -6682,6 +6716,7 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
                pObjIndex->level = x4;
                pObjIndex->layers = x5;
 
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6689,7 +6724,6 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
          case 'T':
             if( !str_cmp( word, "Type" ) )
             {
-               fMatch = TRUE;
                value = get_otype( fread_flagstring( fp ) );
 
                if( value < 0 )
@@ -6698,6 +6732,8 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
                   value = get_otype( "trash" );
                }
                pObjIndex->item_type = value;
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6707,7 +6743,6 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
             {
                char *ln = fread_line( fp );
                int x1, x2, x3, x4, x5, x6;
-               fMatch = TRUE;
                x1 = x2 = x3 = x4 = x5 = x6 = 0;
 
                sscanf( ln, "%d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6 );
@@ -6719,13 +6754,13 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
                pObjIndex->value[4] = x5;
                pObjIndex->value[5] = x6;
 
+               fMatch = TRUE;
                break;
             }
 
             if( !str_cmp( word, "Vnum" ) )
             {
                bool tmpBootDb = fBootDb;
-               fMatch = TRUE;
                fBootDb = false;
 
                int vnum = fread_number( fp );
@@ -6769,6 +6804,8 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
                   if( vnum > tarea->hi_o_vnum )
                      tarea->hi_o_vnum = vnum;
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6778,7 +6815,6 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
             {
                const char *wflags = fread_flagstring( fp );
 
-               fMatch = TRUE;
                while( wflags[0] != '\0' )
                {
                   wflags = one_argument( wflags, flag );
@@ -6788,12 +6824,17 @@ void fread_fuss_object( FILE * fp, AREA_DATA * tarea )
                   else
                      SET_BIT( pObjIndex->wear_flags, 1 << value );
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
       }
       if( !fMatch )
-         bug( "%s: no match: %s", __FUNCTION__, word );
+      {
+         bug( "%s: unknown word: %s", __FUNCTION__, word );
+         fread_to_eol( fp );
+      }
    }
 }
 
@@ -6918,12 +6959,11 @@ void mprog_file_read( MOB_INDEX_DATA * prog_target, const char *f )
 
 void fread_fuss_mobprog( FILE * fp, MPROG_DATA * mprg, MOB_INDEX_DATA * prog_target )
 {
-   bool fMatch;
+   bool fMatch;   // Unused, but needed to shut the compiler up about the KEY macro
 
    for( ;; )
    {
       const char *word = ( feof( fp ) ? "#ENDPROG" : fread_word( fp ) );
-      fMatch = FALSE;
 
       if( word[0] == '\0' )
       {
@@ -6932,22 +6972,20 @@ void fread_fuss_mobprog( FILE * fp, MPROG_DATA * mprg, MOB_INDEX_DATA * prog_tar
       }
 
       if( !str_cmp( word, "#ENDPROG" ) )
-      {
-         fMatch = TRUE;
          return;
-      }
 
+      fMatch = FALSE;
       switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
             fread_to_eol( fp );
+            fMatch = TRUE;
             break;
 
          case 'A':
             if( !str_cmp( word, "Arglist" ) )
             {
-               fMatch = TRUE;
                mprg->arglist = fread_string( fp );
                mprg->fileprog = false;
 
@@ -6959,6 +6997,8 @@ void fread_fuss_mobprog( FILE * fp, MPROG_DATA * mprg, MOB_INDEX_DATA * prog_tar
                   default:
                      break;
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -6970,15 +7010,19 @@ void fread_fuss_mobprog( FILE * fp, MPROG_DATA * mprg, MOB_INDEX_DATA * prog_tar
          case 'P':
             if( !str_cmp( word, "Progtype" ) )
             {
-               fMatch = TRUE;
                mprg->type = mprog_name_to_type( fread_flagstring( fp ) );
                xSET_BIT( prog_target->progtypes, mprg->type );
+
+               fMatch = TRUE;
                break;
             }
             break;
       }
       if( !fMatch )
-         bug( "%s: no match: %s", __FUNCTION__, word );
+      {
+         bug( "%s: unknown word: %s", __FUNCTION__, word );
+         fread_to_eol( fp );
+      }
    }
 }
 
@@ -6986,7 +7030,7 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
 {
    MOB_INDEX_DATA *pMobIndex = NULL;
    bool oldmob = false;
-   bool fMatch;
+   bool fMatch;   // Unused, but needed to shut the compiler up about the KEY macro
 
    for( ;; )
    {
@@ -6994,35 +7038,48 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
       char flag[MAX_INPUT_LENGTH];
       int value = 0;
 
-      fMatch = FALSE;
       if( word[0] == '\0' )
       {
          log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
          word = "#ENDMOBILE";
       }
 
+      fMatch = FALSE;
       switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
             fread_to_eol( fp );
+            fMatch = TRUE;
             break;
 
          case '#':
             if( !str_cmp( word, "#MUDPROG" ) )
             {
                MPROG_DATA *mprg;
-               fMatch = TRUE;
                CREATE( mprg, MPROG_DATA, 1 );
                fread_fuss_mobprog( fp, mprg, pMobIndex );
-               mprg->next = pMobIndex->mudprogs;
-               pMobIndex->mudprogs = mprg;
+
+               if( pMobIndex->mudprogs )
+               {
+                  MPROG_DATA *tmprog;
+
+                  for( tmprog = pMobIndex->mudprogs; tmprog->next; tmprog = tmprog->next );
+
+                  tmprog->next = mprg;
+               }
+               else
+               {
+                  pMobIndex->mudprogs = mprg;
+               }
+               mprg->next = NULL;
+
+               fMatch = TRUE;
                break;
             }
 
             if( !str_cmp( word, "#ENDMOBILE" ) )
             {
-               fMatch = TRUE;
                if( !pMobIndex->long_descr )
                   pMobIndex->long_descr = STRALLOC( "" );
                if( !pMobIndex->description )
@@ -7044,7 +7101,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                const char *actflags = NULL;
 
-               fMatch = TRUE;
                actflags = fread_flagstring( fp );
 
                while( actflags[0] != '\0' )
@@ -7056,6 +7112,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                   else
                      xSET_BIT( pMobIndex->act, value );
                }
+
+               fMatch = TRUE;
                break;
             }
 
@@ -7063,7 +7121,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                const char *affectflags = NULL;
 
-               fMatch = TRUE;
                affectflags = fread_flagstring( fp );
 
                while( affectflags[0] != '\0' )
@@ -7075,6 +7132,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                   else
                      xSET_BIT( pMobIndex->affected_by, value );
                }
+
+               fMatch = TRUE;
                break;
             }
 
@@ -7082,7 +7141,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                const char *attacks = fread_flagstring( fp );
 
-               fMatch = TRUE;
                while( attacks[0] != '\0' )
                {
                   attacks = one_argument( attacks, flag );
@@ -7092,6 +7150,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                   else
                      xSET_BIT( pMobIndex->attacks, value );
                }
+
+               fMatch = TRUE;
                break;
             }
 
@@ -7100,7 +7160,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                char *ln = fread_line( fp );
                int x1, x2, x3, x4, x5, x6, x7;
 
-               fMatch = TRUE;
                x1 = x2 = x3 = x4 = x5 = x6 = x7 = 0;
                sscanf( ln, "%d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7 );
 
@@ -7112,6 +7171,7 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                pMobIndex->perm_cha = x6;
                pMobIndex->perm_lck = x7;
 
+               fMatch = TRUE;
                break;
             }
             break;
@@ -7121,7 +7181,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                const char *bodyparts = fread_flagstring( fp );
 
-               fMatch = TRUE;
                while( bodyparts[0] != '\0' )
                {
                   bodyparts = one_argument( bodyparts, flag );
@@ -7131,6 +7190,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                   else
                      SET_BIT( pMobIndex->xflags, 1 << value );
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -7140,7 +7201,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                short Class = get_npc_class( fread_flagstring( fp ) );
 
-               fMatch = TRUE;
                if( Class < 0 || Class >= MAX_NPC_CLASS )
                {
                   bug( "%s: vnum %d: Mob has invalid Class! Defaulting to warrior.", __FUNCTION__, pMobIndex->vnum );
@@ -7148,6 +7208,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                }
 
                pMobIndex->Class = Class;
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -7157,7 +7219,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                const char *defenses = fread_flagstring( fp );
 
-               fMatch = TRUE;
                while( defenses[0] != '\0' )
                {
                   defenses = one_argument( defenses, flag );
@@ -7167,6 +7228,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                   else
                      xSET_BIT( pMobIndex->defenses, value );
                }
+
+               fMatch = TRUE;
                break;
             }
 
@@ -7174,7 +7237,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                short position = get_npc_position( fread_flagstring( fp ) );
 
-               fMatch = TRUE;
                if( position < 0 || position > POS_DRAG )
                {
                   bug( "%s: vnum %d: Mobile in invalid default position! Defaulting to standing.", __FUNCTION__,
@@ -7182,6 +7244,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                   position = POS_STANDING;
                }
                pMobIndex->defposition = position;
+
+               fMatch = TRUE;
                break;
             }
 
@@ -7193,13 +7257,14 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                short sex = get_npc_sex( fread_flagstring( fp ) );
 
-               fMatch = TRUE;
                if( sex < 0 || sex > SEX_FEMALE )
                {
                   bug( "%s: vnum %d: Mobile has invalid sex! Defaulting to neuter.", __FUNCTION__, pMobIndex->vnum );
                   sex = SEX_NEUTRAL;
                }
                pMobIndex->sex = sex;
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -7209,7 +7274,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                const char *immune = fread_flagstring( fp );
 
-               fMatch = TRUE;
                while( immune[0] != '\0' )
                {
                   immune = one_argument( immune, flag );
@@ -7219,6 +7283,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                   else
                      SET_BIT( pMobIndex->immune, 1 << value );
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -7236,13 +7302,14 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                short position = get_npc_position( fread_flagstring( fp ) );
 
-               fMatch = TRUE;
                if( position < 0 || position > POS_DRAG )
                {
                   bug( "%s: vnum %d: Mobile in invalid position! Defaulting to standing.", __FUNCTION__, pMobIndex->vnum );
                   position = POS_STANDING;
                }
                pMobIndex->position = position;
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -7252,7 +7319,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                short race = get_npc_race( fread_flagstring( fp ) );
 
-               fMatch = TRUE;
                if( race < 0 || race >= MAX_NPC_RACE )
                {
                   bug( "%s: vnum %d: Mob has invalid race! Defaulting to monster.", __FUNCTION__, pMobIndex->vnum );
@@ -7260,6 +7326,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                }
 
                pMobIndex->race = race;
+
+               fMatch = TRUE;
                break;
             }
 
@@ -7268,7 +7336,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                int iFix;
                REPAIR_DATA *rShop;
 
-               fMatch = TRUE;
                CREATE( rShop, REPAIR_DATA, 1 );
                rShop->keeper = pMobIndex->vnum;
                for( iFix = 0; iFix < MAX_FIX; ++iFix )
@@ -7282,6 +7349,7 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                LINK( rShop, first_repair, last_repair, next, prev );
                ++top_repair;
 
+               fMatch = TRUE;
                break;
             }
 
@@ -7289,7 +7357,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                const char *resist = fread_flagstring( fp );
 
-               fMatch = TRUE;
                while( resist[0] != '\0' )
                {
                   resist = one_argument( resist, flag );
@@ -7299,6 +7366,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                   else
                      SET_BIT( pMobIndex->resistant, 1 << value );
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -7309,7 +7378,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                char *ln = fread_line( fp );
                int x1, x2, x3, x4, x5;
 
-               fMatch = TRUE;
                x1 = x2 = x3 = x4 = x5 = 0;
                sscanf( ln, "%d %d %d %d %d", &x1, &x2, &x3, &x4, &x5 );
 
@@ -7319,6 +7387,7 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                pMobIndex->saving_breath = x4;
                pMobIndex->saving_spell_staff = x5;
 
+               fMatch = TRUE;
                break;
             }
 
@@ -7329,7 +7398,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                int iTrade;
                SHOP_DATA *pShop;
 
-               fMatch = TRUE;
                CREATE( pShop, SHOP_DATA, 1 );
                pShop->keeper = pMobIndex->vnum;
                for( iTrade = 0; iTrade < MAX_TRADE; ++iTrade )
@@ -7345,6 +7413,7 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                LINK( pShop, first_shop, last_shop, next, prev );
                ++top_shop;
 
+               fMatch = TRUE;
                break;
             }
 
@@ -7352,7 +7421,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                const char *speaks = fread_flagstring( fp );
 
-               fMatch = TRUE;
                while( speaks[0] != '\0' )
                {
                   speaks = one_argument( speaks, flag );
@@ -7365,6 +7433,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
 
                if( !pMobIndex->speaks )
                   pMobIndex->speaks = LANG_COMMON;
+
+               fMatch = TRUE;
                break;
             }
 
@@ -7372,7 +7442,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                const char *speaking = fread_flagstring( fp );
 
-               fMatch = TRUE;
                while( speaking[0] != '\0' )
                {
                   speaking = one_argument( speaking, flag );
@@ -7385,13 +7454,14 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
 
                if( !pMobIndex->speaking )
                   pMobIndex->speaking = LANG_COMMON;
+
+               fMatch = TRUE;
                break;
             }
 
             if( !str_cmp( word, "Specfun" ) )
             {
                const char *temp = fread_flagstring( fp );
-               fMatch = TRUE;
                if( !pMobIndex )
                {
                   bug( "%s: Specfun: Invalid mob vnum!", __FUNCTION__ );
@@ -7404,6 +7474,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                }
                else
                   pMobIndex->spec_funname = STRALLOC( temp );
+
+               fMatch = TRUE;
                break;
             }
 
@@ -7412,7 +7484,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                char *ln = fread_line( fp );
                int x1, x2, x3, x4, x5, x6;
 
-               fMatch = TRUE;
                x1 = x2 = x3 = x4 = x5 = x6 = 0;
                sscanf( ln, "%d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6 );
 
@@ -7423,6 +7494,7 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                pMobIndex->gold = x5;
                pMobIndex->exp = x6;
 
+               fMatch = TRUE;
                break;
             }
 
@@ -7430,7 +7502,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                char *ln = fread_line( fp );
                int x1, x2, x3;
-               fMatch = TRUE;
                x1 = x2 = x3 = 0;
                sscanf( ln, "%d %d %d", &x1, &x2, &x3 );
 
@@ -7438,6 +7509,7 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                pMobIndex->hitsizedice = x2;
                pMobIndex->hitplus = x3;
 
+               fMatch = TRUE;
                break;
             }
 
@@ -7445,7 +7517,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                char *ln = fread_line( fp );
                int x1, x2, x3;
-               fMatch = TRUE;
                x1 = x2 = x3 = 0;
                sscanf( ln, "%d %d %d", &x1, &x2, &x3 );
 
@@ -7453,6 +7524,7 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                pMobIndex->damsizedice = x2;
                pMobIndex->damplus = x3;
 
+               fMatch = TRUE;
                break;
             }
 
@@ -7461,7 +7533,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                char *ln = fread_line( fp );
                int x1, x2, x3, x4, x5;
 
-               fMatch = TRUE;
                x1 = x2 = x3 = x4 = x5 = 0;
                sscanf( ln, "%d %d %d %d %d", &x1, &x2, &x3, &x4, &x5 );
 
@@ -7471,6 +7542,7 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                pMobIndex->hitroll = x4;
                pMobIndex->damroll = x5;
 
+               fMatch = TRUE;
                break;
             }
 
@@ -7478,7 +7550,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             {
                const char *suscep = fread_flagstring( fp );
 
-               fMatch = TRUE;
                while( suscep[0] != '\0' )
                {
                   suscep = one_argument( suscep, flag );
@@ -7488,6 +7559,8 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                   else
                      SET_BIT( pMobIndex->susceptible, 1 << value );
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -7496,7 +7569,6 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
             if( !str_cmp( word, "Vnum" ) )
             {
                bool tmpBootDb = fBootDb;
-               fMatch = TRUE;
                fBootDb = false;
 
                int vnum = fread_number( fp );
@@ -7540,41 +7612,47 @@ void fread_fuss_mobile( FILE * fp, AREA_DATA * tarea )
                   if( vnum > tarea->hi_m_vnum )
                      tarea->hi_m_vnum = vnum;
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
       }
       if( !fMatch )
-         bug( "%s: no match: %s", __FUNCTION__, word );
+      {
+         bug( "%s: unknown word: %s", __FUNCTION__, word );
+         fread_to_eol( fp );
+      }
    }
 }
 
 void fread_fuss_areadata( FILE * fp, AREA_DATA * tarea )
 {
-   bool fMatch;
+   bool fMatch;   // Unused, but needed to shut the compiler up about the KEY macro
 
    for( ;; )
    {
       const char *word = ( feof( fp ) ? "#ENDAREADATA" : fread_word( fp ) );
 
-      fMatch = FALSE;
       if( word[0] == '\0' )
       {
          log_printf( "%s: EOF encountered reading file!", __FUNCTION__ );
          word = "#ENDAREADATA";
       }
 
+      fMatch = FALSE;
+
       switch ( word[0] )
       {
          default:
             log_printf( "%s: no match: %s", __FUNCTION__, word );
             fread_to_eol( fp );
+            fMatch = TRUE;
             break;
 
          case '#':
             if( !str_cmp( word, "#ENDAREADATA" ) )
             {
-               fMatch = TRUE;
                tarea->age = tarea->reset_frequency;
                return;
             }
@@ -7591,9 +7669,10 @@ void fread_fuss_areadata( FILE * fp, AREA_DATA * tarea )
          case 'E':
             if( !str_cmp( word, "Economy" ) )
             {
-               fMatch = TRUE;
                tarea->high_economy = fread_number( fp );
                tarea->low_economy = fread_number( fp );
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -7605,7 +7684,6 @@ void fread_fuss_areadata( FILE * fp, AREA_DATA * tarea )
                char flag[MAX_INPUT_LENGTH];
                int value;
 
-               fMatch = TRUE;
                areaflags = fread_flagstring( fp );
 
                while( areaflags[0] != '\0' )
@@ -7617,6 +7695,8 @@ void fread_fuss_areadata( FILE * fp, AREA_DATA * tarea )
                   else
                      SET_BIT( tarea->flags, 1 << value );
                }
+
+               fMatch = TRUE;
                break;
             }
             break;
@@ -7631,7 +7711,6 @@ void fread_fuss_areadata( FILE * fp, AREA_DATA * tarea )
                int x1, x2, x3, x4;
                char *ln;
 
-               fMatch = TRUE;
                ln = fread_line( fp );
 
                x1 = x2 = x3 = x4 = 0;
@@ -7642,6 +7721,7 @@ void fread_fuss_areadata( FILE * fp, AREA_DATA * tarea )
                tarea->low_hard_range = x3;
                tarea->hi_hard_range = x4;
 
+               fMatch = TRUE;
                break;
             }
             KEY( "ResetMsg", tarea->resetmsg, fread_string_nohash( fp ) );
@@ -7662,7 +7742,10 @@ void fread_fuss_areadata( FILE * fp, AREA_DATA * tarea )
             break;
       }
       if( !fMatch )
-         bug( "%s: no match: %s", __FUNCTION__, word );
+      {
+         bug( "%s: unknown word: %s", __FUNCTION__, word );
+         fread_to_eol( fp );
+      }
    }
 }
 
@@ -8291,13 +8374,11 @@ void do_newzones( CHAR_DATA* ch, const char* argument)
 void save_sysdata( SYSTEM_DATA sys )
 {
    FILE *fp;
-   char filename[MAX_INPUT_LENGTH];
 
-   snprintf( filename, MAX_INPUT_LENGTH, "%ssysdata.dat", SYSTEM_DIR );
-   if( ( fp = fopen( filename, "w" ) ) == NULL )
+   if( ( fp = fopen( SYSDATA_FILE, "w" ) ) == NULL )
    {
       bug( "save_sysdata: fopen" );
-      perror( filename );
+      perror( SYSDATA_FILE );
    }
    else
    {
@@ -8495,12 +8576,10 @@ void fread_sysdata( SYSTEM_DATA * sys, FILE * fp )
  */
 bool load_systemdata( SYSTEM_DATA * sys )
 {
-   char filename[MAX_INPUT_LENGTH];
    FILE *fp;
    bool found = FALSE;
 
-   snprintf( filename, MAX_INPUT_LENGTH, "%ssysdata.dat", SYSTEM_DIR );
-   if( ( fp = fopen( filename, "r" ) ) != NULL )
+   if( ( fp = fopen( SYSDATA_FILE, "r" ) ) != NULL )
    {
       found = TRUE;
 
