@@ -69,6 +69,8 @@ const char *const mod_types[MAX_CONDS] = {
    "Drunk", "Full", "Thirst", "Bloodthirst"
 };
 
+void save_house_by_vnum( int vnum );
+
 /* locals */
 int top_liquid;
 int liq_count;
@@ -1676,6 +1678,8 @@ void do_fill( CHAR_DATA* ch, const char* argument)
       {
          act( AT_ACTION, "You fill $p.", ch, obj, NULL, TO_CHAR );
          act( AT_ACTION, "$n fills $p.", ch, obj, NULL, TO_ROOM );
+         if( xIS_SET( ch->in_room->room_flags, ROOM_HOUSE ) )
+            save_house_by_vnum( ch->in_room->vnum );
          return;
       }
    }
@@ -1786,6 +1790,8 @@ void do_fill( CHAR_DATA* ch, const char* argument)
             }
             if( found )
             {
+               if( xIS_SET( ch->in_room->room_flags, ROOM_HOUSE ) )
+                  save_house_by_vnum( ch->in_room->vnum );
                act( AT_ACTION, "You fill $p from $P.", ch, obj, source, TO_CHAR );
                act( AT_ACTION, "$n fills $p from $P.", ch, obj, source, TO_ROOM );
             }
@@ -2015,6 +2021,8 @@ void do_empty( CHAR_DATA* ch, const char* argument)
             else
                act( AT_ACTION, "$P is too full.", ch, obj, dest, TO_CHAR );
          }
+         if( ch->in_room && xIS_SET( ch->in_room->room_flags, ROOM_HOUSE ) )
+            save_house_by_vnum( ch->in_room->vnum );
          return;
    }
 }
