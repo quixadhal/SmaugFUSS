@@ -3538,6 +3538,8 @@ extern const char *const wear_locs[];
 extern const char *const ex_flags[];
 extern const char *const sec_flags[];
 
+extern const char *const login_msg[];
+
 /*
  * Global variables.
  */
@@ -3842,6 +3844,7 @@ DECLARE_DO_FUN( do_makerepair );
 DECLARE_DO_FUN( do_makeshop );
 DECLARE_DO_FUN( do_makewizlist );
 DECLARE_DO_FUN( do_memory );
+DECLARE_DO_FUN( do_message	);
 DECLARE_DO_FUN( do_mcreate );
 DECLARE_DO_FUN( do_mdelete );
 DECLARE_DO_FUN( do_mfind );
