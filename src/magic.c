@@ -663,11 +663,11 @@ int ris_save( CHAR_DATA * ch, int schance, int ris )
    short modifier;
 
    modifier = 10;
-   if( IS_SET( ch->immune, ris ) )
+   if( IS_SET( ch->immune, ris ) && !IS_SET( ch->no_immune, ris ) )
       modifier -= 10;
-   if( IS_SET( ch->resistant, ris ) )
+   if( IS_SET( ch->resistant, ris ) && !IS_SET( ch->no_resistant, ris ) )
       modifier -= 2;
-   if( IS_SET( ch->susceptible, ris ) )
+   if( IS_SET( ch->susceptible, ris ) && !IS_SET( ch->no_susceptible, ris ) )
    {
       if( IS_NPC( ch ) && IS_SET( ch->immune, ris ) )
          modifier += 0;
@@ -680,7 +680,6 @@ int ris_save( CHAR_DATA * ch, int schance, int ris )
       return schance;
    return ( schance * modifier ) / 10;
 }
-
 
 /*								    -Thoric
  * Fancy dice expression parsing complete with order of operations,
@@ -1033,6 +1032,7 @@ bool process_spell_components( CHAR_DATA * ch, int sn )
                   break;
                }
             break;
+
          case 'V':
             for( obj = ch->first_carrying; obj; obj = obj->next_content )
                if( obj->pIndexData->vnum == value )
@@ -1046,6 +1046,7 @@ bool process_spell_components( CHAR_DATA * ch, int sn )
                   break;
                }
             break;
+
          case 'K':
             for( obj = ch->first_carrying; obj; obj = obj->next_content )
                if( nifty_is_name( check, obj->name ) )
@@ -1059,6 +1060,7 @@ bool process_spell_components( CHAR_DATA * ch, int sn )
                   break;
                }
             break;
+
          case 'G':
             if( ch->gold >= value )
             {
@@ -1079,6 +1081,7 @@ bool process_spell_components( CHAR_DATA * ch, int sn )
                }
             }
             break;
+
          case 'H':
             if( ch->hit >= value )
             {
@@ -1101,17 +1104,20 @@ bool process_spell_components( CHAR_DATA * ch, int sn )
             }
             break;
       }
+
       /*
        * having this component would make the spell fail... if we get
        * here, then the caster didn't have that component 
        */
       if( fail )
          continue;
+
       if( !found )
       {
          send_to_char( "Something is missing...\r\n", ch );
          return FALSE;
       }
+
       if( obj )
       {
          if( val >= 0 && val < 6 )
@@ -1152,9 +1158,6 @@ bool process_spell_components( CHAR_DATA * ch, int sn )
    }
    return TRUE;
 }
-
-
-
 
 int pAbort;
 
@@ -1295,11 +1298,16 @@ void *locate_targets( CHAR_DATA * ch, char *arg, int sn, CHAR_DATA ** victim, OB
          }
       }
 
+         if( SPELL_FLAG( skill, SF_NOMOB ) && IS_NPC( *victim ) )
+         {
+            send_to_char( "Your magic fails to take hold.\r\n", ch );
+            return &pAbort;
+         }
+
          /*
           * Nuisance flag will pick who you are fighting for defensive
           * * spells up to 36% of the time -- Shaddai
           */
-
          if( !IS_NPC( ch ) && ch->fighting && ch->pcdata->nuisance &&
              ch->pcdata->nuisance->flags > 5
              && number_percent(  ) < ( ( ( ch->pcdata->nuisance->flags - 5 ) * 8 ) + 6 * ch->pcdata->nuisance->power ) )
@@ -1389,7 +1397,7 @@ void do_cast( CHAR_DATA* ch, const char* argument)
             return;
          }
 
-         if( xIS_SET( ch->in_room->room_flags, ROOM_NO_MAGIC ) )
+         if( xIS_SET( ch->in_room->room_flags, ROOM_NO_MAGIC ) || IS_SET( ch->in_room->area->flags, AFLAG_NOMAGIC ) )
          {
             set_char_color( AT_MAGIC, ch );
             send_to_char( "You failed.\r\n", ch );
@@ -1863,11 +1871,11 @@ ch_ret obj_cast_spell( int sn, int level, CHAR_DATA * ch, CHAR_DATA * victim, OB
       return retcode;
    if( !skill || !skill->spell_fun )
    {
-      bug( "Obj_cast_spell: bad sn %d.", sn );
+      bug( "%s: bad sn %d.", __FUNCTION__, sn );
       return rERROR;
    }
 
-   if( xIS_SET( ch->in_room->room_flags, ROOM_NO_MAGIC ) )
+   if( !ch->in_room || xIS_SET( ch->in_room->room_flags, ROOM_NO_MAGIC ) || IS_SET( ch->in_room->area->flags, AFLAG_NOMAGIC ) )
    {
       set_char_color( AT_MAGIC, ch );
       send_to_char( "Nothing seems to happen...\r\n", ch );
@@ -1885,7 +1893,7 @@ ch_ret obj_cast_spell( int sn, int level, CHAR_DATA * ch, CHAR_DATA * victim, OB
     * Basically this was added to cut down on level 5 players using level
     * 40 scrolls in battle too often ;)     -Thoric
     */
-   if( ( skill->target == TAR_CHAR_OFFENSIVE || number_bits( 7 ) == 1 ) /* 1/128 chance if non-offensive */
+   if( ch != victim && ( skill->target == TAR_CHAR_OFFENSIVE || number_bits( 7 ) == 1 )   /* 1/128 chance if non-offensive */
        && skill->type != SKILL_HERB && !chance( ch, 95 + levdiff ) )
    {
       switch ( number_bits( 2 ) )
@@ -1893,15 +1901,18 @@ ch_ret obj_cast_spell( int sn, int level, CHAR_DATA * ch, CHAR_DATA * victim, OB
          case 0:
             failed_casting( skill, ch, victim, NULL );
             break;
+
          case 1:
             act( AT_MAGIC, "The $t spell backfires!", ch, skill->name, victim, TO_CHAR );
             if( victim )
                act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name, victim, TO_VICT );
             act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name, victim, TO_NOTVICT );
             return damage( ch, ch, number_range( 1, level ), TYPE_UNDEFINED );
+
          case 2:
             failed_casting( skill, ch, victim, NULL );
             break;
+
          case 3:
             act( AT_MAGIC, "The $t spell backfires!", ch, skill->name, victim, TO_CHAR );
             if( victim )
@@ -1947,6 +1958,13 @@ ch_ret obj_cast_spell( int sn, int level, CHAR_DATA * ch, CHAR_DATA * victim, OB
          if( victim == NULL )
             victim = ch;
          vo = ( void * )victim;
+
+         if( SPELL_FLAG( skill, SF_NOMOB ) && IS_NPC( victim ) )
+         {
+            send_to_char( "Your magic fails to take hold.\r\n", ch );
+            return rNONE;
+         }
+
          if( skill->type != SKILL_HERB && IS_SET( victim->immune, RIS_MAGIC ) )
          {
             immune_casting( skill, ch, victim, NULL );
@@ -2126,6 +2144,9 @@ ch_ret spell_call_lightning( int sn, int level, CHAR_DATA * ch, void *vo )
 
       if( vch->in_room == where )
       {
+         if( IS_NPC( vch ) && xIS_SET( vch->act, ACT_MOBINVIS ) )
+            continue;
+
          if( !IS_NPC( vch ) && xIS_SET( vch->act, PLR_WIZINVIS ) && vch->pcdata->wizinvis >= LEVEL_IMMORTAL )
             continue;
 
@@ -2210,6 +2231,12 @@ ch_ret spell_charm_person( int sn, int level, CHAR_DATA * ch, void *vo )
       return rSPELL_FAILED;
    }
 
+   if( get_timer( ch, TIMER_PKILLED ) > 0 )
+   {
+      send_to_char( "You have been killed in the past five minutes.\r\n", ch );
+      return rSPELL_FAILED;
+   }
+
    if( IS_SET( victim->immune, RIS_MAGIC ) || IS_SET( victim->immune, RIS_CHARM ) )
    {
       immune_casting( skill, ch, victim, NULL );
@@ -2231,6 +2258,13 @@ ch_ret spell_charm_person( int sn, int level, CHAR_DATA * ch, void *vo )
        || level < victim->level || circle_follow( victim, ch ) || !can_charm( ch ) || saves_spell_staff( schance, victim ) )
    {
       failed_casting( skill, ch, victim, NULL );
+      return rSPELL_FAILED;
+   }
+
+   /* cannot charm mobs while having just been killed/killer */
+   if( get_timer( ch, TIMER_PKILLED ) > 0 )
+   {
+      send_to_char( "You are still too weak..\r\n", ch );
       return rSPELL_FAILED;
    }
 
@@ -2362,6 +2396,7 @@ ch_ret spell_create_water( int sn, int level, CHAR_DATA * ch, void *vo )
 {
    OBJ_DATA *obj = ( OBJ_DATA * ) vo;
    struct WeatherCell *cell = getWeatherCell( ch->in_room->area );
+   LIQ_TABLE *liq = get_liq( "water" );
    int water;
 
    if( obj->item_type != ITEM_DRINK_CON )
@@ -2370,7 +2405,7 @@ ch_ret spell_create_water( int sn, int level, CHAR_DATA * ch, void *vo )
       return rSPELL_FAILED;
    }
 
-   if( obj->value[2] != LIQ_WATER && obj->value[1] != 0 )
+   if( ( !liq || liq->vnum != obj->value[2] ) && obj->value[1] != 0 )
    {
       send_to_char( "It contains some other liquid.\r\n", ch );
       return rSPELL_FAILED;
@@ -2381,7 +2416,7 @@ ch_ret spell_create_water( int sn, int level, CHAR_DATA * ch, void *vo )
    if( water > 0 )
    {
       separate_obj( obj );
-      obj->value[2] = LIQ_WATER;
+      obj->value[2] = liq->vnum;
       obj->value[1] += water;
       if( !is_name( "water", obj->name ) )
       {
@@ -2500,6 +2535,7 @@ ch_ret spell_cure_poison( int sn, int level, CHAR_DATA * ch, void *vo )
 {
    CHAR_DATA *victim = ( CHAR_DATA * ) vo;
    SKILLTYPE *skill = get_skilltype( sn );
+   int x = 0;
 
    if( IS_SET( victim->immune, RIS_MAGIC ) )
    {
@@ -2512,7 +2548,8 @@ ch_ret spell_cure_poison( int sn, int level, CHAR_DATA * ch, void *vo )
       affect_strip( victim, gsn_poison );
       set_char_color( AT_MAGIC, victim );
       send_to_char( "A warm feeling runs through your body.\r\n", victim );
-      victim->mental_state = URANGE( -100, victim->mental_state, -10 );
+      x = victim->mental_state < 0 ? -x : x;
+      victim->mental_state = URANGE( -25, victim->mental_state, 25 );
       if( ch != victim )
       {
          act( AT_MAGIC, "A flush of health washes over $N.", ch, NULL, victim, TO_NOTVICT );
@@ -2878,6 +2915,9 @@ ch_ret spell_earthquake( int sn, int level, CHAR_DATA * ch, void *vo )
 
       if( vch->in_room == where )
       {
+         if( IS_NPC( vch ) && xIS_SET( vch->act, ACT_MOBINVIS ) )
+            continue;
+
          if( !IS_NPC( vch ) && xIS_SET( vch->act, PLR_WIZINVIS ) && vch->pcdata->wizinvis >= LEVEL_IMMORTAL )
             continue;
 
@@ -3310,7 +3350,6 @@ ch_ret spell_identify( int sn, int level, CHAR_DATA * ch, void *vo )
        * If they are morphed or a NPC use the appropriate short_desc otherwise
        * * use their name -- Shaddai
        */
-
       if( victim->morph && victim->morph->morph )
          name = capitalize( victim->morph->morph->short_desc );
       else if( IS_NPC( victim ) )
@@ -3433,8 +3472,6 @@ ch_ret spell_invis( int sn, int level, CHAR_DATA * ch, void *vo )
    return rSPELL_FAILED;
 }
 
-
-
 ch_ret spell_know_alignment( int sn, int level, CHAR_DATA * ch, void *vo )
 {
    CHAR_DATA *victim = ( CHAR_DATA * ) vo;
@@ -3499,8 +3536,6 @@ ch_ret spell_lightning_bolt( int sn, int level, CHAR_DATA * ch, void *vo )
    return damage( ch, victim, dam, sn );
 }
 
-
-
 ch_ret spell_locate_object( int sn, int level, CHAR_DATA * ch, void *vo )
 {
    char buf[MAX_INPUT_LENGTH];
@@ -3564,8 +3599,6 @@ ch_ret spell_locate_object( int sn, int level, CHAR_DATA * ch, void *vo )
    }
    return rNONE;
 }
-
-
 
 ch_ret spell_magic_missile( int sn, int level, CHAR_DATA * ch, void *vo )
 {
@@ -3657,7 +3690,6 @@ ch_ret spell_poison( int sn, int level, CHAR_DATA * ch, void *vo )
    return rNONE;
 }
 
-
 ch_ret spell_remove_curse( int sn, int level, CHAR_DATA * ch, void *vo )
 {
    OBJ_DATA *obj;
@@ -3744,7 +3776,6 @@ ch_ret spell_remove_trap( int sn, int level, CHAR_DATA * ch, void *vo )
       return rSPELL_FAILED;
    }
 
-
    if( !chance( ch, 70 + get_curr_wis( ch ) ) )
    {
       send_to_char( "Ooops!\r\n", ch );
@@ -3759,7 +3790,6 @@ ch_ret spell_remove_trap( int sn, int level, CHAR_DATA * ch, void *vo )
    successful_casting( skill, ch, NULL, NULL );
    return rNONE;
 }
-
 
 ch_ret spell_shocking_grasp( int sn, int level, CHAR_DATA * ch, void *vo )
 {
@@ -3887,6 +3917,7 @@ ch_ret spell_summon( int sn, int level, CHAR_DATA * ch, void *vo )
        || victim->level >= level + 3
        || victim->fighting
        || ( IS_NPC( victim ) && xIS_SET( victim->act, ACT_PROTOTYPE ) )
+       || ( IS_NPC( victim ) && xIS_SET( victim->act, ACT_AGGRESSIVE ) )
        || ( IS_NPC( victim ) && saves_spell_staff( level, victim ) )
        || !in_hard_range( victim, ch->in_room->area )
        || ( !IS_NPC( ch ) && !CAN_PKILL( ch ) && IS_PKILL( victim ) )
@@ -3966,8 +3997,6 @@ ch_ret spell_astral_walk( int sn, int level, CHAR_DATA * ch, void *vo )
    return rNONE;
 }
 
-
-
 ch_ret spell_teleport( int sn, int level, CHAR_DATA * ch, void *vo )
 {
    CHAR_DATA *victim = ( CHAR_DATA * ) vo;
@@ -4005,19 +4034,103 @@ ch_ret spell_teleport( int sn, int level, CHAR_DATA * ch, void *vo )
    return rNONE;
 }
 
+/*  Returns the number ot people within a grouped party */
+int number_in_group( CHAR_DATA * ch )
+{
+   CHAR_DATA *nch, *nch_next;
+   ROOM_INDEX_DATA *start = ch->in_room;
+   int number = 0;
 
+   for( nch = start->first_person; nch; nch = nch_next )
+   {
+      nch_next = nch->next_in_room;
+      if( is_same_group( nch, ch ) )
+         number += 1;
+   }
+   return number;
+}
+
+ch_ret spell_group_teleport( int sn, int level, CHAR_DATA * ch, void *vo )
+{
+   CHAR_DATA *victim = ( CHAR_DATA * ) vo;
+   CHAR_DATA *nch, *nch_next;
+   ROOM_INDEX_DATA *start = ch->in_room, *pRoomIndex;
+   SKILLTYPE *skill = get_skilltype( sn );
+   int mana;
+
+   if( !victim )
+      victim = ch;
+
+   if( !victim->in_room
+       || xIS_SET( victim->in_room->room_flags, ROOM_NO_RECALL )
+       || ( !IS_NPC( ch ) && victim->fighting )
+       || ( victim != ch && ( saves_spell_staff( level, victim ) || saves_wands( level, victim ) ) ) )
+   {
+      failed_casting( skill, ch, victim, NULL );
+      return rSPELL_FAILED;
+   }
+
+   for( ;; )
+   {
+      pRoomIndex = get_room_index( number_range( 0, MAX_VNUM ) );
+      if( pRoomIndex )
+         if( pRoomIndex != start )
+            if( !xIS_SET( pRoomIndex->room_flags, ROOM_PRIVATE )
+                && !xIS_SET( pRoomIndex->room_flags, ROOM_SOLITARY )
+                && !xIS_SET( pRoomIndex->room_flags, ROOM_NO_ASTRAL )
+                && !IS_SET( pRoomIndex->area->flags, AFLAG_NOTELEPORT )
+                && !xIS_SET( pRoomIndex->room_flags, ROOM_PROTOTYPE )
+                && !xIS_SET( pRoomIndex->room_flags, ROOM_NO_RECALL ) && in_hard_range( ch, pRoomIndex->area ) )
+               break;
+   }
+
+   mana = number_in_group( victim ) * 100;
+   if( !IS_NPC( ch ) && ch->mana < mana )
+   {
+      send_to_char( "You don't have enough mana.\r\n", ch );
+      return rSPELL_FAILED;
+   }
+
+   act( AT_MAGIC, "$n's arms rise towards the sky, a tornado engulfs the area.", victim, NULL, NULL, TO_ROOM );
+   act( AT_MAGIC, "$n's group is sucked into the raging tornadoes.", victim, NULL, NULL, TO_ROOM );
+
+   char_from_room( victim );
+   char_to_room( victim, pRoomIndex );
+   do_look( victim, "auto" );
+
+   for( nch = start->first_person; nch; nch = nch_next )
+   {
+      nch_next = nch->next_in_room;
+      if( is_same_group( nch, victim ) && ( in_hard_range( nch, pRoomIndex->area ) ) )
+      {
+         char_from_room( nch );
+         char_to_room( nch, pRoomIndex );
+         if( !IS_NPC( nch ) )
+            do_look( nch, "auto" );
+      }
+   }
+   victim->mana -= mana;
+   return rNONE;
+}
 
 ch_ret spell_ventriloquate( int sn, int level, CHAR_DATA * ch, void *vo )
 {
    char buf1[MAX_STRING_LENGTH];
    char buf2[MAX_STRING_LENGTH];
+   char buf3[MAX_STRING_LENGTH];
    char speaker[MAX_INPUT_LENGTH];
    CHAR_DATA *vch;
 
    target_name = one_argument( target_name, speaker );
+   if( speaker[0] == '\0' )
+   {
+      send_to_char( "Your voice sputters as you try to cast it in random directions.\r\n", ch );
+      return rSPELL_FAILED;
+   }
 
    snprintf( buf1, MAX_STRING_LENGTH, "%s says '%s'.\r\n", speaker, target_name );
    snprintf( buf2, MAX_STRING_LENGTH, "Someone makes %s say '%s'.\r\n", speaker, target_name );
+   snprintf( buf3, MAX_STRING_LENGTH, "%s makes %s say '%s'.\r\n", capitalize( ch->name ), speaker, target_name );
    buf1[0] = UPPER( buf1[0] );
 
    for( vch = ch->in_room->first_person; vch; vch = vch->next_in_room )
@@ -4025,14 +4138,14 @@ ch_ret spell_ventriloquate( int sn, int level, CHAR_DATA * ch, void *vo )
       if( !is_name( speaker, vch->name ) )
       {
          set_char_color( AT_SAY, vch );
-         send_to_char( saves_spell_staff( level, vch ) ? buf2 : buf1, vch );
+         if( get_trust( vch ) >= LEVEL_IMMORTAL )
+            send_to_char( buf3, vch );
+         else
+            send_to_char( saves_spell_staff( level, vch ) ? buf2 : buf1, vch );
       }
    }
-
    return rNONE;
 }
-
-
 
 ch_ret spell_weaken( int sn, int level, CHAR_DATA * ch, void *vo )
 {
@@ -4282,6 +4395,9 @@ ch_ret spell_gas_breath( int sn, int level, CHAR_DATA * ch, void *vo )
    loop_ctrl = trvch_create( ch, TR_CHAR_ROOM_FORW );
    for( vch = ch->in_room->first_person; vch; vch = trvch_next( loop_ctrl ) )
    {
+      if( IS_NPC( vch ) && xIS_SET( vch->act, ACT_MOBINVIS ) )
+         continue;
+
       if( !IS_NPC( vch ) && xIS_SET( vch->act, PLR_WIZINVIS ) && vch->pcdata->wizinvis >= LEVEL_IMMORTAL )
          continue;
 
@@ -4381,7 +4497,7 @@ ch_ret spell_transport( int sn, int level, CHAR_DATA * ch, void *vo )
 
    separate_obj( obj ); /* altrag shoots, haus alley-oops! */
 
-   if( IS_OBJ_STAT( obj, ITEM_NODROP ) )
+   if( IS_OBJ_STAT( obj, ITEM_NODROP ) || IS_OBJ_STAT( obj, ITEM_PERMANENT ) )
    {
       send_to_char( "You can't seem to let go of it.\r\n", ch );
       return rSPELL_FAILED;   /* nice catch, caine */
@@ -4401,6 +4517,28 @@ ch_ret spell_transport( int sn, int level, CHAR_DATA * ch, void *vo )
    act( AT_MAGIC, "$p appears in $n's hands!", victim, obj, NULL, TO_ROOM );
    save_char_obj( ch );
    save_char_obj( victim );
+   return rNONE;
+}
+
+ch_ret spell_close_portal( int sn, int level, CHAR_DATA * ch, void *vo )
+{
+
+   OBJ_DATA *obj;
+   OBJ_DATA *obj_next;
+
+   for( obj = ch->in_room->first_content; obj; obj = obj_next )
+   {
+      obj_next = obj->next_content;
+
+      if( obj->item_type == ITEM_PORTAL )
+      {
+         remove_portal( obj );
+         obj->item_type = ITEM_TRASH;
+         extract_obj( obj );
+         act( AT_MAGIC, "As $n utters a lengthy incantation, the portal spins into nothingness.", ch, NULL, NULL, TO_ROOM );
+         act( AT_MAGIC, "As you utter a lengthy incantation, the portal spins into nothingness.", ch, NULL, NULL, TO_CHAR );
+      }
+   }
    return rNONE;
 }
 
@@ -4436,6 +4574,10 @@ ch_ret spell_portal( int sn, int level, CHAR_DATA * ch, void *vo )
        || xIS_SET( victim->in_room->room_flags, ROOM_PROTOTYPE )
        || xIS_SET( ch->in_room->room_flags, ROOM_NO_RECALL )
        || xIS_SET( ch->in_room->room_flags, ROOM_NO_ASTRAL )
+       || IS_SET( ch->in_room->area->flags, AFLAG_NOPORTALOUT )
+       || IS_SET( victim->in_room->area->flags, AFLAG_NOPORTALIN )
+       || IS_SET( victim->in_room->area->flags, AFLAG_NOASTRAL )
+       || IS_SET( ch->in_room->area->flags, AFLAG_NOASTRAL )
        || victim->level >= level + 15
        || ( IS_NPC( victim ) && xIS_SET( victim->act, ACT_PROTOTYPE ) )
        || ( IS_NPC( victim ) && saves_spell_staff( level, victim ) )
@@ -4575,6 +4717,9 @@ ch_ret spell_farsight( int sn, int level, CHAR_DATA * ch, void *vo )
    do_look( ch, "auto" );
    char_from_room( ch );
    char_to_room( ch, original );
+
+   if( chance_attrib( victim, 20, get_curr_wis( victim ) ) && !IS_PKILL( ch ) )
+      send_to_char( "You get an uneasy feeling that you are being watched.\r\n", victim );
    return rNONE;
 }
 
@@ -4653,6 +4798,8 @@ ch_ret spell_plant_pass( int sn, int level, CHAR_DATA * ch, void *vo )
        || xIS_SET( victim->in_room->room_flags, ROOM_NO_ASTRAL )
        || xIS_SET( victim->in_room->room_flags, ROOM_DEATH )
        || xIS_SET( victim->in_room->room_flags, ROOM_PROTOTYPE )
+       || IS_SET( victim->in_room->area->flags, AFLAG_NOASTRAL )
+       || IS_SET( ch->in_room->area->flags, AFLAG_NOASTRAL )
        || ( victim->in_room->sector_type != SECT_FOREST
             && victim->in_room->sector_type != SECT_FIELD )
        || ( ch->in_room->sector_type != SECT_FOREST
@@ -4713,6 +4860,8 @@ ch_ret spell_mist_walk( int sn, int level, CHAR_DATA * ch, void *vo )
        || xIS_SET( victim->in_room->room_flags, ROOM_NO_ASTRAL )
        || xIS_SET( victim->in_room->room_flags, ROOM_DEATH )
        || xIS_SET( victim->in_room->room_flags, ROOM_PROTOTYPE )
+       || IS_SET( victim->in_room->area->flags, AFLAG_NOASTRAL )
+       || IS_SET( ch->in_room->area->flags, AFLAG_NOASTRAL )
        || xIS_SET( ch->in_room->room_flags, ROOM_NO_RECALL )
        || victim->level >= level + 15
        || ( CAN_PKILL( victim ) && !IS_NPC( ch ) && !IS_PKILL( ch ) )
@@ -4762,6 +4911,8 @@ ch_ret spell_solar_flight( int sn, int level, CHAR_DATA * ch, void *vo )
        || xIS_SET( victim->in_room->room_flags, ROOM_DEATH )
        || xIS_SET( victim->in_room->room_flags, ROOM_PROTOTYPE )
        || xIS_SET( ch->in_room->room_flags, ROOM_NO_RECALL )
+       || IS_SET( victim->in_room->area->flags, AFLAG_NOASTRAL )
+       || IS_SET( ch->in_room->area->flags, AFLAG_NOASTRAL )
        || victim->level >= level + 15
        || ( CAN_PKILL( victim ) && !IS_NPC( ch ) && !IS_PKILL( ch ) )
        || ( IS_NPC( victim ) && xIS_SET( victim->act, ACT_PROTOTYPE ) )
@@ -4797,6 +4948,8 @@ ch_ret spell_remove_invis( int sn, int level, CHAR_DATA * ch, void *vo )
 
    if( obj )
    {
+      separate_obj( obj );
+
       if( !IS_OBJ_STAT( obj, ITEM_INVIS ) )
       {
          send_to_char( "Its not invisible!\r\n", ch );
@@ -4913,8 +5066,7 @@ ch_ret spell_animate_dead( int sn, int level, CHAR_DATA * ch, void *vo )
       return rNONE;
    }
 
-
-   if( ( pMobIndex = get_mob_index( ( short )abs( corpse->cost ) ) ) == NULL )
+   if( ( pMobIndex = get_mob_index( ( int )abs( corpse->cost ) ) ) == NULL )
    {
       bug( "%s", "Can not find mob for cost of corpse, spell_animate_dead" );
       return rSPELL_FAILED;
@@ -5049,6 +5201,12 @@ ch_ret spell_possess( int sn, int level, CHAR_DATA * ch, void *vo )
    {
       ch_printf( ch, "%s is already possessed.\r\n", victim->short_descr );
       return rSPELL_FAILED;
+   }
+
+   if( IS_PACIFIST( victim ) )
+   {
+      immune_casting( skill, ch, victim, NULL );
+      return rVICT_IMMUNE;
    }
 
    if( IS_SET( victim->immune, RIS_MAGIC ) || IS_SET( victim->immune, RIS_CHARM ) )
@@ -5222,6 +5380,8 @@ ch_ret spell_helical_flow( int sn, int level, CHAR_DATA * ch, void *vo )
        || xIS_SET( victim->in_room->room_flags, ROOM_DEATH )
        || xIS_SET( victim->in_room->room_flags, ROOM_PROTOTYPE )
        || xIS_SET( ch->in_room->room_flags, ROOM_NO_RECALL )
+       || IS_SET( victim->in_room->area->flags, AFLAG_NOASTRAL )
+       || IS_SET( ch->in_room->area->flags, AFLAG_NOASTRAL )
        || victim->level >= level + 15
        || ( CAN_PKILL( victim ) && !IS_NPC( ch ) && !IS_PKILL( ch ) )
        || ( IS_NPC( victim ) && xIS_SET( victim->act, ACT_PROTOTYPE ) )
@@ -5373,6 +5533,9 @@ ch_ret spell_area_attack( int sn, int level, CHAR_DATA * ch, void *vo )
    {
       vch_next = vch->next_in_room;
 
+      if( IS_NPC( vch ) && xIS_SET( vch->act, ACT_MOBINVIS ) )
+         continue;
+
       if( !IS_NPC( vch ) && xIS_SET( vch->act, PLR_WIZINVIS ) && vch->pcdata->wizinvis >= LEVEL_IMMORTAL )
          continue;
 
@@ -5489,6 +5652,7 @@ ch_ret spell_affectchar( int sn, int level, CHAR_DATA * ch, void *vo )
       af.bitvector = meb( saf->bitvector );
       if( saf->bitvector >= 0 && xIS_SET( victim->affected_by, saf->bitvector ) && !SPELL_FLAG( skill, SF_ACCUMULATIVE ) )
          continue;
+
       /*
        * necessary for affect_strip to work properly...
        */
@@ -5497,6 +5661,7 @@ ch_ret spell_affectchar( int sn, int level, CHAR_DATA * ch, void *vo )
          default:
             af.type = sn;
             break;
+
          case AFF_POISON:
             af.type = gsn_poison;
             schance = ris_save( victim, level, RIS_POISON );
@@ -5515,15 +5680,19 @@ ch_ret spell_affectchar( int sn, int level, CHAR_DATA * ch, void *vo )
             }
             victim->mental_state = URANGE( 30, victim->mental_state + 2, 100 );
             break;
+
          case AFF_BLIND:
             af.type = gsn_blindness;
             break;
+
          case AFF_CURSE:
             af.type = gsn_curse;
             break;
+
          case AFF_INVISIBLE:
             af.type = gsn_invis;
             break;
+
          case AFF_SLEEP:
             af.type = gsn_sleep;
             schance = ris_save( victim, level, RIS_SLEEP );
@@ -5535,6 +5704,7 @@ ch_ret spell_affectchar( int sn, int level, CHAR_DATA * ch, void *vo )
                continue;
             }
             break;
+
          case AFF_CHARM:
             af.type = gsn_charm_person;
             schance = ris_save( victim, level, RIS_CHARM );
@@ -5546,6 +5716,7 @@ ch_ret spell_affectchar( int sn, int level, CHAR_DATA * ch, void *vo )
                continue;
             }
             break;
+
          case AFF_POSSESS:
             af.type = gsn_possess;
             break;
@@ -5561,7 +5732,8 @@ ch_ret spell_affectchar( int sn, int level, CHAR_DATA * ch, void *vo )
          switch ( af.location )
          {
             case APPLY_HIT:
-               victim->hit = URANGE( 0, victim->hit + af.modifier, victim->max_hit );
+               victim->hit = URANGE( 0, victim->hit + ( !IS_NPC( ch ) && IS_NPC( victim ) ? af.modifier / 4 : af.modifier ), victim->max_hit );
+
                update_pos( victim );
                if( ( af.modifier > 0 && ch->fighting && ch->fighting->who == victim )
                    || ( af.modifier > 0 && victim->fighting && victim->fighting->who == ch ) )
@@ -5574,6 +5746,7 @@ ch_ret spell_affectchar( int sn, int level, CHAR_DATA * ch, void *vo )
                if( IS_NPC( victim ) && victim->hit <= 0 )
                   damage( ch, victim, 5, TYPE_UNDEFINED );
                break;
+
             case APPLY_MANA:
                victim->mana = URANGE( 0, victim->mana + af.modifier, victim->max_mana );
                update_pos( victim );
@@ -5623,6 +5796,10 @@ ch_ret spell_affect( int sn, int level, CHAR_DATA * ch, void *vo )
       areasp = TRUE;
    else
       areasp = FALSE;
+
+   if( SPELL_FLAG( skill, SF_NOMOB ) && victim && IS_NPC( victim ) )
+      return rSPELL_FAILED;
+
    if( !groupsp && !areasp )
    {
       /*
@@ -5633,6 +5810,9 @@ ch_ret spell_affect( int sn, int level, CHAR_DATA * ch, void *vo )
          failed_casting( skill, ch, victim, NULL );
          return rSPELL_FAILED;
       }
+
+      if( SPELL_FLAG( skill, SF_NOMOB ) && IS_NPC( victim ) )
+         return rSPELL_FAILED;
 
       if( ( skill->type != SKILL_HERB
             && IS_SET( victim->immune, RIS_MAGIC ) ) || is_immune( victim, SPELL_DAMAGE( skill ) ) )
@@ -5686,6 +5866,7 @@ ch_ret spell_affect( int sn, int level, CHAR_DATA * ch, void *vo )
       else
          victim = ch->in_room->first_person;
    }
+
    if( !victim )
    {
       bug( "spell_affect: could not find victim: sn %d", sn );
@@ -5700,7 +5881,9 @@ ch_ret spell_affect( int sn, int level, CHAR_DATA * ch, void *vo )
          if( ( groupsp && !is_same_group( victim, ch ) )
              || IS_SET( victim->immune, RIS_MAGIC )
              || is_immune( victim, SPELL_DAMAGE( skill ) )
-             || check_save( sn, level, ch, victim ) || ( !SPELL_FLAG( skill, SF_RECASTABLE ) && is_affected( victim, sn ) ) )
+             || check_save( sn, level, ch, victim )
+             || ( SPELL_FLAG( skill, SF_NOMOB ) && IS_NPC( victim ) )
+             || ( !SPELL_FLAG( skill, SF_RECASTABLE ) && is_affected( victim, sn ) ) )
             continue;
 
          if( hitvict && ch != victim )
@@ -5761,6 +5944,7 @@ ch_ret spell_obj_inv( int sn, int level, CHAR_DATA * ch, void *vo )
       case SA_CREATE:
          if( SPELL_FLAG( skill, SF_WATER ) ) /* create water */
          {
+            LIQ_TABLE *liq = get_liq( "water" );
             int water;
 
             if( obj->item_type != ITEM_DRINK_CON )
@@ -5769,7 +5953,7 @@ ch_ret spell_obj_inv( int sn, int level, CHAR_DATA * ch, void *vo )
                return rSPELL_FAILED;
             }
 
-            if( obj->value[2] != LIQ_WATER && obj->value[1] != 0 )
+            if( ( !liq || liq->vnum != obj->value[2] ) && obj->value[1] != 0 )
             {
                send_to_char( "It contains some other liquid.\r\n", ch );
                return rSPELL_FAILED;
@@ -5781,7 +5965,7 @@ ch_ret spell_obj_inv( int sn, int level, CHAR_DATA * ch, void *vo )
             if( water > 0 )
             {
                separate_obj( obj );
-               obj->value[2] = LIQ_WATER;
+               obj->value[2] = liq->vnum;
                obj->value[1] += water;
                if( !is_name( "water", obj->name ) )
                {
@@ -6447,7 +6631,7 @@ ch_ret spell_midas_touch( int sn, int level, CHAR_DATA * ch, void *vo )
    int val;
    OBJ_DATA *obj = ( OBJ_DATA * ) vo;
 
-   if( IS_OBJ_STAT( obj, ITEM_NODROP ) )
+   if( IS_OBJ_STAT( obj, ITEM_NODROP ) || IS_OBJ_STAT( obj, ITEM_PERMANENT ) )
    {
       send_to_char( "You can't seem to let go of it.\r\n", ch );
       return rSPELL_FAILED;
@@ -6459,7 +6643,7 @@ ch_ret spell_midas_touch( int sn, int level, CHAR_DATA * ch, void *vo )
       return rSPELL_FAILED;   /* Thoric */
    }
 
-   if( !CAN_WEAR( obj, ITEM_TAKE ) || ( obj->item_type == ITEM_CORPSE_NPC ) || ( obj->item_type == ITEM_CORPSE_PC ) )
+   if( !CAN_WEAR( obj, ITEM_TAKE ) || ( obj->item_type == ITEM_CORPSE_NPC ) || ( obj->item_type == ITEM_CORPSE_PC ) || ( obj->item_type == ITEM_KEY ) )
    {
       send_to_char( "You cannot seem to turn this item to gold!\r\n", ch );
       return rNONE;

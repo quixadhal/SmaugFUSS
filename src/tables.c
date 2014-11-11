@@ -137,6 +137,7 @@ bool load_class_file( const char *fname )
             if( !str_cmp( word, "End" ) )
             {
                fclose( fp );
+               fp = NULL;
                if( cl < 0 || cl >= MAX_CLASS )
                {
                   bug( "Load_class_file: Class (%s) bad/not found (%d)",
@@ -279,6 +280,7 @@ void load_classes(  )
          ++MAX_PC_CLASS;
    }
    fclose( fpList );
+   fpList = NULL;
    for( i = 0; i < MAX_CLASS; ++i )
    {
       if( class_table[i] == NULL )
@@ -331,6 +333,7 @@ void write_class_file( int cl )
       fprintf( fpout, "Title\n%s~\n%s~\n", title_table[cl][x][0], title_table[cl][x][1] );
    fprintf( fpout, "End\n" );
    fclose( fpout );
+   fpout = NULL;
 }
 
 /*
@@ -375,6 +378,7 @@ void load_races(  )
       }
    }
    fclose( fpList );
+   fpList = NULL;
    return;
 }
 
@@ -820,14 +824,14 @@ void fwrite_skill( FILE * fpout, SKILLTYPE * skill )
    {
       int y;
       int min = 1000;
-      for( y = 0; y < MAX_CLASS; ++y )
+      for( y = 0; y < MAX_PC_CLASS; ++y )
          if( skill->skill_level[y] < min )
             min = skill->skill_level[y];
 
       fprintf( fpout, "Minlevel     %d\n", min );
 
       min = 1000;
-      for( y = 0; y < MAX_RACE; ++y )
+      for( y = 0; y < MAX_PC_RACE; ++y )
          if( skill->race_level[y] < min )
             min = skill->race_level[y];
 
@@ -859,6 +863,7 @@ void save_skill_table(  )
    }
    fprintf( fpout, "#END\n" );
    fclose( fpout );
+   fpout = NULL;
 }
 
 /*
@@ -885,6 +890,7 @@ void save_herb_table(  )
    }
    fprintf( fpout, "#END\n" );
    fclose( fpout );
+   fpout = NULL;
 }
 
 /*
@@ -935,6 +941,7 @@ void save_socials(  )
    }
    fprintf( fpout, "#END\n" );
    fclose( fpout );
+   fpout = NULL;
 }
 
 int get_skill( const char *skilltype )
@@ -999,6 +1006,7 @@ void save_commands(  )
    }
    fprintf( fpout, "#END\n" );
    fclose( fpout );
+   fpout = NULL;
 }
 
 SKILLTYPE *fread_skill( FILE * fp )
@@ -1027,7 +1035,6 @@ SKILLTYPE *fread_skill( FILE * fp )
    skill->skill_fun = NULL;
    skill->spell_fun = NULL;
    skill->spell_sector = 0;
-
 
    for( ;; )
    {
@@ -1069,6 +1076,7 @@ SKILLTYPE *fread_skill( FILE * fp )
                fMatch = TRUE;
                break;
             }
+            KEY( "Alignment", skill->alignment, fread_number( fp ) );
             break;
 
          case 'C':
@@ -1523,6 +1531,7 @@ void load_socials(  )
          }
       }
       fclose( fp );
+      fp = NULL;
    }
    else
    {
@@ -1534,7 +1543,6 @@ void load_socials(  )
 /*
  *  Added the flags Aug 25, 1997 --Shaddai
  */
-
 void fread_command( FILE * fp )
 {
    const char *word;
@@ -1702,6 +1710,7 @@ void load_commands(  )
          }
       }
       fclose( fp );
+      fp = NULL;
    }
    else
    {
@@ -1851,5 +1860,6 @@ void fwrite_langs( void )
    }
    fprintf( fp, "#end\n\n" );
    fclose( fp );
+   fp = NULL;
    return;
 }

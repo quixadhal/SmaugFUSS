@@ -415,7 +415,7 @@ LIQ_TABLE *get_liq( const char *str )
    {
       i = atoi( str );
 
-      return liquid_table[i];
+      return get_liq_vnum( i );
    }
    else
    {
@@ -428,6 +428,17 @@ LIQ_TABLE *get_liq( const char *str )
 
 LIQ_TABLE *get_liq_vnum( int vnum )
 {
+   /*
+    * Bugfix - This could have crashed things if the number was out of range.
+    * Calling function should be validating for NULLs, or it'll crash there instead.
+    * Samson 11-09-2014
+    */
+   if( vnum < 0 || vnum >= top_liquid )
+   {
+      bug( "%s: Invalid vnum %d, returning NULL", __FUNCTION__, vnum );
+      return NULL;
+   }
+
    return liquid_table[vnum];
 }
 
@@ -441,6 +452,32 @@ MIX_TABLE *get_mix( const char *str )
          return mix;
 
    return NULL;
+}
+
+void free_liquiddata( void )
+{
+   MIX_TABLE *mix, *mix_next;
+   LIQ_TABLE *liq;
+   int loopa;
+
+   for( mix = first_mixture; mix; mix = mix_next )
+   {
+      mix_next = mix->next;
+      UNLINK( mix, first_mixture, last_mixture, next, prev );
+      STRFREE( mix->name );
+      DISPOSE( mix );
+   }
+
+   for( loopa = 0; loopa < top_liquid; ++loopa )
+   {
+      liq = get_liq_vnum( loopa );
+
+      STRFREE( liq->name );
+      STRFREE( liq->color );
+      STRFREE( liq->shortdesc );
+      DISPOSE( liq );
+   }
+   return;
 }
 
 /* Function to display liquid list. - Tarl 9 Jan 03 */
@@ -1327,7 +1364,7 @@ void do_drink( CHAR_DATA* ch, const char* argument)
 
          if( ( liq = get_liq_vnum( obj->value[2] ) ) == NULL )
          {
-            bug( "Do_drink: bad liquid number %d.", obj->value[2] );
+            bug( "%s: bad liquid number %d.", __FUNCTION__, obj->value[2] );
             liq = get_liq_vnum( 0 );
          }
 
@@ -1741,7 +1778,10 @@ void do_fill( CHAR_DATA* ch, const char* argument)
          src_next = source->next_content;
          if( dest_item == ITEM_CONTAINER )
          {
-            if( !CAN_WEAR( source, ITEM_TAKE ) || IS_OBJ_STAT( source, ITEM_BURIED )
+            if( !CAN_WEAR( source, ITEM_TAKE )
+                || IS_OBJ_STAT( source, ITEM_NOFILL )
+                || IS_SET( source->magic_flags, ITEM_PKDISARMED )
+                || IS_OBJ_STAT( source, ITEM_BURIED )
                 || ( IS_OBJ_STAT( source, ITEM_PROTOTYPE ) && !can_take_proto( ch ) )
                 || ch->carry_weight + get_obj_weight( source ) > can_carry_w( ch )
                 || ( get_real_obj_weight( source ) + get_real_obj_weight( obj ) / obj->count ) > obj->value[0] )
@@ -1766,6 +1806,7 @@ void do_fill( CHAR_DATA* ch, const char* argument)
             break;
          }
       }
+
       if( !found )
       {
          switch ( src_item1 )
@@ -1787,10 +1828,12 @@ void do_fill( CHAR_DATA* ch, const char* argument)
                return;
          }
       }
+
       if( dest_item == ITEM_CONTAINER )
       {
          act( AT_ACTION, "You fill $p.", ch, obj, NULL, TO_CHAR );
          act( AT_ACTION, "$n fills $p.", ch, obj, NULL, TO_ROOM );
+
          if( xIS_SET( ch->in_room->room_flags, ROOM_HOUSE ) )
             save_house_by_vnum( ch->in_room->vnum );
          return;
@@ -1815,7 +1858,10 @@ void do_fill( CHAR_DATA* ch, const char* argument)
       {
          default:   /* put something in container */
             if( !source->in_room /* disallow inventory items */
-                || !CAN_WEAR( source, ITEM_TAKE ) || ( IS_OBJ_STAT( source, ITEM_PROTOTYPE ) && !can_take_proto( ch ) )
+                || !CAN_WEAR( source, ITEM_TAKE )
+                || IS_OBJ_STAT( source, ITEM_NOFILL )
+                || IS_SET( source->magic_flags, ITEM_PKDISARMED )
+                || ( IS_OBJ_STAT( source, ITEM_PROTOTYPE ) && !can_take_proto( ch ) )
                 || ch->carry_weight + get_obj_weight( source ) > can_carry_w( ch )
                 || ( get_real_obj_weight( source ) + get_real_obj_weight( obj ) / obj->count ) > obj->value[0] )
             {
@@ -1891,7 +1937,9 @@ void do_fill( CHAR_DATA* ch, const char* argument)
             {
                otmp_next = otmp->next_content;
 
-               if( !CAN_WEAR( otmp, ITEM_TAKE ) || ( IS_OBJ_STAT( otmp, ITEM_PROTOTYPE ) && !can_take_proto( ch ) )
+               if( !CAN_WEAR( otmp, ITEM_TAKE )
+                   || IS_OBJ_STAT( otmp, ITEM_NOFILL )
+                   || ( IS_OBJ_STAT( otmp, ITEM_PROTOTYPE ) && !can_take_proto( ch ) )
                    || ch->carry_number + otmp->count > can_carry_n( ch )
                    || ch->carry_weight + get_obj_weight( otmp ) > can_carry_w( ch )
                    || ( get_real_obj_weight( source ) + get_real_obj_weight( obj ) / obj->count ) > obj->value[0] )
@@ -2026,6 +2074,7 @@ void do_fill( CHAR_DATA* ch, const char* argument)
          {
             char buf[20];
             char buf2[70];
+            LIQ_TABLE *liq = get_liq_vnum( source->value[2] );
 
             if( source->value[1] > 15 )
                mudstrlcpy( buf, "large", 20 );
@@ -2035,8 +2084,7 @@ void do_fill( CHAR_DATA* ch, const char* argument)
                mudstrlcpy( buf, "rather small", 20 );
             else
                mudstrlcpy( buf, "small", 20 );
-            snprintf( buf2, 70, "There is a %s puddle of %s.", buf,
-               ( source->value[2] >= LIQ_MAX ? "water" : liq_table[source->value[2]].liq_name ) );
+            snprintf( buf2, 70, "There is a %s puddle of %s.", buf, ( liq == NULL ? "water" : liq->name ) );
             source->description = STRALLOC( buf2 );
          }
          act( AT_ACTION, "You fill $p from $P.", ch, obj, source, TO_CHAR );
@@ -2191,28 +2239,4 @@ void do_empty( CHAR_DATA* ch, const char* argument)
          }
          return;
    }
-}
-
-void free_liquiddata( void )
-{
-   MIX_TABLE *mix, *mix_next;
-   LIQ_TABLE *liq;
-   int loopa;
-
-   for( mix = first_mixture; mix; mix = mix_next )
-   {
-      mix_next = mix->next;
-      UNLINK( mix, first_mixture, last_mixture, next, prev );
-      STRFREE( mix->name );
-      DISPOSE( mix );
-   }
-   for( loopa = 0; loopa <= top_liquid; loopa++ )
-   {
-      liq = get_liq_vnum( loopa );
-      STRFREE( liq->name );
-      STRFREE( liq->color );
-      STRFREE( liq->shortdesc );
-      DISPOSE( liq );
-   }
-   return;
 }
