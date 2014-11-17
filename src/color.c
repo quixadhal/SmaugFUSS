@@ -279,7 +279,7 @@ void reset_colors( CHAR_DATA * ch )
       return;
    }
    else
-      log_printf( "%s: Attempting to reset NPC colors: %s", __FUNCTION__, ch->short_descr );
+      log_printf( "%s: Attempting to reset NPC colors: %s", __func__, ch->short_descr );
 }
 
 void do_color( CHAR_DATA* ch, const char* argument)
@@ -1782,7 +1782,7 @@ void set_char_color( short AType, CHAR_DATA * ch )
    write_to_buffer( ch->desc, color_str( AType, ch ), 0 );
    if( !ch->desc )
    {
-      bug( "%s: NULL descriptor after WTB! CH: %s", __FUNCTION__, ch->name ? ch->name : "Unknown?!?" );
+      bug( "%s: NULL descriptor after WTB! CH: %s", __func__, ch->name ? ch->name : "Unknown?!?" );
       return;
    }
    ch->desc->pagecolor = ch->colors[AType];
@@ -1851,7 +1851,7 @@ void set_pager_color( short AType, CHAR_DATA * ch )
    write_to_pager( ch->desc, color_str( AType, ch ), 0 );
    if( !ch->desc )
    {
-      bug( "%s: NULL descriptor after WTP! CH: %s", __FUNCTION__, ch->name ? ch->name : "Unknown?!?" );
+      bug( "%s: NULL descriptor after WTP! CH: %s", __func__, ch->name ? ch->name : "Unknown?!?" );
       return;
    }
    ch->desc->pagecolor = ch->colors[AType];
@@ -1862,7 +1862,7 @@ void send_to_desc_color( const char *txt, DESCRIPTOR_DATA * d )
 {
    if( !d )
    {
-      bug( "%s: NULL *d", __FUNCTION__ );
+      bug( "%s: NULL *d", __func__ );
       return;
    }
 
@@ -1879,7 +1879,7 @@ void send_to_char( const char *txt, CHAR_DATA * ch )
 {
    if( !ch )
    {
-      bug( "%s: NULL ch!", __FUNCTION__ );
+      bug( "%s: NULL ch!", __func__ );
       return;
    }
 
@@ -1891,7 +1891,7 @@ void send_to_pager( const char *txt, CHAR_DATA * ch )
 {
    if( !ch )
    {
-      bug( "%s: NULL ch!", __FUNCTION__ );
+      bug( "%s: NULL ch!", __func__ );
       return;
    }
 

@@ -218,7 +218,7 @@ void fread_memberlist( CLAN_DATA * clan, FILE * fp )
 
                if( Class < 0 || Class >= MAX_NPC_CLASS )
                {
-                  bug( "%s: Invalid class in clan roster", __FUNCTION__ );
+                  bug( "%s: Invalid class in clan roster", __func__ );
                   Class = get_npc_class( "warrior" );
                }
                STRFREE( temp );
@@ -257,7 +257,7 @@ void fread_memberlist( CLAN_DATA * clan, FILE * fp )
             break;
       }
       if( !fMatch )
-         bug( "%s: no match: %s", __FUNCTION__, word );
+         bug( "%s: no match: %s", __func__, word );
    }
 }
 
@@ -393,7 +393,7 @@ void save_clan( CLAN_DATA * clan )
 
    if( !clan->filename || clan->filename[0] == '\0' )
    {
-      bug( "%s: %s has no filename", __FUNCTION__, clan->name );
+      bug( "%s: %s has no filename", __func__, clan->name );
       return;
    }
 
@@ -520,7 +520,7 @@ void sort_vaults( VAULT_DATA *pVault )
 
    if( !pVault )
    {
-      bug( "%s: NULL pVault", __FUNCTION__ );
+      bug( "%s: NULL pVault", __func__ );
       return;
    }
 
@@ -550,7 +550,7 @@ void save_vault_list( )
    fpout = fopen( VAULT_LIST, "w" );
    if( !fpout )
    {
-      bug( "%s: FATAL: cannot open vault.lst for writing!", __FUNCTION__ );
+      bug( "%s: FATAL: cannot open vault.lst for writing!", __func__ );
       return;
    }
 
@@ -587,7 +587,7 @@ void load_vaults( )
 
       if( ( rnum = atoi(vnum) ) == 0 )
       {
-         bug( "%s: Invalid vault number: %d", __FUNCTION__, rnum );
+         bug( "%s: Invalid vault number: %d", __func__, rnum );
          break;
       }
 
@@ -595,7 +595,7 @@ void load_vaults( )
 
       if( !fread_storage( rnum, filename ) )
       {
-         bug( "%s: Cannot load vault file: %s", __FUNCTION__, filename );
+         bug( "%s: Cannot load vault file: %s", __func__, filename );
       }
    }
 
@@ -651,7 +651,7 @@ bool fread_storage( int rnum, const char *filename )
 
          if( letter != '#' )
          {
-            bug( "%s: %s: # not found.", __FUNCTION__, filename );
+            bug( "%s: %s: # not found.", __func__, filename );
             break;
          }
 
@@ -664,7 +664,7 @@ bool fread_storage( int rnum, const char *filename )
             break;
          else
          {
-            bug( "%s: %s: bad section.", __FUNCTION__, filename );
+            bug( "%s: %s: bad section.", __func__, filename );
             break;
          }
       }
@@ -1008,7 +1008,7 @@ bool load_clan_file( const char *clanfile )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __FUNCTION__ );
+            bug( "%s: # not found.", __func__ );
             break;
          }
 
@@ -1021,7 +1021,7 @@ bool load_clan_file( const char *clanfile )
             break;
          else
          {
-            bug( "%s: bad section: %s.", __FUNCTION__, word );
+            bug( "%s: bad section: %s.", __func__, word );
             break;
          }
       }
@@ -1082,7 +1082,7 @@ bool load_council_file( const char *councilfile )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __FUNCTION__ );
+            bug( "%s: # not found.", __func__ );
             break;
          }
 
@@ -1096,7 +1096,7 @@ bool load_council_file( const char *councilfile )
             break;
          else
          {
-            bug( "%s: bad section: %s", __FUNCTION__, word );
+            bug( "%s: bad section: %s", __func__, word );
             break;
          }
       }
@@ -1151,7 +1151,7 @@ void load_clans(  )
 
       if( !load_clan_file( CLAN_LIST ) )
       {
-         bug( "%s: Cannot load clan file: %s", __FUNCTION__, CLAN_LIST );
+         bug( "%s: Cannot load clan file: %s", __func__, CLAN_LIST );
       }
    }
    fclose( fpList );
@@ -1209,13 +1209,13 @@ void save_storeroom( CHAR_DATA *ch, int vnum )
 
    if( !vnum )
    {
-      bug( "%s: Null vnum pointer!", __FUNCTION__ );
+      bug( "%s: Null vnum pointer!", __func__ );
       return;
    }                                                                                                                                           
 
    if( !ch )
    {
-      bug( "%s: Null ch pointer!", __FUNCTION__ );
+      bug( "%s: Null ch pointer!", __func__ );
       return;
    }                                                                                                                                           
 
@@ -1223,7 +1223,7 @@ void save_storeroom( CHAR_DATA *ch, int vnum )
 
    if( ( fp = fopen( filename, "w" ) ) == NULL )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( filename );
    }
    else

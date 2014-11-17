@@ -2256,7 +2256,7 @@ void save_weathermap( void )
 
    if( !( fp = fopen( WEATHER_FILE, "w" ) ) )
    {
-      bug( "%s: fopen", __FUNCTION__ );
+      bug( "%s: fopen", __func__ );
       perror( WEATHER_FILE );
       return;
    }
@@ -2378,7 +2378,7 @@ void fread_cell( FILE * fp, int x, int y )
       }
       if( !fMatch )
       {
-         bug( "%s: no match for %s", __FUNCTION__, word );
+         bug( "%s: no match for %s", __func__, word );
          fread_to_eol( fp );
       }
    }
@@ -2409,7 +2409,7 @@ bool load_weathermap( void )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found (%c)", __FUNCTION__, letter );
+         bug( "%s: # not found (%c)", __func__, letter );
          return FALSE;
       }
 
@@ -2430,7 +2430,7 @@ bool load_weathermap( void )
          break;
       else
       {
-         bug( "%s: no match for %s", __FUNCTION__, word );
+         bug( "%s: no match for %s", __func__, word );
          continue;
       }
    }
