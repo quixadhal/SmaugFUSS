@@ -4372,8 +4372,8 @@ void show_file( CHAR_DATA * ch, const char *filename )
    {
       while( !feof( fp ) )
       {
-         while( ( buf[num] = fgetc( fp ) ) != EOF
-                && buf[num] != '\n' && buf[num] != '\r' && num < ( MAX_STRING_LENGTH - 2 ) )
+         while( num < ( MAX_STRING_LENGTH - 2 ) && ( buf[num] = fgetc( fp ) ) != EOF
+                && buf[num] != '\n' && buf[num] != '\r' )
             num++;
          c = fgetc( fp );
          if( ( c != '\n' && c != '\r' ) || c == buf[num] )
@@ -4409,7 +4409,7 @@ void show_file_vnum( CHAR_DATA *ch, const char *filename, int lo, int hi )
    {
       while( !feof( fp ) )
       {
-         while( ( buf[num] = fgetc( fp ) ) != EOF && buf[num] != '\n' && buf[num] != '\r' && num < ( MAX_STRING_LENGTH - 2 ) )
+         while( num < ( MAX_STRING_LENGTH - 2 ) && ( buf[num] = fgetc( fp ) ) != EOF && buf[num] != '\n' && buf[num] != '\r' )
             num++;
 
          c = fgetc( fp );
@@ -8107,9 +8107,8 @@ void load_buildlist( void )
    char line[81];
    char word[81];
    int low, hi;
-   int mlow, mhi, olow, ohi, rlow, rhi;
+   int mlow, mhi, olow, ohi, rlow, rhi, temp;
    bool badfile = FALSE;
-   char temp;
 
    dp = opendir( GOD_DIR );
    dentry = readdir( dp );
@@ -8125,15 +8124,18 @@ void load_buildlist( void )
             dentry = readdir( dp );
             continue;
          }
+
          log_string( buf );
          badfile = FALSE;
          rlow = rhi = olow = ohi = mlow = mhi = 0;
+
          while( !feof( fp ) && !ferror( fp ) )
          {
             low = 0;
             hi = 0;
             word[0] = 0;
             line[0] = 0;
+
             if( ( temp = fgetc( fp ) ) != EOF )
                ungetc( temp, fp );
             else
@@ -8149,6 +8151,7 @@ void load_buildlist( void )
                   badfile = TRUE;
                }
             }
+
             if( !str_cmp( word, "RoomRange" ) )
                rlow = low, rhi = hi;
             else if( !str_cmp( word, "MobRange" ) )
@@ -8156,8 +8159,10 @@ void load_buildlist( void )
             else if( !str_cmp( word, "ObjRange" ) )
                olow = low, ohi = hi;
          }
+
          fclose( fp );
          fp = NULL;
+
          if( rlow && rhi && !badfile )
          {
             snprintf( buf, MAX_STRING_LENGTH, "%s%s.are", BUILD_DIR, dentry->d_name );
@@ -8191,6 +8196,7 @@ void load_buildlist( void )
 #endif
             fclose( fp );
             fp = NULL;
+
             pArea->low_r_vnum = rlow;
             pArea->hi_r_vnum = rhi;
             pArea->low_m_vnum = mlow;
@@ -9036,8 +9042,12 @@ void load_projects( void ) /* Copied load_boards structure for simplicity */
    while( ( project = read_project( fp ) ) != NULL )
       LINK( project, first_project, last_project, next, prev );
 
-   fclose( fp );
-   fp = NULL;
+   // Bugfix - CPPcheck flagged this. It's possible for it to be closed in fread_project before getting back here.
+   if( fp )
+   {
+      fclose( fp );
+      fp = NULL;
+   }
 
    return;
 }

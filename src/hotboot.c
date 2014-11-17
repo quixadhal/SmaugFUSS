@@ -561,9 +561,10 @@ void load_world( void )
                done++;
          }
       }
-      fclose( mobfp );
-      mobfp = NULL;
    }
+
+   fclose( mobfp );
+   mobfp = NULL;
 
    load_obj_files(  );
 
