@@ -433,7 +433,7 @@ LIQ_TABLE *get_liq_vnum( int vnum )
     * Calling function should be validating for NULLs, or it'll crash there instead.
     * Samson 11-09-2014
     */
-   if( vnum < 0 || vnum >= top_liquid )
+   if( vnum < 0 || vnum > top_liquid )
    {
       bug( "%s: Invalid vnum %d, returning NULL", __func__, vnum );
       return NULL;
@@ -468,7 +468,7 @@ void free_liquiddata( void )
       DISPOSE( mix );
    }
 
-   for( loopa = 0; loopa < top_liquid; ++loopa )
+   for( loopa = 0; loopa <= top_liquid; ++loopa )
    {
       liq = get_liq_vnum( loopa );
 
