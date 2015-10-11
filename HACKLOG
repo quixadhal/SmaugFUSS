@@ -100,3 +100,10 @@
             To see a detailed list of THOSE changes, refer to the git log
             command's output, copied from their repositories.
 
+2015.10.11  Quixadhal (1.9.2q2)
+            Files:
+                src/act_wiz.c src/color.c
+
+            Fixed a small bug in do_mortalize(), and removed an unused test
+            version of a function in color.c
+

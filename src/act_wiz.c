@@ -5648,12 +5648,12 @@ void do_mortalize( CHAR_DATA *ch, const char *argument)
          }
       while( victim->first_carrying )
          extract_obj( victim->first_carrying );
-      return;
       if( loaded )
          do_quit( victim, "" );
       else
          save_char_obj( victim );
       make_wizlist(  );
+      return;
    }
    send_to_char( "No such player.\r\n", ch );
    return;
