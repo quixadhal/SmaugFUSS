@@ -107,3 +107,15 @@
             Fixed a small bug in do_mortalize(), and removed an unused test
             version of a function in color.c
 
+2014.03.11  Quixadhal (1.9.2q3)
+            Files:
+                src/Makefile src/act_wiz.c
+
+            Modified the Makefile so dependancies are only rebuilt when a source
+            file is changed, not every time you need to regenerate any object file.
+
+            Imported several bugfixes from latest SmaugFUSS 1.9 release.
+
+            Also, in a previous change, I added a check for immortal status to the
+            idle timeout in comm.c.... no kicking off idle admins, that's their job!
+

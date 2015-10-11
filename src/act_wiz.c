@@ -5568,6 +5568,9 @@ void do_mortalize( CHAR_DATA *ch, const char *argument)
          CREATE( d->outbuf, char, d->outsize );
 
          loaded = load_char_obj( d, name, FALSE, FALSE );
+         if( !loaded ) {
+            bug( "%s: Failed to load_char_object for %s.", __func__, name );
+         }
          add_char( d->character );
          char_to_room( d->character, ch->in_room );
          if( get_trust( d->character ) >= get_trust( ch ) )
@@ -5718,6 +5721,9 @@ void do_loadup( CHAR_DATA* ch, const char* argument)
       CREATE( d->outbuf, char, d->outsize );
 
       loaded = load_char_obj( d, name, FALSE, FALSE );
+      if( !loaded ) {
+         bug( "%s: Failed to load_char_object for %s.", __func__, name );
+      }
       add_char( d->character );
       old_room_vnum = d->character->in_room->vnum;
       char_to_room( d->character, ch->in_room );
