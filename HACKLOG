@@ -88,3 +88,15 @@
             Easy fix, just have the obj restore thing skip files that don't
             start with a digit, since the filename is just the vnum.
 
+2015.10.11  Quixadhal (1.9.2q1)
+            Files:
+                HACKLOG, and lots of other files.
+
+            This is a small update to state that a LOT of changes were merged
+            in from Kayle and Samson over the last couple of years.  This
+            version brings us back up to date with them, keeping my own
+            changes in place (where applicable).
+
+            To see a detailed list of THOSE changes, refer to the git log
+            command's output, copied from their repositories.
+
